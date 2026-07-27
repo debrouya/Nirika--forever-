@@ -88,7 +88,7 @@ const exercises = [
     equipment: 'barbell',
     difficulty: 'moyen',
     description: 'Développé couché prise serrée. Sollicite davantage les triceps et l\'intérieur des pecs.',
-    youtubeId: 'bEv6CCg2BC8',
+    youtubeId: 'UYJsFzqdgK4',
   },
   {
     id: 'butterfly',
@@ -97,7 +97,7 @@ const exercises = [
     equipment: 'machine',
     difficulty: 'facile',
     description: 'Machine butterfly pour isolation des pectoraux. Contrôlez la phase excentrique.',
-    youtubeId: '8iPEnn_lNVg',
+    youtubeId: 'H4mVGHaK2f4',
   },
   {
     id: 'pec_sled',
@@ -106,7 +106,7 @@ const exercises = [
     equipment: 'machine',
     difficulty: 'facile',
     description: 'Presse à poignées verticales ciblant les pectoraux. Mouvement guidé.',
-    youtubeId: 'GmVDSsHpLbQ',
+    youtubeId: 'zgP-UCKGe24',
   },
   {
     id: 'incline_dumbbell',
@@ -115,7 +115,7 @@ const exercises = [
     equipment: 'dumbbell',
     difficulty: 'moyen',
     description: 'Développé incliné aux haltères. Amplitude de mouvement supérieure à la barre.',
-    youtubeId: '8iPEnn_lNVg',
+    youtubeId: '0f6-uCUKqgA',
   },
   {
     id: 'chest_fly',
@@ -162,7 +162,7 @@ const exercises = [
     equipment: 'machine',
     difficulty: 'facile',
     description: 'Rowing à la machine guidée. Confortable et sécurisé pour travailler le dos.',
-    youtubeId: 'roCP6wCXPqo',
+    youtubeId: 'vwHG9Jfu4sw',
   },
   {
     id: 'rowing_cable',
@@ -198,7 +198,7 @@ const exercises = [
     equipment: 'none',
     difficulty: 'difficile',
     description: 'Tractions en supination. Plus de sollicitation des biceps que les tractions classiques.',
-    youtubeId: 'brhRXlNhIq0',
+    youtubeId: 'e1YSApl-QcM',
   },
   {
     id: 'tirage_poulie_basse',
@@ -207,7 +207,7 @@ const exercises = [
     equipment: 'cable',
     difficulty: 'facile',
     description: 'Tirage debout à la poulie basse. Variation pour cibler les dorsaux.',
-    youtubeId: 'roCP6wCXPqo',
+    youtubeId: 'vwHG9Jfu4sw',
   },
   {
     id: 'rowing_haltere',
@@ -216,7 +216,7 @@ const exercises = [
     equipment: 'dumbbell',
     difficulty: 'moyen',
     description: 'Rowing unilatéral à l\'haltère sur banc. Permet de corriger les déséquilibres.',
-    youtubeId: 'dFzUjZSuQYg',
+    youtubeId: 'vwHG9Jfu4sw',
   },
   {
     id: 'dorsaux_machine',
@@ -243,7 +243,7 @@ const exercises = [
     equipment: 'dumbbell',
     difficulty: 'moyen',
     description: 'Pullover haltère ou à la poulie. Travaille les dorsaux et les pectoraux.',
-    youtubeId: 'rCM4NN6g0kA',
+    youtubeId: '0f6-uCUKqgA',
   },
   {
     id: 'smith_rowing',
@@ -290,7 +290,7 @@ const exercises = [
     equipment: 'dumbbell',
     difficulty: 'facile',
     description: 'Élévations frontales aux haltères ou à la poulie. Cible le deltoïde antérieur.',
-    youtubeId: 'szM0rYfK4Fo',
+    youtubeId: '-t7fuZ0KhDA',
   },
   {
     id: 'deltoids_machine',
@@ -299,7 +299,7 @@ const exercises = [
     equipment: 'machine',
     difficulty: 'facile',
     description: 'Machine d\'élévations latérales. Idéal pour les débutants ou en fin de séance.',
-    youtubeId: 'GkEaJMk7JC4',
+    youtubeId: 'NNAs8jx_zJI',
   },
   {
     id: 'rowing_orteil',
@@ -308,7 +308,7 @@ const exercises = [
     equipment: 'barbell',
     difficulty: 'moyen',
     description: 'Rowing buste penché prise large pour cibler les épaules postérieures.',
-    youtubeId: 'FWJR5V8zvKw',
+    youtubeId: 'Xpu0C50pD-U',
   },
   {
     id: 'face_pull',
@@ -326,7 +326,7 @@ const exercises = [
     equipment: 'dumbbell',
     difficulty: 'facile',
     description: 'Haussements d\'épaules aux haltères ou à la barre. Cible les trapèzes.',
-    youtubeId: 'hJW0n96nfY4',
+    youtubeId: 'cJRVVxmytaM',
   },
   {
     id: 'reverse_fly',
@@ -400,7 +400,7 @@ const exercises = [
     equipment: 'dumbbell',
     difficulty: 'moyen',
     description: 'Fentes marchées ou statiques aux haltères. Travail unilatéral et équilibre.',
-    youtubeId: 'QOVaHnm-QDI',
+    youtubeId: 'Pbmj6xPo-Hw',
   },
   {
     id: 'leg_curl',
@@ -427,7 +427,7 @@ const exercises = [
     equipment: 'machine',
     difficulty: 'facile',
     description: 'Élévations de mollets assis. Cible le soléaire.',
-    youtubeId: 'J0DnG1_S0jU',
+    youtubeId: 'pz66Bw6HJ4s',
   },
   {
     id: 'hack_squat',
@@ -436,7 +436,7 @@ const exercises = [
     equipment: 'machine',
     difficulty: 'moyen',
     description: 'Squat hack machine. Permet de pousser lourd en sécurité.',
-    youtubeId: 'v30jRWOoOBo',
+    youtubeId: 'hrciyIRwFzs',
   },
   {
     id: 'hip_thrust',
@@ -454,7 +454,7 @@ const exercises = [
     equipment: 'none',
     difficulty: 'difficile',
     description: 'Sissy squat au poids du corps. Isolation extrême des quadriceps.',
-    youtubeId: 'A-cFYGmF0IQ',
+    youtubeId: '54f15e74Hmw',
   },
   {
     id: 'adducteurs',
@@ -463,7 +463,7 @@ const exercises = [
     equipment: 'machine',
     difficulty: 'facile',
     description: 'Machine adducteurs. Renforcement de l\'intérieur des cuisses.',
-    youtubeId: 'KJhXnXIJJI0',
+    youtubeId: 'MLBm7i341Rw',
   },
   {
     id: 'abducteurs',
@@ -472,7 +472,7 @@ const exercises = [
     equipment: 'machine',
     difficulty: 'facile',
     description: 'Machine abducteurs. Renforcement de l\'extérieur des cuisses et hanches.',
-    youtubeId: 'KJhXnXIJJI0',
+    youtubeId: 'OjI5OpV6IWA',
   },
 
   // ==================== ABDOMINAUX (9) ====================
@@ -510,7 +510,7 @@ const exercises = [
     equipment: 'none',
     difficulty: 'moyen',
     description: 'Relevé de jambes suspendu ou allongé. Cible les abdominaux inférieurs.',
-    youtubeId: 'JB2oyawz9bk',
+    youtubeId: 'Pr1ieGZ5atk',
   },
   {
     id: 'abdominal_crunch_machine',
@@ -519,7 +519,7 @@ const exercises = [
     equipment: 'machine',
     difficulty: 'facile',
     description: 'Crunch à la machine guidée. Permet d\'ajouter de la résistance facilement.',
-    youtubeId: 'MjrcBwJ1rFA',
+    youtubeId: 'fl9FSpCpvq0',
   },
   {
     id: 'cable_crunch',
@@ -537,7 +537,7 @@ const exercises = [
     equipment: 'none',
     difficulty: 'facile',
     description: 'Exercice de stabilisation du core. Parfait pour débuter ou en réathlétisation.',
-    youtubeId: 'LhM1cNNLpK0',
+    youtubeId: 'GbSC02oU3To',
   },
   {
     id: 'mountain_climber',
@@ -629,7 +629,7 @@ const exercises = [
     equipment: 'dumbbell',
     difficulty: 'facile',
     description: 'Curl concentré assis. Isolation parfaite du biceps avec pause en contraction.',
-    youtubeId: '0AUGkch3t2c',
+    youtubeId: 'Jvj2wV0vOYU',
   },
   {
     id: 'pronation_supination',
@@ -638,7 +638,7 @@ const exercises = [
     equipment: 'dumbbell',
     difficulty: 'facile',
     description: 'Rotation du poignet avec haltère. Renforce les avant-bras et les rotateurs.',
-    youtubeId: 'nRgx9X5pKEo',
+    youtubeId: '7ac_qmBjkFI',
   },
 
   // ==================== CARDIO (9) ====================
@@ -649,7 +649,7 @@ const exercises = [
     equipment: 'machine',
     difficulty: 'facile',
     description: 'Vélo statique en salle. Cardio à faible impact pour tous les niveaux.',
-    youtubeId: 'JnJ1-gM0dDc',
+    youtubeId: 'rEqRmKAQ5xM',
   },
   {
     id: 'tapis_course',
@@ -658,7 +658,7 @@ const exercises = [
     equipment: 'machine',
     difficulty: 'facile',
     description: 'Course à pied sur tapis roulant. Ajustez la vitesse et l\'inclinaison.',
-    youtubeId: 'LhF5NcEGXhU',
+    youtubeId: 'vo8kocLRJ8M',
   },
   {
     id: 'rameur',
@@ -667,7 +667,7 @@ const exercises = [
     equipment: 'machine',
     difficulty: 'moyen',
     description: 'Rameur ergomètre. Travail complet du corps en un seul mouvement.',
-    youtubeId: 'Z3wsDG7VlXI',
+    youtubeId: '4ykhggcbJrY',
   },
   {
     id: 'corde_a_sauter',
@@ -676,7 +676,7 @@ const exercises = [
     equipment: 'none',
     difficulty: 'moyen',
     description: 'Corde à sauter. Excellent pour l\'endurance et la coordination.',
-    youtubeId: 'FJmRQ5iTAKE',
+    youtubeId: 'fm0WpJsWBA8',
   },
   {
     id: 'elliptique',
@@ -685,7 +685,7 @@ const exercises = [
     equipment: 'machine',
     difficulty: 'facile',
     description: 'Vélo elliptique. Cardio à très faible impact sur les articulations.',
-    youtubeId: 'iX2tr0CNnGE',
+    youtubeId: 'JuIVGB2IBL0',
   },
   {
     id: 'natation',
@@ -694,7 +694,7 @@ const exercises = [
     equipment: 'none',
     difficulty: 'moyen',
     description: 'Natation en piscine. Le sport complet par excellence, sans impact.',
-    youtubeId: 'KyQxYKNR33g',
+    youtubeId: 'LijdyVaaDnY',
   },
   {
     id: 'marche_rapide',
@@ -703,7 +703,7 @@ const exercises = [
     equipment: 'none',
     difficulty: 'facile',
     description: 'Marche rapide ou Nordic walking. Accessible à tous, brûle beaucoup de calories.',
-    youtubeId: 'sQ0e1V0iU8c',
+    youtubeId: 'tVpUCkMLgms',
   },
   {
     id: 'stepper',
@@ -712,7 +712,7 @@ const exercises = [
     equipment: 'machine',
     difficulty: 'moyen',
     description: 'Steppeur. Simule la montée d\'escaliers, travail intensif des jambes.',
-    youtubeId: 'gWjeU1g7xQ4',
+    youtubeId: 'ST-5lD69XqU',
   },
   {
     id: 'aviron',
@@ -721,7 +721,7 @@ const exercises = [
     equipment: 'machine',
     difficulty: 'moyen',
     description: 'Machine d\'aviron. Mouvement complet cardiovasculaire et musculaire.',
-    youtubeId: 'Z3wsDG7VlXI',
+    youtubeId: '4ykhggcbJrY',
   },
 ]
 
