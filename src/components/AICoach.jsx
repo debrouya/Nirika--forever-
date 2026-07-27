@@ -48,6 +48,8 @@ const INJURY_EXCLUSION_MAP = {
   coude: ['curl_bicep', 'curl_haltere', 'extension_tricep_cable', 'curl_marteau'],
   poignet: ['push_up', 'dips_tricep', 'developed_plat', 'pull_up'],
   lombaires: ['squat', 'rowing_barre', 'hip_thrust', 'hack_squat'],
+  anche: ['squat', 'fentes', 'leg_press', 'hip_thrust', 'dead_lift'],
+  talon: ['squat', 'fentes', 'leg_press', 'hack_squat', 'mollets_debout'],
 }
 
 const ACTIVITY_LEVELS = [
@@ -204,11 +206,24 @@ function getExcludedExerciseIds(injuries) {
 }
 
 function generateWorkout(profile, excludedIds) {
-  const { level, goals, frequency } = profile
+  const { level, goals, frequency, location, material } = profile
   const goal = Array.isArray(goals) ? goals[0] : goals
   const availableMuscles = Object.keys(MUSCLE_GROUPS).filter((m) => MUSCLE_GROUPS[m].exercises.length > 0)
   const setsForLevel = level === 'debutant' ? 3 : level === 'intermediaire' ? 4 : 4
   const repsForGoal = goal === 'force' ? '5-8' : goal === 'endurance' ? '15-20' : '8-12'
+
+  const filterByEquipment = (ex) => {
+    if (!location) return true
+    if (location === 'maison') {
+      if (ex.equipment === 'barbell' || ex.equipment === 'machine') return false
+      if (material && material.includes('aucun') && (ex.equipment === 'dumbbell' || ex.equipment === 'cable')) return false
+    }
+    if (location === 'exterieur') {
+      if (ex.equipment === 'machine' || ex.equipment === 'cable' || ex.equipment === 'barbell') return false
+    }
+    return true
+  }
+
   const split = []
   const days = Math.min(frequency || 3, 6)
   const musclesPerDay = Math.ceil(availableMuscles.length / Math.max(1, Math.floor(days / 2)))
@@ -221,7 +236,9 @@ function generateWorkout(profile, excludedIds) {
     }
     const dayExercises = []
     dayMuscles.forEach((muscle) => {
-      const pool = MUSCLE_GROUPS[muscle].exercises.filter((e) => !excludedIds.includes(e.id))
+      const pool = MUSCLE_GROUPS[muscle].exercises.filter(
+        (e) => !excludedIds.includes(e.id) && filterByEquipment(e)
+      )
       const selected = pool.slice(0, muscle === 'Jambes' ? 3 : 2)
       selected.forEach((ex) => {
         dayExercises.push({

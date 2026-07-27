@@ -38,9 +38,9 @@ export default function App() {
   const [splashDone, setSplashDone] = useState(false)
 
   const supabaseReady = isSupabaseConfigured()
-  const { subscription } = useSubscription(user?.id)
+  const { subscription, isPremium } = useSubscription(user?.id)
   const isAdmin = checkAdmin(user) || profile?.role === 'admin'
-  const hasAccess = isAdmin
+  const hasAccess = isAdmin || isPremium
 
   const handleSplashComplete = useCallback(() => setSplashDone(true), [])
 
@@ -177,7 +177,7 @@ export default function App() {
       {currentView === 'calisthenics' && <Calisthenics isPremium={hasAccess} onShowPaywall={() => !isAdmin && setShowPaywall(true)} />}
       {currentView === 'cardio' && <Cardio />}
       {currentView === 'ai' && <AICoach />}
-      {currentView === 'stats' && <Stats isPremium={hasAccess} onShowPaywall={() => !isAdmin && setShowPaywall(true)} />}
+      {currentView === 'stats' && <Stats />}
       {currentView === 'fitmatrix' && <FitMatrix />}
       {currentView === 'calendar' && <Calendar />}
       {currentView === 'programme' && <Programme user={user} isPremium={hasAccess} />}

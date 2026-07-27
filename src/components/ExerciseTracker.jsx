@@ -42,7 +42,7 @@ function getIntensityLabel(sets, avgReps, avgWeight) {
 }
 
 export default function ExerciseTracker({ exercise, sessionHistory, onComplete }) {
-  const { addSession } = useStore()
+  const { addExerciseRecord } = useStore()
   const [isActive, setIsActive] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [timer, setTimer] = useState(0)
@@ -112,12 +112,9 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
     const avgWeight = sets.length ? sets.reduce((sum, s) => sum + s.weight, 0) / sets.length : 0
     const calories = Math.round(timer * 0.15)
 
-    addSession({
-      id: Date.now().toString(),
-      exerciseId: exercise.id,
+    addExerciseRecord(exercise.id, {
       exerciseName: exercise.name,
       muscleGroup: exercise.muscleGroup,
-      date: new Date().toISOString().slice(0, 10),
       duration: Math.floor(timer / 60),
       sets,
       totalReps,

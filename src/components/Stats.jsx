@@ -37,14 +37,17 @@ function getGoalLabel(goal) {
     perte_poids: 'Perte de poids',
     prise_masse: 'Prise de masse',
     force: 'Force',
-    endurace: 'Endurance',
+    endurance: 'Endurance',
     definition: 'Définition',
     sante: 'Santé',
+    flexibilite: 'Flexibilité',
+    mobilite: 'Mobilité',
+    performance: 'Performance sportive',
   }
   return labels[goal] || goal
 }
 
-export default function Stats({ isPremium, onShowPaywall }) {
+export default function Stats() {
   const { profile, sessionHistory, workoutHistory, getStreak } = useStore()
 
   const allSessions = useMemo(() => {

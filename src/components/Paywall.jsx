@@ -19,7 +19,7 @@ export default function Paywall({ onClose, onUpgrade }) {
       if (result.url) {
         window.location.href = result.url
       } else if (result.error) {
-        setError(result.error)
+        setError(typeof result.error === 'string' ? result.error : result.error?.message || 'Erreur inconnue')
       }
     } catch {
       setError('Erreur lors de la connexion à Stripe')

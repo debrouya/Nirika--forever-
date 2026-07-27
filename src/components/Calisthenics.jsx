@@ -30,7 +30,7 @@ const EQUIPMENT_ICONS = {
 }
 
 export default function Calisthenics({ isPremium, onShowPaywall }) {
-  const { sessionHistory } = useStore()
+  const { exerciseHistory } = useStore()
   const [activeGroup, setActiveGroup] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedExercise, setSelectedExercise] = useState(null)
@@ -46,10 +46,11 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
   const lockedCount = isPremium ? 0 : Math.max(0, filtered.length - FREE_LIMIT)
 
   if (selectedExercise) {
+    const lastRecord = (exerciseHistory[selectedExercise.id] || []).slice(-1)[0]
     return (
       <ExerciseTracker
         exercise={selectedExercise}
-        sessionHistory={sessionHistory}
+        sessionHistory={lastRecord ? [lastRecord] : []}
         onComplete={() => setSelectedExercise(null)}
       />
     )

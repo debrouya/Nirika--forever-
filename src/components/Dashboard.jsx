@@ -8,7 +8,6 @@ import {
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import { programs } from '../data/programs'
-import exercises from '../data/exercises'
 import Recommendations from './Recommendations'
 
 const PLAN_IMAGES = [
@@ -18,11 +17,37 @@ const PLAN_IMAGES = [
   'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&h=300&fit=crop',
 ]
 
+function formatDurationShort(seconds) {
+  const h = Math.floor(seconds / 3600)
+  const m = Math.floor((seconds % 3600) / 60)
+  if (h > 0) return `${h}h ${m}m`
+  return `${m}m`
+}
+
 export default function Dashboard() {
-  const { profile, setCurrentView } = useStore()
+  const { profile, setCurrentView, workoutHistory, sessionHistory, exerciseHistory } = useStore()
   const [searchQuery, setSearchQuery] = useState('')
 
-  const firstName = profile?.full_name?.split(' ')[0] || profile?.name?.split(' ')[0] || 'Athlète'
+  const firstName = profile?.full_name?.split(' ')[0] || profile?.name?.split(' ')[0] || ''
+
+  const weekStats = useMemo(() => {
+    const now = new Date()
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+    const allSessions = [
+      ...(workoutHistory || []),
+      ...(sessionHistory || []),
+    ].filter(s => new Date(s.completedAt || s.date || s.startedAt) >= weekAgo)
+    const totalCalories = allSessions.reduce((sum, s) => sum + (s.calories || 0), 0)
+    const totalDuration = allSessions.reduce((sum, s) => sum + (s.duration || s.durationMinutes || 0) * 60, 0)
+    let totalVolume = 0
+    Object.values(exerciseHistory || {}).forEach(records => {
+      records.forEach(r => {
+        const rDate = new Date(r.date || r.completedAt)
+        if (rDate >= weekAgo) totalVolume += r.totalVolume || 0
+      })
+    })
+    return { totalCalories, totalDuration, totalVolume, sessionCount: allSessions.length }
+  }, [workoutHistory, sessionHistory, exerciseHistory])
 
   const filteredPrograms = useMemo(() => {
     if (!searchQuery) return programs.slice(0, 4)
@@ -35,7 +60,7 @@ export default function Dashboard() {
     <div className="space-y-6 p-4">
       {/* Greeting */}
       <div className="animate-fade-in">
-        <p className="text-muted text-sm">Bonjour,</p>
+        <p className="text-muted text-sm">Bonjour{firstName ? `, ${firstName}` : ''},</p>
         <h1 className="text-white font-bold text-2xl">Let's Workout</h1>
       </div>
 
@@ -58,22 +83,22 @@ export default function Dashboard() {
 
       {/* Last Week Result */}
       <div className="animate-fade-in delay-200" style={{ opacity: 0, animationFillMode: 'forwards' }}>
-        <h2 className="text-white font-semibold text-lg mb-3">Last Week Result</h2>
+        <h2 className="text-white font-semibold text-lg mb-3">Dernière semaine</h2>
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-dark-card rounded-2xl p-4 flex flex-col items-center">
             <Flame size={24} className="text-lime mb-2" />
-            <span className="text-white text-xl font-bold">2100</span>
+            <span className="text-white text-xl font-bold">{weekStats.totalCalories > 0 ? weekStats.totalCalories.toLocaleString() : '—'}</span>
             <span className="text-muted text-xs">Cal</span>
           </div>
           <div className="bg-dark-card rounded-2xl p-4 flex flex-col items-center">
             <Clock size={24} className="text-lime mb-2" />
-            <span className="text-white text-xl font-bold">21h</span>
-            <span className="text-muted text-xs">34 m</span>
+            <span className="text-white text-xl font-bold">{weekStats.totalDuration > 0 ? formatDurationShort(weekStats.totalDuration) : '—'}</span>
+            <span className="text-muted text-xs">Durée</span>
           </div>
           <div className="bg-dark-card rounded-2xl p-4 flex flex-col items-center">
             <Dumbbell size={24} className="text-lime mb-2" />
-            <span className="text-white text-xl font-bold">1450</span>
-            <span className="text-muted text-xs">Kg</span>
+            <span className="text-white text-xl font-bold">{weekStats.totalVolume > 0 ? `${weekStats.totalVolume.toLocaleString()}kg` : '—'}</span>
+            <span className="text-muted text-xs">Volume</span>
           </div>
         </div>
       </div>

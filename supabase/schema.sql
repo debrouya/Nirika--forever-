@@ -63,20 +63,6 @@ CREATE OR REPLACE TRIGGER on_auth_user_updated
   AFTER UPDATE OF email ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_user_update();
 
--- Admin stats view
-CREATE OR REPLACE VIEW public.admin_stats AS
-SELECT
-  (SELECT COUNT(*) FROM auth.users) AS total_users,
-  (SELECT COUNT(*) FROM public.profiles WHERE level IS NOT NULL) AS profiles_with_data,
-  (SELECT COUNT(*) FROM public.sessions) AS total_sessions,
-  (SELECT COUNT(*) FROM public.cardio_sessions) AS total_cardio_sessions,
-  (SELECT AVG(sessions_count) FROM (
-    SELECT user_id, COUNT(*) AS sessions_count
-    FROM public.sessions
-    GROUP BY user_id
-  ) sub) AS avg_sessions_per_user,
-  (SELECT MAX(created_at) FROM public.sessions) AS last_session_at;
-
 -- ==================== TABLES ====================
 
 -- Profiles table
@@ -611,13 +597,23 @@ CREATE POLICY "Users can manage own push subscriptions"
   ON public.push_subscriptions FOR ALL
   USING (auth.uid() = user_id);
 
-CREATE POLICY "Service role can read all push subscriptions"
-  ON public.push_subscriptions FOR SELECT
-  USING (TRUE);
-
 CREATE TRIGGER update_push_subscriptions_updated_at
   BEFORE UPDATE ON public.push_subscriptions
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+
+-- Admin stats view (defined after all tables)
+CREATE OR REPLACE VIEW public.admin_stats AS
+SELECT
+  (SELECT COUNT(*) FROM auth.users) AS total_users,
+  (SELECT COUNT(*) FROM public.profiles WHERE level IS NOT NULL) AS profiles_with_data,
+  (SELECT COUNT(*) FROM public.sessions) AS total_sessions,
+  (SELECT COUNT(*) FROM public.cardio_sessions) AS total_cardio_sessions,
+  (SELECT AVG(sessions_count) FROM (
+    SELECT user_id, COUNT(*) AS sessions_count
+    FROM public.sessions
+    GROUP BY user_id
+  ) sub) AS avg_sessions_per_user,
+  (SELECT MAX(created_at) FROM public.sessions) AS last_session_at;
 
 CREATE OR REPLACE FUNCTION public.admin_send_push(
   title TEXT,

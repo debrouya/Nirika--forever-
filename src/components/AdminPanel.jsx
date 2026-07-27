@@ -1083,14 +1083,29 @@ function ActivityTab() {
 // ==================== SETTINGS ====================
 
 function SettingsTab() {
-  const [settings, setSettings] = useState({
-    monthlyPrice: '4.99',
-    yearlyPrice: '39.99',
-    yearlyDiscount: '33',
-    maxFreePrograms: '3',
-    maxFreeExercises: '20',
-    coachEnabled: false,
-    notificationsEnabled: true,
+  const [settings, setSettings] = useState(() => {
+    try {
+      const saved = localStorage.getItem('nirika_admin_settings')
+      return saved ? JSON.parse(saved) : {
+        monthlyPrice: '4.99',
+        yearlyPrice: '39.99',
+        yearlyDiscount: '33',
+        maxFreePrograms: '3',
+        maxFreeExercises: '20',
+        coachEnabled: false,
+        notificationsEnabled: true,
+      }
+    } catch {
+      return {
+        monthlyPrice: '4.99',
+        yearlyPrice: '39.99',
+        yearlyDiscount: '33',
+        maxFreePrograms: '3',
+        maxFreeExercises: '20',
+        coachEnabled: false,
+        notificationsEnabled: true,
+      }
+    }
   })
   const [saved, setSaved] = useState(false)
 

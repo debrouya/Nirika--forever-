@@ -6,6 +6,7 @@ import { useNotifications } from '../hooks/useNotifications'
 
 const LEVELS = ['Débutant', 'Intermédiaire', 'Avancé', 'Expert']
 const FREQUENCIES = ['1-2x / sem', '3-4x / sem', '5-6x / sem', 'Tous les jours']
+const FREQUENCY_MAP = { '1-2x / sem': 2, '3-4x / sem': 3, '5-6x / sem': 5, 'Tous les jours': 6 }
 const GOALS = [
   'Force',
   'Endurance',
@@ -16,6 +17,17 @@ const GOALS = [
   'Relaxation',
   'Performance sportive',
 ]
+const GOAL_KEY_MAP = {
+  'Force': 'force',
+  'Endurance': 'endurance',
+  'Hypertrophie': 'prise_masse',
+  'Perte de poids': 'perte_poids',
+  'Flexibilité': 'flexibilite',
+  'Mobilité': 'mobilite',
+  'Relaxation': 'sante',
+  'Performance sportive': 'performance',
+}
+const GOAL_LABEL_MAP = Object.fromEntries(Object.entries(GOAL_KEY_MAP).map(([k, v]) => [v, k]))
 const DAYS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
 
 function FieldGroup({ icon: Icon, label, children }) {
@@ -116,7 +128,13 @@ export default function Profile({ user, onLogout }) {
 
   const handleSave = () => {
     localStorage.setItem('nirika-profile', JSON.stringify(profile))
-    if (saveToStore) saveToStore(profile)
+    if (saveToStore) {
+      saveToStore({
+        ...profile,
+        frequency: FREQUENCY_MAP[profile.frequency] || 3,
+        goals: (profile.goals || []).map(g => GOAL_KEY_MAP[g] || g),
+      })
+    }
   }
 
   const bmi =

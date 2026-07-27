@@ -167,6 +167,15 @@ export default function Programme({ user, isPremium }) {
     const newCompleted = { ...completedDays }
     if (newCompleted[dayKey]) {
       delete newCompleted[dayKey]
+      // Also un-mark all exercises in this day
+      const program = programs.find(p => p.id === activeProgram?.program_id)
+      const dayName = dayKey.replace(`${activeProgram?.program_id}_`, '')
+      const newExercises = { ...completedExercises }
+      program?.structure[dayName]?.forEach(ex => {
+        delete newExercises[`${dayKey}__${ex.exerciseId}`]
+      })
+      setCompletedExercises(newExercises)
+      saveProgress(newCompleted, newExercises)
     } else {
       const program = programs.find(p => p.id === activeProgram?.program_id)
       const dayName = dayKey.replace(`${activeProgram?.program_id}_`, '')

@@ -104,13 +104,13 @@ const useStore = create(
         }
       },
       cancelSession: () => set({ activeSession: null }),
-      addSetToSession: (set) =>
+      addSetToSession: (setData) =>
         set((state) => {
           if (!state.activeSession) return state
           return {
             activeSession: {
               ...state.activeSession,
-              sets: [...state.activeSession.sets, { ...set, timestamp: new Date().toISOString() }],
+              sets: [...state.activeSession.sets, { ...setData, timestamp: new Date().toISOString() }],
             },
           }
         }),
@@ -290,6 +290,10 @@ const useStore = create(
     {
       name: 'nf-storage',
       version: 1,
+      partialize: (state) => {
+        const { activeSession, ...rest } = state
+        return rest
+      },
     }
   )
 )

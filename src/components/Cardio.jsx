@@ -159,19 +159,12 @@ export default function Cardio() {
   const weight = profile?.weight || 70
 
   useEffect(() => {
-    if (isRunning) {
-      timerRef.current = setInterval(() => setElapsed((t) => t + 1), 1000)
-    } else {
+    if (!isRunning || !selectedActivity) {
       clearInterval(timerRef.current)
+      return
     }
-    return () => clearInterval(timerRef.current)
-  }, [isRunning])
 
-  // Simulate BPM + zone + coaching every second
-  useEffect(() => {
-    if (!isRunning || !selectedActivity) return
-
-    const interval = setInterval(() => {
+    timerRef.current = setInterval(() => {
       setElapsed((prev) => {
         const t = prev + 1
         const bpm = simulateBPM(
@@ -188,7 +181,7 @@ export default function Cardio() {
         const zone = getZone(intensityRatio)
         setCurrentZone(zone)
 
-        setZoneTime((prev) => ({ ...prev, [zone.zone]: (prev[zone.zone] || 0) + 1 }))
+        setZoneTime((zt) => ({ ...zt, [zone.zone]: (zt[zone.zone] || 0) + 1 }))
         setTimeInCurrentZone((prev) => prev + 1)
 
         setBpmHistory((prev) => {
@@ -200,7 +193,7 @@ export default function Cardio() {
       })
     }, 1000)
 
-    return () => clearInterval(interval)
+    return () => clearInterval(timerRef.current)
   }, [isRunning, selectedActivity, currentLevel, objective, profile?.age])
 
   // Coaching messages
@@ -212,7 +205,7 @@ export default function Cardio() {
       setTimeInCurrentZone(0)
     }, 8000)
     return () => clearInterval(coachingRef.current)
-  }, [isRunning, objective, currentZone, timeInCurrentZone])
+  }, [isRunning, objective, currentZone])
 
   const selectActivity = useCallback((activity) => {
     setSelectedActivity(activity)
