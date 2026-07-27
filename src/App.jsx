@@ -15,6 +15,7 @@ import Stats from './components/Stats'
 import FitMatrix from './components/FitMatrix'
 import Calendar from './components/Calendar'
 import Programme from './components/Programme'
+import WorkoutDetail from './components/WorkoutDetail'
 import Pricing from './components/Pricing'
 import Paywall from './components/Paywall'
 import SplashScreen from './components/SplashScreen'
@@ -125,13 +126,13 @@ export default function App() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#0F1A1E] to-[#1A2B34]">
+      <div className="min-h-screen flex items-center justify-center bg-dark-bg">
         <div className="text-center animate-fade-in">
           <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-black/20 p-2.5">
             <img src="/logo.svg" alt="Nirika" className="w-full h-full" />
           </div>
-          <div className="w-10 h-10 border-2 border-white/10 border-t-[#10B981] rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-xs text-white/40">Chargement...</p>
+          <div className="w-10 h-10 border-2 border-dark-border border-t-lime rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-xs text-muted">Chargement...</p>
         </div>
       </div>
     )
@@ -142,6 +143,7 @@ export default function App() {
       <Layout>
         {currentView === 'dashboard' && <Dashboard />}
         {currentView === 'profile' && <Profile />}
+        {currentView === 'workout-detail' && <WorkoutDetail />}
         {currentView === 'calisthenics' && <Calisthenics isPremium={true} />}
         {currentView === 'cardio' && <Cardio />}
         {currentView === 'ai' && <AICoach />}
@@ -171,6 +173,7 @@ export default function App() {
     <Layout>
       {currentView === 'dashboard' && <Dashboard />}
       {currentView === 'profile' && <Profile user={user} onLogout={handleLogout} />}
+      {currentView === 'workout-detail' && <WorkoutDetail />}
       {currentView === 'calisthenics' && <Calisthenics isPremium={hasAccess} onShowPaywall={() => !isAdmin && setShowPaywall(true)} />}
       {currentView === 'cardio' && <Cardio />}
       {currentView === 'ai' && <AICoach />}
@@ -179,7 +182,7 @@ export default function App() {
       {currentView === 'calendar' && <Calendar />}
       {currentView === 'programme' && <Programme user={user} isPremium={hasAccess} />}
       {currentView === 'pricing' && <Pricing subscription={subscription} />}
-      {!['dashboard','profile','calisthenics','cardio','ai','stats','fitmatrix','calendar','programme','pricing','admin'].includes(currentView) && <Dashboard />}
+      {!['dashboard','profile','workout-detail','calisthenics','cardio','ai','stats','fitmatrix','calendar','programme','pricing','admin'].includes(currentView) && <Dashboard />}
       <Navigation active={currentView} onChange={(id) => useStore.getState().setCurrentView(id)} isAdmin={isAdmin} userRole={profile?.role} onAdminClick={() => useStore.getState().setCurrentView('admin')} onLogout={handleLogout} onPricingClick={() => useStore.getState().setCurrentView('pricing')} />
       {showPaywall && <Paywall onClose={() => setShowPaywall(false)} />}
     </Layout>
