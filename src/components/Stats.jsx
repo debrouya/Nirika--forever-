@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import {
   Flame,
   Dumbbell,
@@ -15,6 +15,31 @@ import {
   Heart,
 } from 'lucide-react'
 import useStore from '../store/useStore'
+
+const MOTIVATION_KEY = 'nirika_motivation_phrases'
+const DEFAULT_PHRASES = [
+  "Chaque grand parcours commence par un premier pas. Lance ta première séance !",
+  "La régularité fait la différence. Mieux vaut 30 min chaque jour que 3h une fois par semaine.",
+  "Ton corps est capable de bien plus que tu ne l'imagines. Pousse tes limites !",
+  "Le seul entraînement que tu regrettes, c'est celui que tu n'as pas fait.",
+  "La discipline, c'est choisir entre ce que tu veux maintenant et ce que tu veux le plus.",
+  "Chaque répétition te rapproche de la version la plus forte de toi-même.",
+  "Ne compare pas ton chapitre 1 à quelqu'un d'autre. Chacun son rythme.",
+  "La récupération fait partie de l'entraînement. Écoute ton corps.",
+  "Tu n'as pas besoin d'être parfait, tu as besoin de commencer. 💪",
+  "Le succès, c'est la somme de petits efforts répétés chaque jour. 🔥",
+]
+
+function getStoredPhrases() {
+  try {
+    const raw = localStorage.getItem(MOTIVATION_KEY)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed
+    }
+  } catch {}
+  return DEFAULT_PHRASES
+}
 
 function getTrend(data) {
   if (data.length < 2) return 'stable'
@@ -49,6 +74,23 @@ function getGoalLabel(goal) {
 
 export default function Stats() {
   const { profile, sessionHistory, workoutHistory, getStreak } = useStore()
+  const [phraseIndex, setPhraseIndex] = useState(0)
+  const [phrases, setPhrases] = useState(getStoredPhrases)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPhraseIndex((prev) => (prev + 1) % phrases.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [phrases.length])
+
+  useEffect(() => {
+    const handleStorage = (e) => {
+      if (e.key === MOTIVATION_KEY) setPhrases(getStoredPhrases())
+    }
+    window.addEventListener('storage', handleStorage)
+    return () => window.removeEventListener('storage', handleStorage)
+  }, [])
 
   const allSessions = useMemo(() => {
     const combined = [
@@ -332,15 +374,19 @@ export default function Stats() {
         <div className="flex items-center gap-2 mb-2">
           <Heart size={16} className="text-lime" />
           <span className="text-lime font-semibold text-sm">Motivation</span>
+          <div className="ml-auto flex gap-1">
+            {phrases.slice(0, Math.min(phrases.length, 10)).map((_, i) => (
+              <div
+                key={i}
+                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                  i === phraseIndex % Math.min(phrases.length, 10) ? 'bg-lime w-4' : 'bg-white/20'
+                }`}
+              />
+            ))}
+          </div>
         </div>
-        <p className="text-white text-sm font-medium leading-relaxed">
-          {totalSessions === 0
-            ? "Chaque grand parcours commence par un premier pas. Lance ta première séance !"
-            : streak >= 7
-            ? `Tu es en feu ! ${streak} jours consécutifs — ne lâche rien, la constance est la clé du succès.`
-            : streak >= 3
-            ? `${streak} jours d'affilée — tu construis une habitude solide. Continue !`
-            : "Chaque séance te rapproche de ton objectif. La régularité fait la différence. 💪"}
+        <p className="text-white text-sm font-medium leading-relaxed transition-opacity duration-500" key={phraseIndex}>
+          {phrases[phraseIndex % phrases.length]}
         </p>
       </div>
     </div>

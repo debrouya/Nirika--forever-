@@ -65,6 +65,7 @@ const TABS = [
   { id: 'subscriptions', label: 'Abonnements', icon: Crown },
   { id: 'exercises', label: 'Exercices', icon: Dumbbell },
   { id: 'programs', label: 'Programmes', icon: Calendar },
+  { id: 'motivation', label: 'Motivation', icon: Heart },
   { id: 'activity', label: 'Activité', icon: Activity },
   { id: 'settings', label: 'Réglages', icon: Settings },
 ]
@@ -216,6 +217,7 @@ export default function AdminPanel({ user, profile, onLogout }) {
           {activeTab === 'subscriptions' && <SubscriptionsTab />}
           {activeTab === 'exercises' && <ExercisesTab />}
           {activeTab === 'programs' && <ProgramsTab />}
+          {activeTab === 'motivation' && <MotivationTab />}
           {activeTab === 'activity' && <ActivityTab />}
           {activeTab === 'settings' && <SettingsTab />}
         </div>
@@ -1185,6 +1187,183 @@ function SettingsTab() {
       >
         {saved ? <><Save size={16} /> Enregistré !</> : <><Save size={16} /> Enregistrer les réglages</>}
       </button>
+    </div>
+  )
+}
+
+// ==================== MOTIVATION ====================
+
+const MOTIVATION_KEY = 'nirika_motivation_phrases'
+const DEFAULT_PHRASES = [
+  "Chaque grand parcours commence par un premier pas. Lance ta première séance !",
+  "La régularité fait la différence. Mieux vaut 30 min chaque jour que 3h une fois par semaine.",
+  "Ton corps est capable de bien plus que tu ne l'imagines. Pousse tes limites !",
+  "Le seul entraînement que tu regrettes, c'est celui que tu n'as pas fait.",
+  "La discipline, c'est choisir entre ce que tu veux maintenant et ce que tu veux le plus.",
+  "Chaque répétition te rapproche de la version la plus forte de toi-même.",
+  "Ne compare pas ton chapitre 1 à quelqu'un d'autre. Chacun son rythme.",
+  "La récupération fait partie de l'entraînement. Écoute ton corps.",
+  "Tu n'as pas besoin d'être parfait, tu as besoin de commencer. 💪",
+  "Le succès, c'est la somme de petits efforts répétés chaque jour. 🔥",
+]
+
+function MotivationTab() {
+  const [phrases, setPhrases] = useState(() => {
+    try {
+      const raw = localStorage.getItem(MOTIVATION_KEY)
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed
+      }
+    } catch {}
+    return DEFAULT_PHRASES
+  })
+  const [newPhrase, setNewPhrase] = useState('')
+  const [editIndex, setEditIndex] = useState(null)
+  const [editText, setEditText] = useState('')
+  const [saved, setSaved] = useState(false)
+
+  const savePhrases = (updated) => {
+    setPhrases(updated)
+    localStorage.setItem(MOTIVATION_KEY, JSON.stringify(updated))
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
+    window.dispatchEvent(new StorageEvent('storage', { key: MOTIVATION_KEY }))
+  }
+
+  const addPhrase = () => {
+    const text = newPhrase.trim()
+    if (!text) return
+    savePhrases([...phrases, text])
+    setNewPhrase('')
+  }
+
+  const deletePhrase = (index) => {
+    if (phrases.length <= 1) return
+    savePhrases(phrases.filter((_, i) => i !== index))
+    if (editIndex === index) { setEditIndex(null); setEditText('') }
+  }
+
+  const saveEdit = () => {
+    if (!editText.trim() || editIndex === null) return
+    const updated = [...phrases]
+    updated[editIndex] = editText.trim()
+    savePhrases(updated)
+    setEditIndex(null)
+    setEditText('')
+  }
+
+  const resetDefaults = () => {
+    savePhrases(DEFAULT_PHRASES)
+  }
+
+  return (
+    <div className="space-y-4 animate-fade-in">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Heart size={16} className="text-lime" />
+          <h3 className="text-white font-semibold text-sm">Phrases de motivation</h3>
+        </div>
+        <span className="text-muted text-xs">{phrases.length} phrase{phrases.length !== 1 ? 's' : ''}</span>
+      </div>
+
+      <p className="text-muted text-xs">
+        Ces phrases défilent automatiquement dans la page Stats toutes les 5 secondes.
+      </p>
+
+      {/* Add new phrase */}
+      <div className="bg-dark-card rounded-2xl p-4 border border-dark-border space-y-3">
+        <div className="flex items-center gap-2">
+          <Plus size={14} className="text-lime" />
+          <span className="text-white font-medium text-xs">Ajouter une phrase</span>
+        </div>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={newPhrase}
+            onChange={(e) => setNewPhrase(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && addPhrase()}
+            placeholder="Écris ta phrase motivante..."
+            className="flex-1 bg-dark-bg border border-dark-border rounded-xl py-2.5 px-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-lime/50 transition-all"
+          />
+          <button
+            onClick={addPhrase}
+            disabled={!newPhrase.trim()}
+            className="px-4 py-2.5 bg-lime text-dark-bg rounded-xl text-sm font-bold disabled:opacity-30 transition-all"
+          >
+            <Plus size={16} />
+          </button>
+        </div>
+      </div>
+
+      {/* Phrases list */}
+      <div className="space-y-2">
+        {phrases.map((phrase, i) => (
+          <div key={i} className="bg-dark-card rounded-xl p-3 border border-dark-border">
+            {editIndex === i ? (
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && saveEdit()}
+                  className="w-full bg-dark-bg border border-lime/50 rounded-xl py-2 px-3 text-white text-sm focus:outline-none transition-all"
+                  autoFocus
+                />
+                <div className="flex gap-2">
+                  <button onClick={saveEdit} className="flex-1 py-1.5 bg-lime text-dark-bg rounded-lg text-xs font-bold transition-all">
+                    Enregistrer
+                  </button>
+                  <button onClick={() => { setEditIndex(null); setEditText('') }} className="flex-1 py-1.5 bg-dark-border text-muted rounded-lg text-xs font-medium transition-all">
+                    Annuler
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 rounded-full bg-lime/20 flex items-center justify-center flex-shrink-0">
+                  <span className="text-lime text-[10px] font-bold">{i + 1}</span>
+                </div>
+                <p className="text-white/80 text-xs flex-1 leading-relaxed">{phrase}</p>
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => { setEditIndex(i); setEditText(phrase) }}
+                    className="p-1.5 hover:bg-dark-bg rounded-lg transition-colors"
+                  >
+                    <Edit size={12} className="text-muted" />
+                  </button>
+                  <button
+                    onClick={() => deletePhrase(i)}
+                    disabled={phrases.length <= 1}
+                    className="p-1.5 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-30"
+                  >
+                    <Trash2 size={12} className="text-red-400" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Actions */}
+      <div className="flex gap-2">
+        <button
+          onClick={resetDefaults}
+          className="flex-1 py-2.5 bg-dark-card border border-dark-border text-muted rounded-xl text-xs font-medium hover:text-white transition-all"
+        >
+          Réinitialiser par défaut
+        </button>
+        <button
+          onClick={() => { savePhrases(phrases) }}
+          className={`flex-1 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all ${
+            saved ? 'bg-lime/20 text-lime' : 'bg-lime text-dark-bg'
+          }`}
+        >
+          {saved ? <><Save size={14} /> Enregistré !</> : <><Save size={14} /> Sauvegarder</>}
+        </button>
+      </div>
     </div>
   )
 }
