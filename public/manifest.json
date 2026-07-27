@@ -1,0 +1,27 @@
+{
+  "name": "NIRIKA FOR EVER",
+  "short_name": "NIRIKA",
+  "description": "Ton coach personnel de musculation",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0F1A1E",
+  "theme_color": "#0F1A1E",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["fitness", "health"],
+  "lang": "fr",
+  "dir": "ltr"
+}
