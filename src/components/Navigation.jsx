@@ -25,7 +25,7 @@ const MENU_ITEMS = [
   { id: 'programme', label: 'Programme', icon: CalendarRange },
   { id: 'calisthenics', label: 'Exercices', icon: Dumbbell },
   { id: 'cardio', label: 'Cardio', icon: HeartPulse },
-  { id: 'ai', label: 'Coach IA', icon: MessageSquareMore },
+  { id: 'ai', label: 'Coach NIRIKA', icon: MessageSquareMore },
 ]
 
 export default function Navigation({ active, onChange, userRole, isAdmin, onAdminClick, onLogout, onPricingClick }) {

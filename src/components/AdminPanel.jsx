@@ -29,6 +29,13 @@ import {
   Mail,
   CalendarDays,
   Settings,
+  Star,
+  Lock,
+  Unlock,
+  DollarSign,
+  Image,
+  Bell,
+  Globe,
 } from 'lucide-react'
 import {
   BarChart,
@@ -51,7 +58,6 @@ import {
   adminDeleteProgram,
 } from '../services/supabaseService'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
-import GlassCard from './GlassCard'
 
 const TABS = [
   { id: 'dashboard', label: 'Vue d\'ensemble', icon: LayoutDashboard },
@@ -60,6 +66,7 @@ const TABS = [
   { id: 'exercises', label: 'Exercices', icon: Dumbbell },
   { id: 'programs', label: 'Programmes', icon: Calendar },
   { id: 'activity', label: 'Activité', icon: Activity },
+  { id: 'settings', label: 'Réglages', icon: Settings },
 ]
 
 const MUSCLE_GROUPS = ['Pectoraux', 'Dos', 'Epaules', 'Jambes', 'Abdominaux', 'Bras', 'Cardio']
@@ -69,7 +76,7 @@ const DIFFICULTY_LEVELS = ['facile', 'moyen', 'difficile']
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
   return (
-    <div className="glass rounded-lg px-3 py-2 text-xs text-white border border-white/10">
+    <div className="bg-dark-card rounded-lg px-3 py-2 text-xs text-white border border-dark-border">
       <p className="font-medium mb-1">{label}</p>
       {payload.map((p, i) => (
         <p key={i} className="text-white/70">
@@ -106,13 +113,13 @@ function EmptyProgram() {
 function FormInput({ label, value, onChange, placeholder, type = 'text' }) {
   return (
     <div className="space-y-1">
-      <label className="text-white/40 text-[10px] uppercase tracking-wide">{label}</label>
+      <label className="text-muted text-[10px] uppercase tracking-wide">{label}</label>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-[#10B981]/50 transition-all"
+        className="w-full bg-dark-bg border border-dark-border rounded-xl py-2 px-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-lime/50 transition-all"
       />
     </div>
   )
@@ -121,14 +128,14 @@ function FormInput({ label, value, onChange, placeholder, type = 'text' }) {
 function FormSelect({ label, value, onChange, options }) {
   return (
     <div className="space-y-1">
-      <label className="text-white/40 text-[10px] uppercase tracking-wide">{label}</label>
+      <label className="text-muted text-[10px] uppercase tracking-wide">{label}</label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 text-white text-sm focus:outline-none focus:border-[#10B981]/50 transition-all appearance-none"
+        className="w-full bg-dark-bg border border-dark-border rounded-xl py-2 px-3 text-white text-sm focus:outline-none focus:border-lime/50 transition-all appearance-none"
       >
         {options.map((opt) => (
-          <option key={opt.value} value={opt.value} className="bg-[#1A2B34] text-white">
+          <option key={opt.value} value={opt.value} className="bg-dark-card text-white">
             {opt.label}
           </option>
         ))}
@@ -139,18 +146,18 @@ function FormSelect({ label, value, onChange, options }) {
 
 function StatCard({ label, value, icon: Icon, color, trend }) {
   return (
-    <GlassCard className="p-3">
+    <div className="bg-dark-card rounded-2xl p-3 border border-dark-border">
       <div className="flex items-center gap-2 mb-1">
         <Icon size={14} className={color} />
-        <span className="text-white/50 text-[10px] uppercase">{label}</span>
+        <span className="text-muted text-[10px] uppercase">{label}</span>
         {trend !== undefined && (
-          <span className={`ml-auto text-[10px] font-medium ${trend >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+          <span className={`ml-auto text-[10px] font-medium ${trend >= 0 ? 'text-lime' : 'text-red-400'}`}>
             {trend >= 0 ? '+' : ''}{trend}%
           </span>
         )}
       </div>
       <p className="text-white text-xl font-black">{value}</p>
-    </GlassCard>
+    </div>
   )
 }
 
@@ -158,23 +165,23 @@ export default function AdminPanel({ user, profile, onLogout }) {
   const [activeTab, setActiveTab] = useState('dashboard')
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0F1A1E] to-[#1A2B34]">
+    <div className="min-h-screen bg-dark-bg">
       <div className="max-w-lg mx-auto">
         {/* Header */}
-        <div className="sticky top-0 z-40 glass-heavy safe-top">
+        <div className="sticky top-0 z-40 bg-dark-bg border-b border-dark-border safe-top">
           <div className="flex items-center justify-between px-4 py-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-[#10B981]/20 flex items-center justify-center">
-                <Shield size={16} className="text-[#10B981]" />
+              <div className="w-8 h-8 rounded-lg bg-lime/20 flex items-center justify-center">
+                <Shield size={16} className="text-lime" />
               </div>
               <div>
                 <h1 className="text-white font-bold text-sm">Admin Panel</h1>
-                <p className="text-white/30 text-[10px]">NIRIKA FOR EVER</p>
+                <p className="text-muted text-[10px]">NIRIKA FOR EVER</p>
               </div>
             </div>
             <button
               onClick={onLogout}
-              className="text-white/40 hover:text-white text-xs transition-colors"
+              className="text-muted hover:text-white text-xs transition-colors"
             >
               Retour app
             </button>
@@ -190,8 +197,8 @@ export default function AdminPanel({ user, profile, onLogout }) {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium whitespace-nowrap transition-all ${
                     activeTab === tab.id
-                      ? 'bg-[#10B981] text-black'
-                      : 'bg-white/5 text-white/40 hover:bg-white/10'
+                      ? 'bg-lime text-dark-bg'
+                      : 'bg-dark-card text-muted hover:bg-dark-border'
                   }`}
                 >
                   <Icon size={12} />
@@ -210,6 +217,7 @@ export default function AdminPanel({ user, profile, onLogout }) {
           {activeTab === 'exercises' && <ExercisesTab />}
           {activeTab === 'programs' && <ProgramsTab />}
           {activeTab === 'activity' && <ActivityTab />}
+          {activeTab === 'settings' && <SettingsTab />}
         </div>
       </div>
     </div>
@@ -223,9 +231,7 @@ function DashboardTab() {
   const [sessions, setSessions] = useState([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    loadDashboard()
-  }, [])
+  useEffect(() => { loadDashboard() }, [])
 
   const loadDashboard = async () => {
     setLoading(true)
@@ -255,7 +261,6 @@ function DashboardTab() {
       const premiumUsers = users.filter(u => u.role === 'admin').length
       const retention = totalUsers > 0 ? Math.round((active30d / totalUsers) * 100) : 0
 
-      // Sessions by day (last 14 days)
       const sessionsByDay = []
       for (let i = 13; i >= 0; i--) {
         const d = new Date(now)
@@ -287,16 +292,15 @@ function DashboardTab() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <RefreshCw size={24} className="text-white/30 animate-spin" />
+        <RefreshCw size={24} className="text-muted animate-spin" />
       </div>
     )
   }
 
   return (
     <div className="space-y-4 animate-fade-in">
-      {/* KPIs */}
       <div className="grid grid-cols-2 gap-3">
-        <StatCard label="Utilisateurs" value={stats?.totalUsers || 0} icon={Users} color="text-[#10B981]" />
+        <StatCard label="Utilisateurs" value={stats?.totalUsers || 0} icon={Users} color="text-lime" />
         <StatCard label="Actifs 7j" value={stats?.active7d || 0} icon={Activity} color="text-blue-400" />
         <StatCard label="Nouveaux 7j" value={stats?.newUsers7d || 0} icon={UserCheck} color="text-yellow-400" />
         <StatCard label="Rétention" value={`${stats?.retention || 0}%`} icon={TrendingUp} color="text-pink-400" />
@@ -304,49 +308,47 @@ function DashboardTab() {
         <StatCard label="Séances totales" value={stats?.totalSessions || 0} icon={Dumbbell} color="text-purple-400" />
       </div>
 
-      {/* Sessions chart */}
       {sessions.length > 0 && (
-        <GlassCard className="p-4">
+        <div className="bg-dark-card rounded-2xl p-4 border border-dark-border">
           <div className="flex items-center gap-2 mb-3">
-            <BarChart3 size={14} className="text-[#10B981]" />
-            <span className="text-white/50 text-[10px] uppercase tracking-wide">Séances / jour (14j)</span>
+            <BarChart3 size={14} className="text-lime" />
+            <span className="text-muted text-[10px] uppercase tracking-wide">Séances / jour (14j)</span>
           </div>
           <div className="h-40">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={sessions}>
-                <XAxis dataKey="label" tick={{ fill: '#ffffff40', fontSize: 9 }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="label" tick={{ fill: '#8A8A8A', fontSize: 9 }} axisLine={false} tickLine={false} />
                 <YAxis hide />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="count" name="Séances" fill="#34d399" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="count" name="Séances" fill="#C6FF00" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </GlassCard>
+        </div>
       )}
 
-      {/* Recent activity */}
       {stats?.recentSessions?.length > 0 && (
-        <GlassCard className="p-4">
+        <div className="bg-dark-card rounded-2xl p-4 border border-dark-border">
           <div className="flex items-center gap-2 mb-3">
             <Clock size={14} className="text-blue-400" />
-            <span className="text-white/50 text-[10px] uppercase tracking-wide">Activité récente</span>
+            <span className="text-muted text-[10px] uppercase tracking-wide">Activité récente</span>
           </div>
           <div className="space-y-2">
             {stats.recentSessions.slice(0, 5).map((s, i) => (
-              <div key={i} className="flex items-center gap-3 bg-white/5 rounded-lg px-3 py-2">
-                <Dumbbell size={12} className="text-[#10B981] shrink-0" />
+              <div key={i} className="flex items-center gap-3 bg-dark-bg rounded-xl px-3 py-2">
+                <Dumbbell size={12} className="text-lime shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-white text-xs font-medium truncate">
                     {s.exercise_name || s.activity_name || 'Séance'}
                   </p>
-                  <p className="text-white/30 text-[10px]">
+                  <p className="text-muted text-[10px]">
                     {new Date(s.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
               </div>
             ))}
           </div>
-        </GlassCard>
+        </div>
       )}
     </div>
   )
@@ -394,46 +396,52 @@ function UsersTab() {
     setUsers((prev) => prev.filter((u) => u.id !== userId))
   }
 
+  const handleTogglePremium = async (userId, currentRole) => {
+    const newRole = currentRole === 'premium' ? 'user' : 'premium'
+    await adminUpdateUserRole(userId, newRole)
+    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u)))
+  }
+
   const filtered = users.filter(
     (u) => !search || u.email?.toLowerCase().includes(search.toLowerCase()) || u.full_name?.toLowerCase().includes(search.toLowerCase())
   )
 
   if (detailUser) {
-    return <UserDetail user={detailUser} stats={userStats[detailUser.id]} onBack={() => setDetailUser(null)} onRoleToggle={handleRoleToggle} onDelete={handleDelete} />
+    return <UserDetail user={detailUser} stats={userStats[detailUser.id]} onBack={() => setDetailUser(null)} onRoleToggle={handleRoleToggle} onDelete={handleDelete} onTogglePremium={handleTogglePremium} />
   }
 
   return (
     <div className="space-y-3 animate-fade-in">
       <div className="relative">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Rechercher par nom ou email..."
-          className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-[#10B981]/50 transition-all"
+          className="w-full bg-dark-bg border border-dark-border rounded-xl py-2.5 pl-10 pr-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-lime/50 transition-all"
         />
       </div>
 
       <div className="flex items-center justify-between">
-        <span className="text-white/30 text-xs">{filtered.length} utilisateur{filtered.length !== 1 ? 's' : ''}</span>
-        <button onClick={loadUsers} className="text-white/30 hover:text-white transition-colors">
+        <span className="text-muted text-xs">{filtered.length} utilisateur{filtered.length !== 1 ? 's' : ''}</span>
+        <button onClick={loadUsers} className="text-muted hover:text-white transition-colors">
           <RefreshCw size={14} />
         </button>
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center py-8">
-          <RefreshCw size={20} className="text-white/30 animate-spin" />
+          <RefreshCw size={20} className="text-muted animate-spin" />
         </div>
       ) : (
         <div className="space-y-2">
           {filtered.map((u) => (
-            <GlassCard key={u.id} className="p-3">
+            <div key={u.id} className="bg-dark-card rounded-2xl p-3 border border-dark-border">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <div className="w-9 h-9 rounded-full bg-[#10B981]/20 flex items-center justify-center shrink-0">
-                    <span className="text-[#10B981] text-xs font-bold">
+                  <div className="w-9 h-9 rounded-full bg-lime/20 flex items-center justify-center shrink-0">
+                    <span className="text-lime text-xs font-bold">
                       {(u.full_name || u.email || '?')[0].toUpperCase()}
                     </span>
                   </div>
@@ -443,20 +451,23 @@ function UsersTab() {
                       {u.role === 'admin' && (
                         <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-400 text-[9px] font-bold rounded-full">ADMIN</span>
                       )}
+                      {u.role === 'premium' && (
+                        <span className="px-1.5 py-0.5 bg-lime/20 text-lime text-[9px] font-bold rounded-full">PREMIUM</span>
+                      )}
                     </div>
-                    <p className="text-white/30 text-[10px] truncate">{u.email}</p>
+                    <p className="text-muted text-[10px] truncate">{u.email}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <button
                     onClick={() => { handleToggleExpand(u.id); }}
-                    className="p-1.5 rounded-lg text-white/30 hover:text-white hover:bg-white/10 transition-all"
+                    className="p-1.5 rounded-lg text-muted hover:text-white hover:bg-dark-border transition-all"
                   >
                     {expandedUser === u.id ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                   </button>
                   <button
                     onClick={() => setDetailUser(u)}
-                    className="p-1.5 rounded-lg text-white/30 hover:text-[#10B981] hover:bg-[#10B981]/10 transition-all"
+                    className="p-1.5 rounded-lg text-muted hover:text-lime hover:bg-lime/10 transition-all"
                   >
                     <Eye size={14} />
                   </button>
@@ -464,19 +475,19 @@ function UsersTab() {
               </div>
 
               {expandedUser === u.id && (
-                <div className="mt-3 pt-3 border-t border-white/5 space-y-3 animate-fade-in">
+                <div className="mt-3 pt-3 border-t border-dark-border space-y-3 animate-fade-in">
                   <div className="grid grid-cols-3 gap-2">
-                    <div className="bg-white/5 rounded-lg p-2 text-center">
+                    <div className="bg-dark-bg rounded-xl p-2 text-center">
                       <p className="text-white font-bold text-sm">{userStats[u.id]?.total_sessions || 0}</p>
-                      <p className="text-white/30 text-[9px]">Séances</p>
+                      <p className="text-muted text-[9px]">Séances</p>
                     </div>
-                    <div className="bg-white/5 rounded-lg p-2 text-center">
+                    <div className="bg-dark-bg rounded-xl p-2 text-center">
                       <p className="text-white font-bold text-sm">{userStats[u.id]?.total_cardio || 0}</p>
-                      <p className="text-white/30 text-[9px]">Cardio</p>
+                      <p className="text-muted text-[9px]">Cardio</p>
                     </div>
-                    <div className="bg-white/5 rounded-lg p-2 text-center">
+                    <div className="bg-dark-bg rounded-xl p-2 text-center">
                       <p className="text-white font-bold text-sm">{Math.round(userStats[u.id]?.total_volume || 0)}kg</p>
-                      <p className="text-white/30 text-[9px]">Volume</p>
+                      <p className="text-muted text-[9px]">Volume</p>
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -485,25 +496,35 @@ function UsersTab() {
                       className={`flex-1 flex items-center justify-center gap-1 py-2 rounded-xl text-xs font-medium transition-all ${
                         u.role === 'admin'
                           ? 'bg-amber-500/20 text-amber-400 border border-amber-500/20'
-                          : 'bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/20'
+                          : 'bg-lime/10 text-lime border border-lime/20'
                       }`}
                     >
                       {u.role === 'admin' ? <><UserX size={12} /> Retirer Admin</> : <><UserCheck size={12} /> Promouvoir Admin</>}
                     </button>
                     <button
+                      onClick={() => handleTogglePremium(u.id, u.role)}
+                      className={`flex-1 flex items-center justify-center gap-1 py-2 rounded-xl text-xs font-medium transition-all ${
+                        u.role === 'premium'
+                          ? 'bg-amber-500/20 text-amber-400 border border-amber-500/20'
+                          : 'bg-lime/10 text-lime border border-lime/20'
+                      }`}
+                    >
+                      {u.role === 'premium' ? <><Lock size={12} /> Retirer Premium</> : <><Unlock size={12} /> Donner Premium</>}
+                    </button>
+                    <button
                       onClick={() => handleDelete(u.id)}
-                      className="flex items-center justify-center gap-1 px-4 py-2 rounded-xl text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/20 transition-all"
+                      className="flex items-center justify-center gap-1 px-4 py-2 rounded-xl text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20 transition-all"
                     >
                       <Trash2 size={12} />
                     </button>
                   </div>
                 </div>
               )}
-            </GlassCard>
+            </div>
           ))}
           {filtered.length === 0 && (
             <div className="text-center py-8">
-              <p className="text-white/30 text-xs">Aucun utilisateur trouvé</p>
+              <p className="text-muted text-xs">Aucun utilisateur trouvé</p>
             </div>
           )}
         </div>
@@ -512,17 +533,17 @@ function UsersTab() {
   )
 }
 
-function UserDetail({ user, stats, onBack, onRoleToggle, onDelete }) {
+function UserDetail({ user, stats, onBack, onRoleToggle, onDelete, onTogglePremium }) {
   return (
     <div className="space-y-4 animate-fade-in">
-      <button onClick={onBack} className="flex items-center gap-1 text-white/40 hover:text-white text-sm transition-colors">
+      <button onClick={onBack} className="flex items-center gap-1 text-muted hover:text-white text-sm transition-colors">
         <ArrowLeft size={16} /> Retour à la liste
       </button>
 
-      <GlassCard className="p-4">
+      <div className="bg-dark-card rounded-2xl p-4 border border-dark-border">
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-14 h-14 rounded-full bg-[#10B981]/20 flex items-center justify-center">
-            <span className="text-[#10B981] text-xl font-bold">
+          <div className="w-14 h-14 rounded-full bg-lime/20 flex items-center justify-center">
+            <span className="text-lime text-xl font-bold">
               {(user.full_name || user.email || '?')[0].toUpperCase()}
             </span>
           </div>
@@ -532,32 +553,35 @@ function UserDetail({ user, stats, onBack, onRoleToggle, onDelete }) {
               {user.role === 'admin' && (
                 <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-400 text-[9px] font-bold rounded-full">ADMIN</span>
               )}
+              {user.role === 'premium' && (
+                <span className="px-1.5 py-0.5 bg-lime/20 text-lime text-[9px] font-bold rounded-full">PREMIUM</span>
+              )}
             </div>
-            <p className="text-white/40 text-xs">{user.email}</p>
-            <p className="text-white/30 text-[10px] mt-0.5">
+            <p className="text-muted text-xs">{user.email}</p>
+            <p className="text-muted text-[10px] mt-0.5">
               Inscrit le {user.created_at ? new Date(user.created_at).toLocaleDateString('fr-FR') : '—'}
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-2 mb-4">
-          <div className="bg-white/5 rounded-lg p-3 text-center">
+          <div className="bg-dark-bg rounded-xl p-3 text-center">
             <p className="text-white font-bold text-lg">{stats?.total_sessions || 0}</p>
-            <p className="text-white/30 text-[10px]">Séances</p>
+            <p className="text-muted text-[10px]">Séances</p>
           </div>
-          <div className="bg-white/5 rounded-lg p-3 text-center">
+          <div className="bg-dark-bg rounded-xl p-3 text-center">
             <p className="text-white font-bold text-lg">{stats?.total_cardio || 0}</p>
-            <p className="text-white/30 text-[10px]">Cardio</p>
+            <p className="text-muted text-[10px]">Cardio</p>
           </div>
-          <div className="bg-white/5 rounded-lg p-3 text-center">
+          <div className="bg-dark-bg rounded-xl p-3 text-center">
             <p className="text-white font-bold text-lg">{Math.round(stats?.total_volume || 0)}kg</p>
-            <p className="text-white/30 text-[10px]">Volume total</p>
+            <p className="text-muted text-[10px]">Volume total</p>
           </div>
-          <div className="bg-white/5 rounded-lg p-3 text-center">
+          <div className="bg-dark-bg rounded-xl p-3 text-center">
             <p className="text-white font-bold text-lg">
               {stats?.last_session ? new Date(stats.last_session).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) : '—'}
             </p>
-            <p className="text-white/30 text-[10px]">Dernière séance</p>
+            <p className="text-muted text-[10px]">Dernière séance</p>
           </div>
         </div>
 
@@ -567,19 +591,29 @@ function UserDetail({ user, stats, onBack, onRoleToggle, onDelete }) {
             className={`flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl text-xs font-medium transition-all ${
               user.role === 'admin'
                 ? 'bg-amber-500/20 text-amber-400 border border-amber-500/20'
-                : 'bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/20'
+                : 'bg-lime/10 text-lime border border-lime/20'
             }`}
           >
             {user.role === 'admin' ? <><UserX size={14} /> Retirer Admin</> : <><UserCheck size={14} /> Promouvoir Admin</>}
           </button>
           <button
+            onClick={() => onTogglePremium(user.id, user.role)}
+            className={`flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl text-xs font-medium transition-all ${
+              user.role === 'premium'
+                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/20'
+                : 'bg-lime/10 text-lime border border-lime/20'
+            }`}
+          >
+            {user.role === 'premium' ? <><Lock size={14} /> Retirer Premium</> : <><Unlock size={14} /> Donner Premium</>}
+          </button>
+          <button
             onClick={() => { if (window.confirm('Supprimer cet utilisateur ?')) onDelete(user.id) }}
-            className="flex items-center justify-center gap-1 px-5 py-2.5 rounded-xl text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/20 transition-all"
+            className="flex items-center justify-center gap-1 px-5 py-2.5 rounded-xl text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20 transition-all"
           >
             <Trash2 size={14} /> Supprimer
           </button>
         </div>
-      </GlassCard>
+      </div>
     </div>
   )
 }
@@ -589,6 +623,7 @@ function UserDetail({ user, stats, onBack, onRoleToggle, onDelete }) {
 function SubscriptionsTab() {
   const [subscriptions, setSubscriptions] = useState([])
   const [loading, setLoading] = useState(true)
+  const [users, setUsers] = useState([])
 
   useEffect(() => { loadSubscriptions() }, [])
 
@@ -596,8 +631,12 @@ function SubscriptionsTab() {
     if (!isSupabaseConfigured()) { setLoading(false); return }
     setLoading(true)
     try {
-      const { data } = await supabase.from('subscriptions').select('*').order('created_at', { ascending: false })
-      setSubscriptions(data || [])
+      const [subRes, usersRes] = await Promise.all([
+        supabase.from('subscriptions').select('*').order('created_at', { ascending: false }),
+        adminGetAllUsers(),
+      ])
+      setSubscriptions(subRes.data || [])
+      setUsers(usersRes.data || [])
     } catch {}
     setLoading(false)
   }
@@ -608,66 +647,99 @@ function SubscriptionsTab() {
     return counts
   }, [subscriptions])
 
+  const premiumUsers = useMemo(() => {
+    return users.filter(u => u.role === 'premium' || u.role === 'admin')
+  }, [users])
+
   return (
     <div className="space-y-4 animate-fade-in">
       <div className="grid grid-cols-3 gap-3">
-        <StatCard label="Total" value={subscriptions.length} icon={Users} color="text-[#10B981]" />
-        <StatCard label="Free" value={tierCounts.free || 0} icon={UserX} color="text-white/40" />
+        <StatCard label="Total" value={subscriptions.length} icon={Users} color="text-lime" />
+        <StatCard label="Free" value={tierCounts.free || 0} icon={UserX} color="text-muted" />
         <StatCard label="Premium" value={tierCounts.premium || 0} icon={Crown} color="text-amber-400" />
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center py-8">
-          <RefreshCw size={20} className="text-white/30 animate-spin" />
+          <RefreshCw size={20} className="text-muted animate-spin" />
         </div>
       ) : (
-        <div className="space-y-2">
-          {subscriptions.map((sub) => (
-            <GlassCard key={sub.id} className="p-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    sub.tier === 'premium' ? 'bg-amber-500/20' : 'bg-white/5'
-                  }`}>
-                    {sub.tier === 'premium'
-                      ? <Crown size={14} className="text-amber-400" />
-                      : <User size={14} className="text-white/30" />
-                    }
+        <>
+          {/* Premium Users */}
+          <div>
+            <h3 className="text-white font-semibold text-sm mb-2">Utilisateurs Premium</h3>
+            {premiumUsers.length > 0 ? (
+              <div className="space-y-2">
+                {premiumUsers.map((u) => (
+                  <div key={u.id} className="bg-dark-card rounded-2xl p-3 border border-dark-border">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-lime/20 flex items-center justify-center">
+                          <Crown size={14} className="text-lime" />
+                        </div>
+                        <div>
+                          <p className="text-white text-xs font-medium">{u.full_name || u.email}</p>
+                          <p className="text-muted text-[10px]">{u.email}</p>
+                        </div>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                        u.role === 'admin' ? 'bg-amber-500/20 text-amber-400' : 'bg-lime/20 text-lime'
+                      }`}>
+                        {u.role === 'admin' ? 'Admin' : 'Premium'}
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-white text-xs font-medium">{sub.user_id?.slice(0, 8)}...</p>
-                    <p className="text-white/30 text-[10px]">
-                      {sub.tier} · {sub.status}
-                      {sub.current_period_end && ` · expires ${new Date(sub.current_period_end).toLocaleDateString('fr-FR')}`}
-                    </p>
-                  </div>
-                </div>
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                  sub.tier === 'premium' ? 'bg-amber-500/20 text-amber-400' : 'bg-white/5 text-white/30'
-                }`}>
-                  {sub.tier}
-                </span>
+                ))}
               </div>
-            </GlassCard>
-          ))}
-          {subscriptions.length === 0 && (
-            <div className="text-center py-8">
-              <Crown size={32} className="text-white/10 mx-auto mb-2" />
-              <p className="text-white/30 text-xs">Aucun abonnement</p>
-            </div>
-          )}
-        </div>
+            ) : (
+              <div className="bg-dark-card rounded-2xl p-4 border border-dark-border text-center">
+                <Crown size={32} className="text-muted/30 mx-auto mb-2" />
+                <p className="text-muted text-xs">Aucun utilisateur premium</p>
+              </div>
+            )}
+          </div>
+
+          {/* All Subscriptions */}
+          <div>
+            <h3 className="text-white font-semibold text-sm mb-2">Historique Stripe</h3>
+            {subscriptions.length > 0 ? (
+              <div className="space-y-2">
+                {subscriptions.map((sub) => (
+                  <div key={sub.id} className="bg-dark-card rounded-2xl p-3 border border-dark-border">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          sub.tier === 'premium' ? 'bg-lime/20' : 'bg-dark-bg'
+                        }`}>
+                          <Crown size={14} className={sub.tier === 'premium' ? 'text-lime' : 'text-muted'} />
+                        </div>
+                        <div>
+                          <p className="text-white text-xs font-medium">{sub.user_id?.slice(0, 8)}...</p>
+                          <p className="text-muted text-[10px]">
+                            {sub.tier} · {sub.status}
+                            {sub.current_period_end && ` · expire ${new Date(sub.current_period_end).toLocaleDateString('fr-FR')}`}
+                          </p>
+                        </div>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                        sub.tier === 'premium' ? 'bg-lime/20 text-lime' : 'bg-dark-bg text-muted'
+                      }`}>
+                        {sub.tier}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-dark-card rounded-2xl p-4 border border-dark-border text-center">
+                <Crown size={32} className="text-muted/30 mx-auto mb-2" />
+                <p className="text-muted text-xs">Aucun abonnement Stripe</p>
+              </div>
+            )}
+          </div>
+        </>
       )}
     </div>
-  )
-}
-
-function User({ size = 14, className }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
   )
 }
 
@@ -741,17 +813,17 @@ function ExercisesTab() {
   return (
     <div className="space-y-4 animate-fade-in">
       <div className="grid grid-cols-2 gap-2">
-        <StatCard label="Total" value={exercisesList.length} icon={Dumbbell} color="text-[#10B981]" />
+        <StatCard label="Total" value={exercisesList.length} icon={Dumbbell} color="text-lime" />
         <StatCard label="Groupes" value={Object.keys(muscleCounts).length} icon={BarChart3} color="text-blue-400" />
       </div>
 
-      <GlassCard className="p-4 space-y-3">
+      <div className="bg-dark-card rounded-2xl p-4 border border-dark-border space-y-3">
         <div className="flex items-center justify-between">
-          <p className="text-white/50 text-[10px] uppercase tracking-wide">
+          <p className="text-muted text-[10px] uppercase tracking-wide">
             {isEditing ? 'Modifier' : 'Ajouter'} un exercice
           </p>
           {isEditing && (
-            <button onClick={() => { setForm(EmptyExercise()); setIsEditing(false) }} className="text-white/30 hover:text-white transition-colors">
+            <button onClick={() => { setForm(EmptyExercise()); setIsEditing(false) }} className="text-muted hover:text-white transition-colors">
               <X size={14} />
             </button>
           )}
@@ -766,38 +838,38 @@ function ExercisesTab() {
           <FormInput label="YouTube ID" value={form.youtube_id} onChange={(v) => setForm({ ...form, youtube_id: v })} placeholder="dQw4w9WgXcQ" />
         </div>
         <div className="space-y-1">
-          <label className="text-white/40 text-[10px] uppercase tracking-wide">Description</label>
-          <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Description..." rows={2} className="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-[#10B981]/50 transition-all resize-none" />
+          <label className="text-muted text-[10px] uppercase tracking-wide">Description</label>
+          <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Description..." rows={2} className="w-full bg-dark-bg border border-dark-border rounded-xl py-2 px-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-lime/50 transition-all resize-none" />
         </div>
-        <button onClick={handleSave} disabled={!form.name} className={`w-full rounded-xl py-2.5 text-sm font-semibold transition-all flex items-center justify-center gap-2 ${form.name ? 'bg-[#10B981] hover:bg-[#059669] text-black' : 'bg-white/10 text-white/30 cursor-not-allowed'}`}>
+        <button onClick={handleSave} disabled={!form.name} className={`w-full rounded-xl py-2.5 text-sm font-semibold transition-all flex items-center justify-center gap-2 ${form.name ? 'bg-lime hover:bg-lime/90 text-dark-bg' : 'bg-dark-bg text-muted cursor-not-allowed'}`}>
           {isEditing ? <><Save size={14} /> Enregistrer</> : <><Plus size={14} /> Ajouter</>}
         </button>
-      </GlassCard>
+      </div>
 
       <div className="relative">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
-        <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher..." className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-[#10B981]/50 transition-all" />
+        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+        <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher..." className="w-full bg-dark-bg border border-dark-border rounded-xl py-2.5 pl-10 pr-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-lime/50 transition-all" />
       </div>
 
       <div className="space-y-2">
         {loading ? (
-          <div className="flex items-center justify-center py-8"><RefreshCw size={20} className="text-white/30 animate-spin" /></div>
+          <div className="flex items-center justify-center py-8"><RefreshCw size={20} className="text-muted animate-spin" /></div>
         ) : (
           filtered.map((ex) => (
-            <div key={ex.id} className="glass rounded-xl p-3 flex items-center justify-between">
+            <div key={ex.id} className="bg-dark-card rounded-xl p-3 flex items-center justify-between border border-dark-border">
               <div className="min-w-0 flex-1">
                 <p className="text-white text-xs font-medium truncate">{ex.name}</p>
-                <p className="text-white/30 text-[10px]">{ex.muscle_group || ex.muscleGroup} · {ex.equipment} · {ex.difficulty}</p>
+                <p className="text-muted text-[10px]">{ex.muscle_group || ex.muscleGroup} · {ex.equipment} · {ex.difficulty}</p>
               </div>
               <div className="flex items-center gap-1 shrink-0">
-                <button onClick={() => handleEdit(ex)} className="p-1.5 rounded-lg text-white/30 hover:text-white hover:bg-white/10 transition-all"><Edit size={12} /></button>
-                <button onClick={() => handleDeleteExercise(ex.id)} className="p-1.5 rounded-lg text-white/30 hover:text-red-400 hover:bg-red-500/10 transition-all"><Trash2 size={12} /></button>
+                <button onClick={() => handleEdit(ex)} className="p-1.5 rounded-lg text-muted hover:text-white hover:bg-dark-border transition-all"><Edit size={12} /></button>
+                <button onClick={() => handleDeleteExercise(ex.id)} className="p-1.5 rounded-lg text-muted hover:text-red-400 hover:bg-red-500/10 transition-all"><Trash2 size={12} /></button>
               </div>
             </div>
           ))
         )}
         {!loading && filtered.length === 0 && (
-          <div className="text-center py-8"><p className="text-white/30 text-xs">Aucun exercice trouvé</p></div>
+          <div className="text-center py-8"><p className="text-muted text-xs">Aucun exercice trouvé</p></div>
         )}
       </div>
     </div>
@@ -865,58 +937,58 @@ function ProgramsTab() {
 
   return (
     <div className="space-y-4 animate-fade-in">
-      <StatCard label="Programmes" value={programsList.length} icon={Calendar} color="text-[#10B981]" />
+      <StatCard label="Programmes" value={programsList.length} icon={Calendar} color="text-lime" />
 
-      <GlassCard className="p-4 space-y-3">
+      <div className="bg-dark-card rounded-2xl p-4 border border-dark-border space-y-3">
         <div className="flex items-center justify-between">
-          <p className="text-white/50 text-[10px] uppercase tracking-wide">
+          <p className="text-muted text-[10px] uppercase tracking-wide">
             {isEditing ? 'Modifier' : 'Ajouter'} un programme
           </p>
           {isEditing && (
-            <button onClick={() => { setForm(EmptyProgram()); setIsEditing(false) }} className="text-white/30 hover:text-white transition-colors">
+            <button onClick={() => { setForm(EmptyProgram()); setIsEditing(false) }} className="text-muted hover:text-white transition-colors">
               <X size={14} />
             </button>
           )}
         </div>
         <FormInput label="Nom" value={form.name} onChange={(v) => setForm({ ...form, name: v })} placeholder="Push / Pull / Legs..." />
         <div className="space-y-1">
-          <label className="text-white/40 text-[10px] uppercase tracking-wide">Description</label>
-          <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Description..." rows={2} className="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-[#10B981]/50 transition-all resize-none" />
+          <label className="text-muted text-[10px] uppercase tracking-wide">Description</label>
+          <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Description..." rows={2} className="w-full bg-dark-bg border border-dark-border rounded-xl py-2 px-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-lime/50 transition-all resize-none" />
         </div>
         <div className="grid grid-cols-3 gap-2">
           <FormSelect label="Niveau" value={form.level} onChange={(v) => setForm({ ...form, level: v })} options={[{ value: 'debutant', label: 'Débutant' }, { value: 'intermediaire', label: 'Intermédiaire' }, { value: 'avance', label: 'Avancé' }]} />
           <FormInput label="Durée (sem)" value={form.duration_weeks} onChange={(v) => setForm({ ...form, duration_weeks: v })} type="number" placeholder="8" />
           <FormInput label="Jours / sem" value={form.days_per_week} onChange={(v) => setForm({ ...form, days_per_week: v })} type="number" placeholder="3" />
         </div>
-        <button onClick={handleSave} disabled={!form.name} className={`w-full rounded-xl py-2.5 text-sm font-semibold transition-all flex items-center justify-center gap-2 ${form.name ? 'bg-[#10B981] hover:bg-[#059669] text-black' : 'bg-white/10 text-white/30 cursor-not-allowed'}`}>
+        <button onClick={handleSave} disabled={!form.name} className={`w-full rounded-xl py-2.5 text-sm font-semibold transition-all flex items-center justify-center gap-2 ${form.name ? 'bg-lime hover:bg-lime/90 text-dark-bg' : 'bg-dark-bg text-muted cursor-not-allowed'}`}>
           {isEditing ? <><Save size={14} /> Enregistrer</> : <><Plus size={14} /> Ajouter</>}
         </button>
-      </GlassCard>
+      </div>
 
       <div className="relative">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
-        <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher..." className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-[#10B981]/50 transition-all" />
+        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+        <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher..." className="w-full bg-dark-bg border border-dark-border rounded-xl py-2.5 pl-10 pr-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-lime/50 transition-all" />
       </div>
 
       <div className="space-y-2">
         {loading ? (
-          <div className="flex items-center justify-center py-8"><RefreshCw size={20} className="text-white/30 animate-spin" /></div>
+          <div className="flex items-center justify-center py-8"><RefreshCw size={20} className="text-muted animate-spin" /></div>
         ) : (
           filtered.map((prog) => (
-            <div key={prog.id} className="glass rounded-xl p-3 flex items-center justify-between">
+            <div key={prog.id} className="bg-dark-card rounded-xl p-3 flex items-center justify-between border border-dark-border">
               <div className="min-w-0 flex-1">
                 <p className="text-white text-xs font-medium truncate">{prog.name}</p>
-                <p className="text-white/30 text-[10px]">{prog.level} · {prog.days_per_week || prog.daysPerWeek}x / sem · {prog.duration_weeks || prog.durationWeeks} sem</p>
+                <p className="text-muted text-[10px]">{prog.level} · {prog.days_per_week || prog.daysPerWeek}x / sem · {prog.duration_weeks || prog.durationWeeks} sem</p>
               </div>
               <div className="flex items-center gap-1 shrink-0">
-                <button onClick={() => handleEdit(prog)} className="p-1.5 rounded-lg text-white/30 hover:text-white hover:bg-white/10 transition-all"><Edit size={12} /></button>
-                <button onClick={() => handleDeleteProgram(prog.id)} className="p-1.5 rounded-lg text-white/30 hover:text-red-400 hover:bg-red-500/10 transition-all"><Trash2 size={12} /></button>
+                <button onClick={() => handleEdit(prog)} className="p-1.5 rounded-lg text-muted hover:text-white hover:bg-dark-border transition-all"><Edit size={12} /></button>
+                <button onClick={() => handleDeleteProgram(prog.id)} className="p-1.5 rounded-lg text-muted hover:text-red-400 hover:bg-red-500/10 transition-all"><Trash2 size={12} /></button>
               </div>
             </div>
           ))
         )}
         {!loading && filtered.length === 0 && (
-          <div className="text-center py-8"><p className="text-white/30 text-xs">Aucun programme trouvé</p></div>
+          <div className="text-center py-8"><p className="text-muted text-xs">Aucun programme trouvé</p></div>
         )}
       </div>
     </div>
@@ -957,53 +1029,147 @@ function ActivityTab() {
   return (
     <div className="space-y-4 animate-fade-in">
       <div className="grid grid-cols-2 gap-3">
-        <StatCard label="Musculation" value={sessions.length} icon={Dumbbell} color="text-[#10B981]" />
+        <StatCard label="Musculation" value={sessions.length} icon={Dumbbell} color="text-lime" />
         <StatCard label="Cardio" value={cardioSessions.length} icon={Flame} color="text-orange-400" />
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-8"><RefreshCw size={20} className="text-white/30 animate-spin" /></div>
+        <div className="flex items-center justify-center py-8"><RefreshCw size={20} className="text-muted animate-spin" /></div>
       ) : (
         <div className="space-y-2">
           {allActivity.map((item, i) => (
-            <GlassCard key={`${item._type}-${item.id || i}`} className="p-3">
+            <div key={`${item._type}-${item.id || i}`} className="bg-dark-card rounded-2xl p-3 border border-dark-border">
               <div className="flex items-center gap-3">
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                  item._type === 'cardio' ? 'bg-orange-500/20' : 'bg-[#10B981]/20'
+                  item._type === 'cardio' ? 'bg-orange-500/20' : 'bg-lime/20'
                 }`}>
                   {item._type === 'cardio'
                     ? <Flame size={14} className="text-orange-400" />
-                    : <Dumbbell size={14} className="text-[#10B981]" />
+                    : <Dumbbell size={14} className="text-lime" />
                   }
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-white text-xs font-medium truncate">
                     {item.exercise_name || item.activity_name || 'Séance'}
                   </p>
-                  <p className="text-white/30 text-[10px]">
+                  <p className="text-muted text-[10px]">
                     {item._type === 'cardio' ? 'Cardio' : 'Musculation'} · {item.duration || 0}min
                     {item.calories ? ` · ${item.calories}kcal` : ''}
                   </p>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-white/30 text-[10px]">
+                  <p className="text-muted text-[10px]">
                     {item.created_at ? new Date(item.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) : '—'}
                   </p>
-                  <p className="text-white/20 text-[9px]">
+                  <p className="text-muted text-[9px]">
                     {item.user_id?.slice(0, 6)}...
                   </p>
                 </div>
               </div>
-            </GlassCard>
+            </div>
           ))}
           {allActivity.length === 0 && (
             <div className="text-center py-8">
-              <Activity size={32} className="text-white/10 mx-auto mb-2" />
-              <p className="text-white/30 text-xs">Aucune activité</p>
+              <Activity size={32} className="text-muted/30 mx-auto mb-2" />
+              <p className="text-muted text-xs">Aucune activité</p>
             </div>
           )}
         </div>
       )}
+    </div>
+  )
+}
+
+// ==================== SETTINGS ====================
+
+function SettingsTab() {
+  const [settings, setSettings] = useState({
+    monthlyPrice: '4.99',
+    yearlyPrice: '39.99',
+    yearlyDiscount: '33',
+    maxFreePrograms: '3',
+    maxFreeExercises: '20',
+    coachEnabled: false,
+    notificationsEnabled: true,
+  })
+  const [saved, setSaved] = useState(false)
+
+  const handleSave = () => {
+    localStorage.setItem('nirika_admin_settings', JSON.stringify(settings))
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
+  }
+
+  return (
+    <div className="space-y-4 animate-fade-in">
+      <div className="bg-dark-card rounded-2xl p-4 border border-dark-border space-y-4">
+        <div className="flex items-center gap-2">
+          <DollarSign size={16} className="text-lime" />
+          <h3 className="text-white font-semibold text-sm">Tarification</h3>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <FormInput label="Prix mensuel (€)" value={settings.monthlyPrice} onChange={(v) => setSettings({ ...settings, monthlyPrice: v })} placeholder="4.99" />
+          <FormInput label="Prix annuel (€)" value={settings.yearlyPrice} onChange={(v) => setSettings({ ...settings, yearlyPrice: v })} placeholder="39.99" />
+        </div>
+        <FormInput label="Remise annuel (%)" value={settings.yearlyDiscount} onChange={(v) => setSettings({ ...settings, yearlyDiscount: v })} placeholder="33" />
+      </div>
+
+      <div className="bg-dark-card rounded-2xl p-4 border border-dark-border space-y-4">
+        <div className="flex items-center gap-2">
+          <Lock size={16} className="text-lime" />
+          <h3 className="text-white font-semibold text-sm">Freemium</h3>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <FormInput label="Programmes gratuits max" value={settings.maxFreePrograms} onChange={(v) => setSettings({ ...settings, maxFreePrograms: v })} placeholder="3" />
+          <FormInput label="Exercices gratuits max" value={settings.maxFreeExercises} onChange={(v) => setSettings({ ...settings, maxFreeExercises: v })} placeholder="20" />
+        </div>
+      </div>
+
+      <div className="bg-dark-card rounded-2xl p-4 border border-dark-border space-y-4">
+        <div className="flex items-center gap-2">
+          <Zap size={16} className="text-lime" />
+          <h3 className="text-white font-semibold text-sm">Fonctionnalités</h3>
+        </div>
+
+        <div className="space-y-3">
+          <label className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Zap size={14} className="text-muted" />
+              <span className="text-white text-xs">NIRIKA Coach</span>
+            </div>
+            <button
+              onClick={() => setSettings({ ...settings, coachEnabled: !settings.coachEnabled })}
+              className={`w-10 h-6 rounded-full transition-all relative ${settings.coachEnabled ? 'bg-lime' : 'bg-dark-border'}`}
+            >
+              <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-all ${settings.coachEnabled ? 'left-5' : 'left-1'}`} />
+            </button>
+          </label>
+
+          <label className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Bell size={14} className="text-muted" />
+              <span className="text-white text-xs">Notifications push</span>
+            </div>
+            <button
+              onClick={() => setSettings({ ...settings, notificationsEnabled: !settings.notificationsEnabled })}
+              className={`w-10 h-6 rounded-full transition-all relative ${settings.notificationsEnabled ? 'bg-lime' : 'bg-dark-border'}`}
+            >
+              <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-all ${settings.notificationsEnabled ? 'left-5' : 'left-1'}`} />
+            </button>
+          </label>
+        </div>
+      </div>
+
+      <button
+        onClick={handleSave}
+        className={`w-full py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all ${
+          saved ? 'bg-lime/20 text-lime' : 'bg-lime text-dark-bg hover:bg-lime/90'
+        }`}
+      >
+        {saved ? <><Save size={16} /> Enregistré !</> : <><Save size={16} /> Enregistrer les réglages</>}
+      </button>
     </div>
   )
 }

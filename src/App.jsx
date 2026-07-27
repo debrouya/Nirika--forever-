@@ -129,7 +129,7 @@ export default function App() {
       <div className="min-h-screen flex items-center justify-center bg-dark-bg">
         <div className="text-center animate-fade-in">
           <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-black/20 p-2.5">
-            <img src="/logo.svg" alt="Nirika" className="w-full h-full" />
+            <img src="/logo.png" alt="Nirika" className="w-full h-full" />
           </div>
           <div className="w-10 h-10 border-2 border-dark-border border-t-lime rounded-full animate-spin mx-auto mb-3" />
           <p className="text-xs text-muted">Chargement...</p>

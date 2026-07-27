@@ -9,6 +9,7 @@ import {
 import useStore from '../store/useStore'
 import { programs } from '../data/programs'
 import exercises from '../data/exercises'
+import Recommendations from './Recommendations'
 
 const PLAN_IMAGES = [
   'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop',
@@ -37,6 +38,9 @@ export default function Dashboard() {
         <p className="text-muted text-sm">Bonjour,</p>
         <h1 className="text-white font-bold text-2xl">Let's Workout</h1>
       </div>
+
+      {/* Smart Recommendations */}
+      <Recommendations />
 
       {/* Search Bar */}
       <div className="animate-fade-in delay-100" style={{ opacity: 0, animationFillMode: 'forwards' }}>

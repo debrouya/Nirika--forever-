@@ -83,7 +83,7 @@ export function useNotifications(userId) {
     setTimeout(() => {
       new Notification(title, {
         body,
-        icon: '/logo.svg',
+        icon: '/logo.png',
         badge: '/favicon.svg',
         tag: 'nirika-reminder',
       })

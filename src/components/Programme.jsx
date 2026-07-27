@@ -1,14 +1,36 @@
 import { useState, useEffect, useCallback } from 'react'
-import { CalendarRange, Clock, Dumbbell, Target, ChevronRight, ChevronDown, Zap, Flame, Play, Square, CheckCircle, Bell } from 'lucide-react'
+import {
+  CalendarRange,
+  Clock,
+  Dumbbell,
+  Target,
+  ChevronRight,
+  ChevronDown,
+  ChevronLeft,
+  Zap,
+  Flame,
+  Play,
+  Square,
+  CheckCircle2,
+  Bell,
+  RotateCcw,
+  Trophy,
+  Timer,
+  ArrowRight,
+  SkipForward,
+  TrendingUp,
+} from 'lucide-react'
 import { programs } from '../data/programs'
 import exercises from '../data/exercises'
 import { getUserProgram, upsertUserProgram, deleteUserProgram } from '../services/supabaseService'
 import { useNotifications } from '../hooks/useNotifications'
+import ExerciseTracker from './ExerciseTracker'
+import useStore from '../store/useStore'
 
 const exerciseMap = Object.fromEntries(exercises.map(e => [e.id, e]))
 
 const levelColors = {
-  debutant: 'text-[#10B981] bg-[#10B981]/10',
+  debutant: 'text-lime bg-lime/10',
   intermediaire: 'text-amber-400 bg-amber-400/10',
   avance: 'text-red-400 bg-red-400/10',
 }
@@ -19,31 +41,44 @@ const levelLabels = {
   avance: 'Avancé',
 }
 
-const goalIcons = {
-  masse: { icon: Dumbbell, color: 'text-blue-400' },
-  force: { icon: Zap, color: 'text-amber-400' },
-  definition: { icon: Target, color: 'text-emerald-400' },
-  endurance: { icon: Flame, color: 'text-orange-400' },
+const PROGRAM_IMAGES = [
+  'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=250&fit=crop',
+  'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=250&fit=crop',
+  'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&h=250&fit=crop',
+  'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&h=250&fit=crop',
+  'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=250&fit=crop',
+]
+
+function formatDuration(seconds) {
+  const m = Math.floor(seconds / 60)
+  const s = seconds % 60
+  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
 }
 
-export default function Programme({ user }) {
+export default function Programme({ user, isPremium }) {
+  const { sessionHistory, addExerciseRecord, getExerciseHistory } = useStore()
+  const [view, setView] = useState('list')
   const [expandedId, setExpandedId] = useState(null)
-  const [selectedDay, setSelectedDay] = useState(null)
   const [activeProgram, setActiveProgram] = useState(null)
+  const [completedDays, setCompletedDays] = useState({})
+  const [selectedDay, setSelectedDay] = useState(null)
+  const [trackingExercise, setTrackingExercise] = useState(null)
+  const [trackingDayKey, setTrackingDayKey] = useState(null)
+  const [completedExercises, setCompletedExercises] = useState({})
   const [loading, setLoading] = useState(true)
   const [starting, setStarting] = useState(null)
-  const { permission, requestPermission, scheduleLocal } = useNotifications(user?.id)
-
-  const toggle = (id) => {
-    setExpandedId(expandedId === id ? null : id)
-    setSelectedDay(null)
-  }
+  const { permission, requestPermission } = useNotifications(user?.id)
 
   const loadActiveProgram = useCallback(async () => {
     if (!user?.id) { setLoading(false); return }
     try {
       const { data } = await getUserProgram(user.id)
-      setActiveProgram(data)
+      if (data) {
+        setActiveProgram(data)
+        setCompletedDays(data.completed_days || {})
+        setCompletedExercises(data.completed_exercises || {})
+        setView('active')
+      }
     } catch {}
     setLoading(false)
   }, [user?.id])
@@ -53,23 +88,21 @@ export default function Programme({ user }) {
   const startProgram = async (program) => {
     if (!user?.id) return
     setStarting(program.id)
-
-    const startedAt = new Date()
-    const endDate = new Date(startedAt)
-    endDate.setDate(endDate.getDate() + program.durationWeeks * 7)
-
     const data = {
       program_id: program.id,
       program_name: program.name,
       current_week: 1,
       current_day: Object.keys(program.structure)[0] || '',
-      started_at: startedAt.toISOString(),
+      started_at: new Date().toISOString(),
+      completed_days: {},
+      completed_exercises: {},
     }
-
     try {
       await upsertUserProgram(user.id, data)
       setActiveProgram({ ...data, user_id: user.id })
-      scheduleProgramNotifications(program, startedAt, endDate)
+      setCompletedDays({})
+      setCompletedExercises({})
+      setView('active')
     } catch {}
     setStarting(null)
   }
@@ -79,35 +112,93 @@ export default function Programme({ user }) {
     try {
       await deleteUserProgram(user.id)
       setActiveProgram(null)
+      setCompletedDays({})
+      setCompletedExercises({})
+      setView('list')
     } catch {}
   }
 
-  const scheduleProgramNotifications = (program, startDate, endDate) => {
-    if (permission !== 'granted') return
-
-    scheduleLocal(
-      'NIRIKA — Programme lancé !',
-      `${program.name} commence aujourd'hui. Durée : ${program.durationWeeks} semaines. Bonne séance !`,
-      5000
-    )
-
-    const endMs = endDate.getTime() - Date.now()
-    if (endMs > 0 && endMs < 30 * 24 * 60 * 60 * 1000) {
-      scheduleLocal(
-        'NIRIKA — Dernière semaine !',
-        `Plus qu'une semaine pour terminer ${program.name}. Accélère !`,
-        Math.max(endMs - 7 * 24 * 60 * 60 * 1000 - Date.now(), 10000)
-      )
+  const saveProgress = async (newCompleted, newExercises) => {
+    if (user?.id && activeProgram) {
+      try {
+        await upsertUserProgram(user.id, {
+          ...activeProgram,
+          completed_days: newCompleted,
+          completed_exercises: newExercises,
+        })
+      } catch {}
     }
-
-    scheduleLocal(
-      'NIRIKA — Programme terminé !',
-      `Bravo ! Tu as terminé ${program.name} ${program.durationWeeks} semaines.`,
-      Math.max(endMs - Date.now(), 10000)
-    )
   }
 
-  const isProgramActive = (programId) => activeProgram?.program_id === programId
+  const toggleExerciseComplete = (dayKey, exerciseId) => {
+    const exKey = `${dayKey}__${exerciseId}`
+    const newExercises = { ...completedExercises }
+    if (newExercises[exKey]) {
+      delete newExercises[exKey]
+    } else {
+      newExercises[exKey] = { completedAt: new Date().toISOString() }
+    }
+    setCompletedExercises(newExercises)
+
+    // Check if all exercises in day are done → auto-complete day
+    if (activeProgram) {
+      const program = programs.find(p => p.id === activeProgram.program_id)
+      if (program) {
+        const dayExercises = program.structure[dayKey.replace(`${activeProgram.program_id}_`, '')] || []
+        const allDone = dayExercises.every(ex => newExercises[`${dayKey}__${ex.exerciseId}`])
+        if (allDone && dayExercises.length > 0) {
+          const newCompleted = {
+            ...completedDays,
+            [dayKey]: {
+              completedAt: new Date().toISOString(),
+              exercises: dayExercises.map(ex => ex.exerciseId),
+            },
+          }
+          setCompletedDays(newCompleted)
+          saveProgress(newCompleted, newExercises)
+          return
+        }
+      }
+    }
+    saveProgress(completedDays, newExercises)
+  }
+
+  const toggleDayComplete = (dayKey) => {
+    const newCompleted = { ...completedDays }
+    if (newCompleted[dayKey]) {
+      delete newCompleted[dayKey]
+    } else {
+      const program = programs.find(p => p.id === activeProgram?.program_id)
+      const dayName = dayKey.replace(`${activeProgram?.program_id}_`, '')
+      newCompleted[dayKey] = {
+        completedAt: new Date().toISOString(),
+        exercises: program?.structure[dayName]?.map(ex => ex.exerciseId) || [],
+      }
+      // Also mark all exercises as done
+      const newExercises = { ...completedExercises }
+      program?.structure[dayName]?.forEach(ex => {
+        newExercises[`${dayKey}__${ex.exerciseId}`] = { completedAt: new Date().toISOString() }
+      })
+      setCompletedExercises(newExercises)
+      saveProgress(newCompleted, newExercises)
+      return
+    }
+    setCompletedDays(newCompleted)
+    saveProgress(newCompleted, completedExercises)
+  }
+
+  const handleExerciseComplete = (record) => {
+    if (trackingExercise && trackingDayKey) {
+      toggleExerciseComplete(trackingDayKey, trackingExercise.id)
+      addExerciseRecord(trackingExercise.id, {
+        ...record,
+        exerciseName: trackingExercise.name,
+        muscleGroup: trackingExercise.muscleGroup,
+      })
+    }
+    setTrackingExercise(null)
+    setTrackingDayKey(null)
+  }
 
   const getProgress = () => {
     if (!activeProgram) return null
@@ -119,212 +210,349 @@ export default function Programme({ user }) {
     const elapsed = Math.floor((now - start) / (1000 * 60 * 60 * 24))
     const week = Math.min(Math.floor(elapsed / 7) + 1, program.durationWeeks)
     const progress = Math.min(Math.round((elapsed / totalDays) * 100), 100)
-    return { program, week, progress, totalWeeks: program.durationWeeks }
+    const totalWorkouts = program.daysPerWeek * program.durationWeeks
+    const completedCount = Object.keys(completedDays).length
+    const totalExercisesCount = Object.values(program.structure).flat().length
+    const completedExercisesCount = Object.keys(completedExercises).length
+    return { program, week, progress, totalWeeks: program.durationWeeks, totalWorkouts, completedCount, totalExercisesCount, completedExercisesCount }
   }
 
   const progress = getProgress()
 
-  return (
-    <div className="px-4 pt-4 pb-28 space-y-4">
-      <div className="flex items-center gap-3 mb-2">
-        <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-          <CalendarRange size={20} className="text-white" />
-        </div>
-        <div>
-          <h1 className="text-white font-bold text-lg">Programmes</h1>
-          <p className="text-white/40 text-xs">{programs.length} programmes disponibles</p>
-        </div>
-      </div>
+  // TRACKING VIEW
+  if (trackingExercise) {
+    const lastRecord = getExerciseHistory(trackingExercise.id).slice(-1)[0]
+    return (
+      <ExerciseTracker
+        exercise={trackingExercise}
+        sessionHistory={lastRecord ? [lastRecord] : []}
+        onComplete={handleExerciseComplete}
+      />
+    )
+  }
 
-      {progress && (
-        <div className="glass rounded-2xl p-4 animate-fade-in">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <CheckCircle size={16} className="text-[#10B981]" />
-              <span className="text-white text-sm font-semibold">En cours</span>
+  // ACTIVE PROGRAM VIEW
+  if (view === 'active' && activeProgram && progress) {
+    const program = progress.program
+    const days = Object.keys(program.structure)
+
+    return (
+      <div className="space-y-5 p-4">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <button onClick={() => setView('list')} className="p-1">
+            <ChevronLeft size={20} className="text-muted" />
+          </button>
+          <h1 className="text-white font-bold text-lg">Programme actif</h1>
+          <div className="w-8" />
+        </div>
+
+        {/* Progress Card */}
+        <div className="bg-dark-card rounded-2xl p-5 border border-dark-border">
+          <div className="flex items-center gap-2 mb-1">
+            <CheckCircle2 size={18} className="text-lime" />
+            <span className="text-white font-semibold text-sm">{program.name}</span>
+          </div>
+
+          <div className="flex items-center gap-4 mt-3">
+            <div className="text-center">
+              <p className="text-white text-2xl font-bold">{progress.week}</p>
+              <p className="text-muted text-[10px]">Semaine</p>
             </div>
-            <button
-              onClick={stopProgram}
-              className="text-red-400/60 hover:text-red-400 text-[10px] flex items-center gap-1 transition-colors"
-            >
-              <Square size={10} />
-              Arrêter
-            </button>
+            <div className="text-center">
+              <p className="text-white text-2xl font-bold">{progress.completedCount}</p>
+              <p className="text-muted text-[10px]">Jours faits</p>
+            </div>
+            <div className="text-center">
+              <p className="text-white text-2xl font-bold">{progress.completedExercisesCount}/{progress.totalExercisesCount}</p>
+              <p className="text-muted text-[10px]">Exercices</p>
+            </div>
+            <div className="text-center">
+              <p className="text-lime text-2xl font-bold">{progress.progress}%</p>
+              <p className="text-muted text-[10px]">Avancement</p>
+            </div>
           </div>
-          <p className="text-white font-medium text-xs mb-1">{progress.program.name}</p>
-          <div className="flex items-center gap-3 mb-3">
-            <span className="text-white/40 text-[10px]">Semaine {progress.week}/{progress.totalWeeks}</span>
-            <span className="text-white/40 text-[10px]">{progress.progress}%</span>
+
+          {/* Progress Bar */}
+          <div className="mt-4 space-y-1.5">
+            <div className="w-full h-2.5 bg-dark-bg rounded-full overflow-hidden">
+              <div className="h-full bg-lime rounded-full transition-all duration-500" style={{ width: `${progress.progress}%` }} />
+            </div>
+            <div className="w-full h-1.5 bg-dark-bg rounded-full overflow-hidden">
+              <div className="h-full bg-blue-400 rounded-full transition-all duration-500" style={{ width: `${progress.totalExercisesCount > 0 ? (progress.completedExercisesCount / progress.totalExercisesCount) * 100 : 0}%` }} />
+            </div>
           </div>
-          <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-[#10B981] rounded-full transition-all duration-500"
-              style={{ width: `${progress.progress}%` }}
-            />
+          <div className="flex justify-between mt-1">
+            <span className="text-muted text-[9px]">Temps {progress.progress}%</span>
+            <span className="text-blue-400 text-[9px]">Exercices {progress.totalExercisesCount > 0 ? Math.round((progress.completedExercisesCount / progress.totalExercisesCount) * 100) : 0}%</span>
           </div>
         </div>
-      )}
 
-      {permission !== 'granted' && (
-        <button
-          onClick={requestPermission}
-          className="w-full glass rounded-xl p-3 flex items-center gap-3 text-left hover:bg-white/5 transition-colors"
-        >
-          <div className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center flex-shrink-0">
-            <Bell size={14} className="text-amber-400" />
+        {/* Day Selector */}
+        <div>
+          <h2 className="text-white font-semibold text-sm mb-3">Jours du programme</h2>
+          <div className="space-y-2">
+            {days.map((day, i) => {
+              const dayKey = `${activeProgram.program_id}_${day}`
+              const isCompleted = !!completedDays[dayKey]
+              const isToday = i === (new Date().getDay() - 1 + 7) % 7
+              const dayExercises = program.structure[day]
+              const dayExCompleted = dayExercises?.filter(ex => completedExercises[`${dayKey}__${ex.exerciseId}`])?.length || 0
+              const dayExTotal = dayExercises?.length || 0
+              const dayProgress = dayExTotal > 0 ? (dayExCompleted / dayExTotal) * 100 : 0
+
+              return (
+                <div key={day} className="bg-dark-card rounded-2xl overflow-hidden border border-dark-border">
+                  <button
+                    onClick={() => setSelectedDay(selectedDay === day ? null : day)}
+                    className="w-full p-4 flex items-center gap-3 text-left"
+                  >
+                    {/* Checkbox */}
+                    <div
+                      onClick={(e) => { e.stopPropagation(); toggleDayComplete(dayKey) }}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
+                        isCompleted ? 'bg-lime' : dayExCompleted > 0 ? 'bg-blue-400/20 border border-blue-400/30' : 'bg-dark-bg border border-dark-border'
+                      }`}
+                    >
+                      {isCompleted ? (
+                        <CheckCircle2 size={18} className="text-dark-bg" />
+                      ) : dayExCompleted > 0 ? (
+                        <span className="text-blue-400 text-[10px] font-bold">{dayExCompleted}/{dayExTotal}</span>
+                      ) : (
+                        <span className="text-muted text-xs font-medium">{i + 1}</span>
+                      )}
+                    </div>
+
+                    {/* Day Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className={`font-semibold text-sm ${isCompleted ? 'text-lime' : 'text-white'}`}>
+                          {day}
+                        </span>
+                        {isToday && !isCompleted && (
+                          <span className="px-1.5 py-0.5 bg-lime/20 text-lime text-[9px] font-medium rounded-full">
+                            Aujourd'hui
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-muted text-xs">
+                        {dayExCompleted}/{dayExTotal} exercices
+                      </p>
+                      {/* Mini progress bar */}
+                      {dayExCompleted > 0 && !isCompleted && (
+                        <div className="w-full h-1 bg-dark-bg rounded-full mt-1.5 overflow-hidden">
+                          <div className="h-full bg-blue-400 rounded-full transition-all" style={{ width: `${dayProgress}%` }} />
+                        </div>
+                      )}
+                    </div>
+
+                    <ChevronRight size={16} className={`text-muted transition-transform ${selectedDay === day ? 'rotate-90' : ''}`} />
+                  </button>
+
+                  {/* Expanded Day */}
+                  {selectedDay === day && (
+                    <div className="px-4 pb-4 border-t border-dark-border pt-3 animate-fade-in">
+                      <div className="space-y-2">
+                        {dayExercises?.map((item, i) => {
+                          const exo = exerciseMap[item.exerciseId]
+                          const exKey = `${dayKey}__${item.exerciseId}`
+                          const isExDone = !!completedExercises[exKey]
+                          const lastRec = getExerciseHistory(item.exerciseId).slice(-1)[0]
+
+                          return (
+                            <div key={i} className={`flex items-center gap-3 rounded-xl p-3 transition-all ${
+                              isExDone ? 'bg-lime/5 border border-lime/20' : 'bg-dark-bg border border-dark-border'
+                            }`}>
+                              {/* Checkbox */}
+                              <button
+                                onClick={() => toggleExerciseComplete(dayKey, item.exerciseId)}
+                                className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
+                                  isExDone ? 'bg-lime' : 'border border-dark-border hover:border-lime/30'
+                                }`}
+                              >
+                                {isExDone && <CheckCircle2 size={14} className="text-dark-bg" />}
+                              </button>
+
+                              {/* Thumbnail */}
+                              <div className="w-10 h-10 rounded-lg overflow-hidden bg-dark-border flex-shrink-0">
+                                {exo?.youtubeId ? (
+                                  <img src={`https://img.youtube.com/vi/${exo.youtubeId}/mqdefault.jpg`} alt={exo.name} className="w-full h-full object-cover" />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center text-muted text-[10px]">🏋️</div>
+                                )}
+                              </div>
+
+                              {/* Info */}
+                              <div className="flex-1 min-w-0">
+                                <p className={`text-xs font-medium truncate ${isExDone ? 'text-lime' : 'text-white'}`}>
+                                  {exo?.name || item.exerciseId}
+                                </p>
+                                <p className="text-muted text-[10px]">{item.sets} × {item.reps}</p>
+                                {lastRec && (
+                                  <p className="text-blue-400 text-[9px]">
+                                    Dernier : {lastRec.totalVolume > 0 ? `${lastRec.totalVolume}kg` : `${lastRec.totalReps || 0} reps`}
+                                  </p>
+                                )}
+                              </div>
+
+                              {/* Action */}
+                              {!isExDone ? (
+                                <button
+                                  onClick={() => {
+                                    setTrackingExercise(exo || { id: item.exerciseId, name: item.exerciseId, muscleGroup: '—', equipment: '—', description: '' })
+                                    setTrackingDayKey(dayKey)
+                                  }}
+                                  className="px-3 py-1.5 rounded-lg bg-lime/10 border border-lime/20 text-lime text-[10px] font-semibold flex items-center gap-1 flex-shrink-0"
+                                >
+                                  <Play size={10} fill="currentColor" />
+                                  Démarrer
+                                </button>
+                              ) : (
+                                <span className="px-2 py-1 rounded-lg bg-lime/10 text-lime text-[10px] font-medium flex-shrink-0">
+                                  ✓ Fait
+                                </span>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
-          <div>
-            <p className="text-white text-xs font-medium">Active les notifications</p>
-            <p className="text-white/30 text-[10px]">Pour recevoir les rappels de tes programmes</p>
+        </div>
+
+        {/* Stop Button */}
+        <button
+          onClick={stopProgram}
+          className="w-full py-3 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-semibold flex items-center justify-center gap-2"
+        >
+          <Square size={16} />
+          Arrêter ce programme
+        </button>
+      </div>
+    )
+  }
+
+  // LIST VIEW
+  return (
+    <div className="space-y-5 p-4">
+      <h1 className="text-white font-bold text-2xl">Programmes</h1>
+
+      {/* Active Program Banner */}
+      {activeProgram && progress && (
+        <button
+          onClick={() => setView('active')}
+          className="w-full bg-dark-card rounded-2xl p-4 border border-lime/20 text-left"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <RotateCcw size={16} className="text-lime" />
+            <span className="text-white font-semibold text-sm">Reprendre mon programme</span>
+          </div>
+          <p className="text-muted text-xs mb-2">{progress.program.name} — Semaine {progress.week}/{progress.totalWeeks}</p>
+          <div className="w-full h-2 bg-dark-bg rounded-full overflow-hidden">
+            <div className="h-full bg-lime rounded-full" style={{ width: `${progress.progress}%` }} />
           </div>
         </button>
       )}
 
-      {programs.map((program) => {
-        const isExpanded = expandedId === program.id
-        const days = Object.keys(program.structure)
-        const totalExercises = Object.values(program.structure).flat().length
-        const active = isProgramActive(program.id)
+      {/* Notifications */}
+      {permission !== 'granted' && (
+        <button
+          onClick={requestPermission}
+          className="w-full bg-dark-card rounded-2xl p-3 flex items-center gap-3 text-left border border-dark-border"
+        >
+          <div className="w-8 h-8 rounded-lg bg-lime/10 flex items-center justify-center flex-shrink-0">
+            <Bell size={14} className="text-lime" />
+          </div>
+          <div>
+            <p className="text-white text-xs font-medium">Active les notifications</p>
+            <p className="text-muted text-[10px]">Pour recevoir les rappels de tes programmes</p>
+          </div>
+        </button>
+      )}
 
-        return (
-          <div
-            key={program.id}
-            className={`glass rounded-2xl overflow-hidden transition-all duration-300 ${active ? 'ring-1 ring-[#10B981]/30' : ''}`}
-          >
-            <button
-              onClick={() => toggle(program.id)}
-              className="w-full p-4 text-left"
+      {/* Program Cards */}
+      <div className="space-y-4">
+        {programs.map((program, i) => {
+          const isExpanded = expandedId === program.id
+          const days = Object.keys(program.structure)
+          const totalExercises = Object.values(program.structure).flat().length
+          const isActive = activeProgram?.program_id === program.id
+
+          return (
+            <div
+              key={program.id}
+              className={`bg-dark-card rounded-2xl overflow-hidden ${isActive ? 'border border-lime/30' : 'border border-dark-border'}`}
             >
-              <div className="flex items-start justify-between">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-white font-semibold text-sm">{program.name}</h3>
-                    {active && <span className="text-[9px] text-[#10B981] bg-[#10B981]/10 px-1.5 py-0.5 rounded-full font-medium">En cours</span>}
-                  </div>
-                  <p className="text-white/40 text-xs mt-1 line-clamp-2">{program.description}</p>
-
-                  <div className="flex items-center gap-2 mt-3 flex-wrap">
-                    <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${levelColors[program.level]}`}>
+              <button
+                onClick={() => setExpandedId(isExpanded ? null : program.id)}
+                className="w-full text-left"
+              >
+                <div className="relative h-36">
+                  <img src={PROGRAM_IMAGES[i % PROGRAM_IMAGES.length]} alt={program.name} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute top-3 right-3 flex gap-1.5">
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${levelColors[program.level]}`}>
                       {levelLabels[program.level]}
                     </span>
-                    <span className="text-[10px] text-white/30 flex items-center gap-1">
-                      <Clock size={10} />
-                      {program.durationWeeks} sem
-                    </span>
-                    <span className="text-[10px] text-white/30 flex items-center gap-1">
-                      <CalendarRange size={10} />
-                      {program.daysPerWeek}j/sem
-                    </span>
-                    <span className="text-[10px] text-white/30 flex items-center gap-1">
-                      <Dumbbell size={10} />
-                      {totalExercises} exos
-                    </span>
+                    {isActive && (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-medium text-dark-bg bg-lime">En cours</span>
+                    )}
                   </div>
+                  <div className="absolute bottom-3 left-3 right-3">
+                    <h3 className="text-white font-bold text-base">{program.name}</h3>
+                    <div className="flex items-center gap-3 mt-1">
+                      <span className="text-white/60 text-[10px] flex items-center gap-1"><Clock size={10} /> {program.durationWeeks} sem</span>
+                      <span className="text-white/60 text-[10px] flex items-center gap-1"><CalendarRange size={10} /> {program.daysPerWeek}j/sem</span>
+                      <span className="text-white/60 text-[10px] flex items-center gap-1"><Dumbbell size={10} /> {totalExercises} exos</span>
+                    </div>
+                  </div>
+                </div>
+              </button>
 
-                  <div className="flex items-center gap-2 mt-2">
-                    {program.goals.map((goal) => {
-                      const g = goalIcons[goal]
-                      if (!g) return null
-                      const Icon = g.icon
-                      return (
-                        <span key={goal} className={`${g.color}`} title={goal}>
-                          <Icon size={12} />
+              {isExpanded && (
+                <div className="p-4 border-t border-dark-border animate-fade-in">
+                  <p className="text-white/60 text-xs mb-3 leading-relaxed">{program.description}</p>
+                  <div className="flex gap-1.5 flex-wrap mb-3">
+                    {program.goals.map((goal) => (
+                      <span key={goal} className="px-2 py-0.5 bg-dark-bg text-muted text-[10px] rounded-full capitalize">{goal}</span>
+                    ))}
+                  </div>
+                  <div className="space-y-1.5 mb-4">
+                    {days.map((day) => (
+                      <div key={day} className="flex items-center justify-between bg-dark-bg rounded-xl px-3 py-2">
+                        <span className="text-white text-xs font-medium">{day}</span>
+                        <span className="text-muted text-[10px]">
+                          {program.structure[day].length} exos · {program.structure[day].reduce((s, e) => s + e.sets, 0)} séries
                         </span>
-                      )
-                    })}
+                      </div>
+                    ))}
                   </div>
-                </div>
-
-                <div className="ml-2 mt-1">
-                  {isExpanded
-                    ? <ChevronDown size={18} className="text-white/30" />
-                    : <ChevronRight size={18} className="text-white/30" />
-                  }
-                </div>
-              </div>
-            </button>
-
-            {isExpanded && (
-              <div className="px-4 pb-4 border-t border-white/5 pt-3 animate-fade-in">
-                <div className="flex gap-1.5 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
-                  {days.map((day) => (
-                    <button
-                      key={day}
-                      onClick={() => setSelectedDay(selectedDay === day ? null : day)}
-                      className={`flex-shrink-0 text-[11px] font-medium px-3 py-1.5 rounded-lg transition-colors ${
-                        selectedDay === day
-                          ? 'bg-white/15 text-white'
-                          : 'bg-white/5 text-white/40 hover:text-white/60'
-                      }`}
-                    >
-                      {day}
-                    </button>
-                  ))}
-                </div>
-
-                {selectedDay && program.structure[selectedDay] && (
-                  <div className="mt-3 space-y-2 animate-fade-in">
-                    {program.structure[selectedDay].map((item, i) => {
-                      const exo = exerciseMap[item.exerciseId]
-                      return (
-                        <div
-                          key={i}
-                          className="flex items-center justify-between bg-white/5 rounded-xl px-3 py-2.5"
-                        >
-                          <div className="flex-1 min-w-0">
-                            <p className="text-white text-xs font-medium truncate">
-                              {exo?.name || item.exerciseId}
-                            </p>
-                            {exo && (
-                              <p className="text-white/30 text-[10px]">{exo.muscleGroup}</p>
-                            )}
-                          </div>
-                          <div className="text-right ml-3 flex-shrink-0">
-                            <p className="text-white text-[11px] font-medium">{item.sets}x{item.reps}</p>
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                )}
-
-                {!selectedDay && (
-                  <p className="text-white/20 text-[10px] text-center py-2">Sélectionne un jour pour voir les exercices</p>
-                )}
-
-                <div className="mt-3">
-                  {active ? (
-                    <button
-                      onClick={stopProgram}
-                      className="w-full py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium flex items-center justify-center gap-2 hover:bg-red-500/20 transition-colors"
-                    >
-                      <Square size={14} />
-                      Arrêter ce programme
+                  {isActive ? (
+                    <button onClick={() => setView('active')} className="w-full py-3 rounded-xl bg-lime text-dark-bg font-bold text-sm flex items-center justify-center gap-2">
+                      <RotateCcw size={16} /> Reprendre
                     </button>
                   ) : activeProgram ? (
-                    <div className="text-center py-2">
-                      <p className="text-white/20 text-[10px]">Tu as déjà un programme en cours</p>
-                    </div>
+                    <p className="text-center text-muted text-xs py-2">Tu as déjà un programme en cours</p>
                   ) : (
                     <button
                       onClick={() => startProgram(program)}
                       disabled={starting === program.id}
-                      className="w-full py-2.5 rounded-xl bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981] text-xs font-medium flex items-center justify-center gap-2 hover:bg-[#10B981]/20 transition-colors disabled:opacity-50"
+                      className="w-full py-3 rounded-xl bg-lime text-dark-bg font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50"
                     >
-                      {starting === program.id ? (
-                        <div className="w-3 h-3 border-2 border-[#10B981] border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <Play size={14} />
-                      )}
-                      Commencer ce programme
+                      {starting === program.id ? <div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" /> : <Play size={16} fill="currentColor" />}
+                      Commencer
                     </button>
                   )}
                 </div>
-              </div>
-            )}
-          </div>
-        )
-      })}
+              )}
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

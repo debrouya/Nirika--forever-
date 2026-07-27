@@ -3,7 +3,7 @@ const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/logo.svg',
+  '/logo.png',
   '/favicon.svg',
 ]
 
@@ -73,7 +73,7 @@ self.addEventListener('push', (event) => {
 
   const options = {
     body: payload.body || 'Nouvelle notification',
-    icon: '/logo.svg',
+    icon: '/logo.png',
     badge: '/favicon.svg',
     vibrate: [100, 50, 100],
     tag: payload.tag || 'nirika-push',

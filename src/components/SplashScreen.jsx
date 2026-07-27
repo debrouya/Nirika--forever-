@@ -20,8 +20,8 @@ export default function SplashScreen({ onComplete }) {
             phase >= 1 ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
           }`}
         >
-          <div className="w-24 h-24 rounded-3xl bg-white flex items-center justify-center mx-auto mb-6 shadow-lg shadow-black/20 p-4">
-            <img src="/logo.svg" alt="Nirika" className="w-full h-full" />
+          <div className="w-44 h-44 rounded-3xl bg-dark-card flex items-center justify-center mx-auto mb-6 shadow-lg shadow-black/20 p-5 border border-dark-border">
+            <img src="/logo.png" alt="Nirika" className="w-full h-full object-contain" />
           </div>
         </div>
 
@@ -41,9 +41,9 @@ export default function SplashScreen({ onComplete }) {
             phase >= 2 ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <div className="w-32 h-1 bg-white/10 rounded-full mx-auto overflow-hidden">
+            <div className="w-32 h-1 bg-dark-card rounded-full mx-auto overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#10B981] to-[#059669] rounded-full transition-all duration-1000 ease-out"
+              className="h-full bg-lime rounded-full transition-all duration-1000 ease-out"
               style={{ width: phase >= 3 ? '100%' : phase >= 2 ? '60%' : '0%' }}
             />
           </div>

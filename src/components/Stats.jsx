@@ -121,7 +121,7 @@ export default function Stats({ isPremium, onShowPaywall }) {
       return {
         diagnosis: 'Aucune donnée encore',
         summary: 'Commence ton premier entraînement pour que je puisse analyser tes performances !',
-        insights: [{ type: 'info', text: 'Enregistre tes séances pour débloquer l\'analyse IA' }],
+        insights: [{ type: 'info', text: 'Enregistre tes séances pour débloquer l\'analyse NIRIKA' }],
         recommendations: ['Commence avec 3 séances par semaine', 'Choisis un programme adapté à ton niveau'],
         actions: ['Lancer une séance', 'Choisir un programme', 'Définir tes objectifs'],
       }
