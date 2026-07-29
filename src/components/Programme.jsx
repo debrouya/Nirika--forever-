@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import {
   CalendarRange,
   Clock,
@@ -48,6 +48,19 @@ const PROGRAM_IMAGES = [
   'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=250&fit=crop',
 ]
 
+const PROGRAM_STATE_KEY = 'nirika_active_program'
+
+function saveProgramState(state) {
+  try { localStorage.setItem(PROGRAM_STATE_KEY, JSON.stringify(state)) } catch {}
+}
+
+function loadProgramState() {
+  try {
+    const saved = localStorage.getItem(PROGRAM_STATE_KEY)
+    return saved ? JSON.parse(saved) : null
+  } catch { return null }
+}
+
 function formatDuration(seconds) {
   const m = Math.floor(seconds / 60)
   const s = seconds % 60
@@ -56,11 +69,12 @@ function formatDuration(seconds) {
 
 export default function Programme({ user, isPremium }) {
   const { sessionHistory, addExerciseRecord, getExerciseHistory, calisthenie30, addWorkout } = useStore()
-  const [view, setView] = useState('list')
+  const savedState = useRef(loadProgramState())
+  const [view, setView] = useState(savedState.current?.view || 'list')
   const [expandedId, setExpandedId] = useState(null)
-  const [activeProgram, setActiveProgram] = useState(null)
-  const [completedDays, setCompletedDays] = useState({})
-  const [selectedDay, setSelectedDay] = useState(null)
+  const [activeProgram, setActiveProgram] = useState(savedState.current?.activeProgram || null)
+  const [completedDays, setCompletedDays] = useState(savedState.current?.completedDays || {})
+  const [selectedDay, setSelectedDay] = useState(savedState.current?.selectedDay || null)
   const [trackingExercise, setTrackingExercise] = useState(null)
   const [trackingDayKey, setTrackingDayKey] = useState(null)
   const [completedExercises, setCompletedExercises] = useState({})
@@ -85,6 +99,12 @@ export default function Programme({ user, isPremium }) {
   }, [user?.id])
 
   useEffect(() => { loadActiveProgram() }, [loadActiveProgram])
+
+  useEffect(() => {
+    if (activeProgram) {
+      saveProgramState({ view, activeProgram, completedDays, selectedDay })
+    }
+  }, [view, activeProgram, completedDays, selectedDay])
 
   const startProgram = async (program) => {
     if (!user?.id) return

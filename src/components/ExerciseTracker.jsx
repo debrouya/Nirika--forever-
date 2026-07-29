@@ -49,8 +49,12 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
   const [isPaused, setIsPaused] = useState(false)
   const [timer, setTimer] = useState(0)
   const [sets, setSets] = useState([])
-  const [repsInput, setRepsInput] = useState('')
-  const [weightInput, setWeightInput] = useState('')
+  const prevSessions = (sessionHistory || []).filter((s) => s.exerciseId === exercise.id)
+  const lastSession = prevSessions[prevSessions.length - 1]
+  const suggestedReps = lastSession?.sets?.[lastSession.sets.length - 1]?.reps || lastSession?.reps || ''
+  const suggestedWeight = lastSession?.sets?.[lastSession.sets.length - 1]?.weight || ''
+  const [repsInput, setRepsInput] = useState(suggestedReps ? Math.max(1, suggestedReps + 1).toString() : '')
+  const [weightInput, setWeightInput] = useState(suggestedWeight ? suggestedWeight.toString() : '')
   const [showSummary, setShowSummary] = useState(false)
   const [coachingTip, setCoachingTip] = useState(COACHING_TIPS[0])
   const [restActive, setRestActive] = useState(false)
@@ -178,9 +182,6 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
   const totalReps = sets.reduce((sum, s) => sum + s.reps, 0)
   const totalVolume = sets.reduce((sum, s) => sum + s.volume, 0)
   const avgWeight = sets.length ? sets.reduce((sum, s) => sum + s.weight, 0) / sets.length : 0
-
-  const prevSessions = (sessionHistory || []).filter((s) => s.exerciseId === exercise.id)
-  const lastSession = prevSessions[prevSessions.length - 1]
 
   const comparison = lastSession ? {
     volumeChange: totalVolume - (lastSession.totalVolume || 0),
@@ -430,6 +431,9 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
       {/* Set Input */}
       <div className="bg-dark-card rounded-2xl p-4">
         <p className="text-white font-semibold text-sm mb-3">Ajouter une série</p>
+        {suggestedReps > 0 && (
+          <p className="text-lime/60 text-[10px] mb-2">Dernière fois : {suggestedReps} reps {suggestedWeight ? `× ${suggestedWeight}kg` : ''} → essaie {repsInput || suggestedReps + 1} reps</p>
+        )}
         <div className="flex gap-2 mb-3">
           <input
             type="number"

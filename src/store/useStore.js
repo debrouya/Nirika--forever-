@@ -1,12 +1,20 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import exercises from '../data/exercises.js'
+import { supabase, isSupabaseConfigured } from '../lib/supabase'
 
 const useStore = create(
   persist(
     (set, get) => ({
       currentView: 'dashboard',
-      setCurrentView: (view) => set({ currentView: view }),
+      viewHistory: [],
+      setCurrentView: (view) => set({ currentView: view, viewHistory: [] }),
+      pushView: (view) => set((state) => ({ currentView: view, viewHistory: [...state.viewHistory, state.currentView] })),
+      popView: () => set((state) => {
+        if (state.viewHistory.length === 0) return { currentView: 'dashboard' }
+        const prev = state.viewHistory[state.viewHistory.length - 1]
+        return { currentView: prev, viewHistory: state.viewHistory.slice(0, -1) }
+      }),
 
       profile: {
         name: '',
@@ -30,13 +38,24 @@ const useStore = create(
         })),
 
       workoutHistory: [],
-      addWorkout: (workout) =>
+      addWorkout: (workout) => {
+        const completed = { ...workout, id: Date.now(), completedAt: new Date().toISOString() }
+        if (isSupabaseConfigured()) {
+          supabase.auth.getUser().then(({ data: { user } }) => {
+            if (user) {
+              supabase.from('sessions').insert({
+                user_id: user.id,
+                type: 'workout',
+                data: completed,
+                completed_at: completed.completedAt,
+              }).then(() => {}).catch(() => {})
+            }
+          }).catch(() => {})
+        }
         set((state) => ({
-          workoutHistory: [
-            ...state.workoutHistory,
-            { ...workout, id: Date.now(), completedAt: new Date().toISOString() },
-          ],
-        })),
+          workoutHistory: [...state.workoutHistory, completed],
+        }))
+      },
       removeWorkout: (id) =>
         set((state) => ({
           workoutHistory: state.workoutHistory.filter((w) => w.id !== id),
@@ -79,6 +98,8 @@ const useStore = create(
       },
 
       activeSession: null,
+      savedProgramState: null,
+      setSavedProgramState: (state) => set({ savedProgramState: state }),
       startSession: (exerciseId, exerciseName) =>
         set({
           activeSession: {
@@ -124,10 +145,24 @@ const useStore = create(
       },
 
       sessionHistory: [],
-      addSessionToHistory: (session) =>
+      addSessionToHistory: (session) => {
+        const completed = { ...session, id: Date.now(), date: new Date().toISOString() }
+        if (isSupabaseConfigured()) {
+          supabase.auth.getUser().then(({ data: { user } }) => {
+            if (user) {
+              supabase.from('sessions').insert({
+                user_id: user.id,
+                type: 'exercise',
+                data: completed,
+                completed_at: completed.date,
+              }).then(() => {}).catch(() => {})
+            }
+          }).catch(() => {})
+        }
         set((state) => ({
-          sessionHistory: [...state.sessionHistory, session],
-        })),
+          sessionHistory: [...state.sessionHistory, completed],
+        }))
+      },
       clearSessionHistory: () => set({ sessionHistory: [] }),
 
       getSessionsForDay: (year, month, day) => {
@@ -140,16 +175,31 @@ const useStore = create(
 
       // ==================== EXERCISE HISTORY ====================
       exerciseHistory: {},
-      addExerciseRecord: (exerciseId, record) =>
+      addExerciseRecord: (exerciseId, record) => {
+        const completed = { ...record, id: Date.now(), date: new Date().toISOString() }
+        if (isSupabaseConfigured()) {
+          supabase.auth.getUser().then(({ data: { user } }) => {
+            if (user) {
+              supabase.from('sessions').insert({
+                user_id: user.id,
+                type: 'exercise_record',
+                exercise_id: exerciseId,
+                data: completed,
+                completed_at: completed.date,
+              }).then(() => {}).catch(() => {})
+            }
+          }).catch(() => {})
+        }
         set((state) => {
           const existing = state.exerciseHistory[exerciseId] || []
           return {
             exerciseHistory: {
               ...state.exerciseHistory,
-              [exerciseId]: [...existing, { ...record, id: Date.now(), date: new Date().toISOString() }],
+              [exerciseId]: [...existing, completed],
             },
           }
-        }),
+        })
+      },
       getExerciseHistory: (exerciseId) => {
         return get().exerciseHistory[exerciseId] || []
       },
