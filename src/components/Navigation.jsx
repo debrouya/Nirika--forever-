@@ -12,6 +12,7 @@ import {
   Shield,
   LogOut,
   Crown,
+  Plus,
   FileText,
 } from 'lucide-react'
 
