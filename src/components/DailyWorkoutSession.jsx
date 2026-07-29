@@ -48,7 +48,7 @@ export default function DailyWorkoutSession() {
           <ChevronLeft size={20} className="text-muted" />
         </button>
         <div className="flex-1">
-          <h1 className="text-white font-bold text-sm">Workout du Jour</h1>
+          <h1 className="text-white font-bold text-sm">Suggestion du Jour</h1>
           <p className="text-muted text-[10px]">{currentIndex + 1}/{exercises.length} · {current?.muscleGroup}</p>
         </div>
         <div className="flex items-center gap-1">

@@ -478,7 +478,7 @@ const useStore = create(
       clearPendingDailyWorkout: () => set({ pendingDailyWorkout: null }),
       generateDailyWorkout: () => {
         const s = get()
-        const { profile, exerciseHistory, workoutHistory } = s
+        const { profile, workoutHistory } = s
         const today = new Date().toISOString().slice(0, 10)
 
         if (s.dailyWorkoutDate === today && s.dailyWorkout) return s.dailyWorkout
@@ -490,24 +490,34 @@ const useStore = create(
         recentMuscles.forEach(m => { muscleCounts[m] = (muscleCounts[m] || 0) + 1 })
 
         const allMuscles = ['Pectoraux', 'Dos', 'Epaules', 'Jambes', 'Abdominaux', 'Bras']
-        const leastWorked = allMuscles.sort((a, b) => (muscleCounts[a] || 0) - (muscleCounts[b] || 0))
+        const leastWorked = [...allMuscles].sort((a, b) => (muscleCounts[a] || 0) - (muscleCounts[b] || 0))
 
-        const targetMuscles = leastWorked.slice(0, profile?.frequency >= 4 ? 3 : 2)
-        targetMuscles.forEach(muscle => {
-          const muscleExercises = exercises.filter(e => e.muscleGroup === muscle && e.equipment !== 'none')
-          if (muscleExercises.length > 0) {
-            const pick = muscleExercises[Math.floor(Math.random() * Math.min(3, muscleExercises.length))]
-            exercises.push({ ...pick, sets: 3, reps: '8-12' })
+        const allExercises = s.getAllExercises ? s.getAllExercises() : exercises
+        const targetCount = Math.min(8, Math.max(5, (profile?.frequency || 3) + 2))
+
+        const selected = []
+        let muscleIdx = 0
+        while (selected.length < targetCount) {
+          const muscle = leastWorked[muscleIdx % leastWorked.length]
+          const pool = allExercises.filter(e => e.muscleGroup === muscle)
+          const unused = pool.filter(e => !selected.find(se => se.id === e.id))
+          if (unused.length > 0) {
+            const pick = unused[Math.floor(Math.random() * unused.length)]
+            selected.push({ ...pick, sets: 3, reps: '8-12' })
           }
-        })
+          muscleIdx++
+          if (muscleIdx > targetCount * 2) break
+        }
+
+        const targetMuscles = [...new Set(selected.map(e => e.muscleGroup))]
 
         const workout = {
           date: today,
-          name: `Workout du ${new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}`,
+          name: `Suggestion du ${new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}`,
           targetMuscles,
-          exercises,
-          estimatedDuration: exercises.length * 8,
-          estimatedCalories: exercises.length * 40,
+          exercises: selected,
+          estimatedDuration: selected.length * 8,
+          estimatedCalories: selected.length * 40,
         }
 
         set({ dailyWorkout: workout, dailyWorkoutDate: today })
