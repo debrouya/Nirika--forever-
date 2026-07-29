@@ -1,17 +1,14 @@
-import { useState, useMemo, useCallback, useEffect } from 'react'
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import {
+  MessageCircle,
   Bot,
   Dumbbell,
   AlertTriangle,
   BarChart3,
   ChevronLeft,
-  RotateCcw,
   Target,
-  Zap,
   Clock,
   Trophy,
-  TrendingUp,
-  Info,
   User,
   Save,
   Heart,
@@ -22,9 +19,11 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronRight,
+  Send,
 } from 'lucide-react'
 import exercises from '../data/exercises'
 import useStore from '../store/useStore'
+import { askCoach } from '../services/supabaseService'
 
 const MUSCLE_GROUPS = {
   Pectoraux: { icon: '🏋️', exercises: [] },
@@ -378,7 +377,7 @@ function SliderInput({ label, value, onChange, min = 0, max = 10, step = 1 }) {
   )
 }
 
-export default function AICoach() {
+export default function AICoach({ isPremium = false, onShowPaywall }) {
   const { profile: storeProfile, workoutHistory, sessionHistory } = useStore()
   const [view, setView] = useState('main')
   const [generatedSplit, setGeneratedSplit] = useState(null)
@@ -412,6 +411,36 @@ export default function AICoach() {
     healthIssues: '',
   })
   const [saved, setSaved] = useState(false)
+  const [chatMessages, setChatMessages] = useState([])
+  const [chatInput, setChatInput] = useState('')
+  const [chatLoading, setChatLoading] = useState(false)
+  const chatEndRef = useRef(null)
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [chatMessages])
+
+  const handleSendMessage = useCallback(async () => {
+    const msg = chatInput.trim()
+    if (!msg || chatLoading) return
+    setChatInput('')
+
+    const userMessage = { role: 'user', content: msg }
+    setChatMessages((prev) => [...prev, userMessage])
+    setChatLoading(true)
+
+    try {
+      const result = await askCoach(msg, coachProfile, chatMessages)
+      if (result.reply) {
+        setChatMessages((prev) => [...prev, { role: 'assistant', content: result.reply }])
+      } else if (result.error) {
+        setChatMessages((prev) => [...prev, { role: 'assistant', content: `❌ ${result.error}` }])
+      }
+    } catch {
+      setChatMessages((prev) => [...prev, { role: 'assistant', content: '❌ Erreur de connexion' }])
+    }
+    setChatLoading(false)
+  }, [chatInput, chatLoading, coachProfile, chatMessages])
 
   const fitnessScore = useMemo(
     () => computeFitnessScore(storeProfile, workoutHistory, sessionHistory),
@@ -455,6 +484,7 @@ export default function AICoach() {
     else if (view === 'workout') setView('main')
     else if (view === 'bilan') setView('main')
     else if (view === 'profile') setView('main')
+    else if (view === 'chat') setView('main')
   }, [view])
 
   // ==================== DAY DETAIL VIEW ====================
@@ -790,9 +820,127 @@ export default function AICoach() {
     )
   }
 
+  // ==================== CHAT VIEW ====================
+  if (view === 'chat') {
+    if (!isPremium) {
+      return (
+        <div className="space-y-4 p-4">
+          <button onClick={handleBack} className="flex items-center gap-1 text-muted hover:text-white text-sm transition-colors">
+            <ChevronLeft size={16} /> Retour
+          </button>
+          <div className="bg-dark-card rounded-2xl p-8 border border-dark-border text-center space-y-4">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center mx-auto">
+              <Crown size={32} className="text-white" />
+            </div>
+            <h2 className="text-white font-bold text-lg">Fonctionnalité Premium</h2>
+            <p className="text-muted text-sm">Le Chat avec NIRIKA est réservé aux abonnés Premium.</p>
+            <button
+              onClick={onShowPaywall}
+              className="px-6 py-3 rounded-xl bg-lime text-dark-bg font-bold text-sm hover:bg-lime/90 transition-all"
+            >
+              Passer à Premium
+            </button>
+          </div>
+        </div>
+      )
+    }
+
+    const suggestedQuestions = [
+      'Combien de séances par semaine ?',
+      'Quels exercices pour mon objectif ?',
+      'Comment améliorer ma récupération ?',
+      'Que manger avant l\'entraînement ?',
+    ]
+    return (
+      <div className="flex flex-col h-[calc(100vh-8rem)] p-4">
+        <div className="flex items-center justify-between mb-4">
+          <button onClick={handleBack} className="flex items-center gap-1 text-muted hover:text-white text-sm transition-colors">
+            <ChevronLeft size={16} /> Retour
+          </button>
+          <h1 className="text-white font-bold text-sm">Coach NIRIKA</h1>
+          <div className="w-16" />
+        </div>
+
+        <div className="flex-1 overflow-y-auto space-y-3 mb-4 pr-1">
+          {chatMessages.length === 0 && (
+            <div className="text-center py-8 space-y-4">
+              <div className="w-16 h-16 rounded-2xl bg-lime/20 flex items-center justify-center mx-auto">
+                <MessageCircle size={32} className="text-lime" />
+              </div>
+              <p className="text-white font-bold text-sm">Pose ta question à NIRIKA</p>
+              <p className="text-muted text-xs">Conseils personnalisés selon ton profil</p>
+              <div className="space-y-2 max-w-xs mx-auto">
+                {suggestedQuestions.map((q, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      setChatInput(q)
+                    }}
+                    className="w-full text-left bg-dark-card rounded-xl px-3 py-2 text-xs text-white/70 hover:text-white hover:border-lime/30 border border-dark-border transition-all"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {chatMessages.map((msg, i) => (
+            <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${
+                msg.role === 'user'
+                  ? 'bg-lime text-dark-bg font-medium'
+                  : 'bg-dark-card border border-dark-border text-white/90'
+              }`}>
+                {msg.role === 'assistant' && (
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="w-5 h-5 rounded-lg bg-lime/20 flex items-center justify-center">
+                      <MessageCircle size={12} className="text-lime" />
+                    </div>
+                    <span className="text-[10px] font-bold text-lime uppercase">NIRIKA</span>
+                  </div>
+                )}
+                <p className="leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+              </div>
+            </div>
+          ))}
+          {chatLoading && (
+            <div className="flex justify-start">
+              <div className="bg-dark-card border border-dark-border rounded-2xl px-4 py-3">
+                <div className="flex gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-lime/40 animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <div className="w-2 h-2 rounded-full bg-lime/60 animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <div className="w-2 h-2 rounded-full bg-lime animate-bounce" style={{ animationDelay: '300ms' }} />
+                </div>
+              </div>
+            </div>
+          )}
+          <div ref={chatEndRef} />
+        </div>
+
+        <div className="flex items-center gap-2 bg-dark-card rounded-2xl border border-dark-border p-1.5">
+          <input
+            type="text"
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+            placeholder="Pose ta question..."
+            className="flex-1 bg-transparent border-none text-white text-sm px-3 py-2 placeholder-white/30 focus:outline-none"
+          />
+          <button
+            onClick={handleSendMessage}
+            disabled={!chatInput.trim() || chatLoading}
+            className="w-10 h-10 rounded-xl bg-lime flex items-center justify-center disabled:opacity-40 transition-all active:scale-90"
+          >
+            <Send size={16} className="text-dark-bg" />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   // ==================== MAIN VIEW ====================
   return (
-    <div className="space-y-4 p-4">
+    <div data-onboard="coach" className="space-y-4 p-4">
       {/* Score Ring */}
       <div className="bg-dark-card rounded-2xl p-6 border border-dark-border flex flex-col items-center gap-3">
         <ScoreRing score={fitnessScore} />
@@ -823,6 +971,20 @@ export default function AICoach() {
       {/* Actions */}
       <div className="space-y-2">
         <button
+          onClick={() => isPremium ? setView('chat') : onShowPaywall?.()}
+          className="w-full bg-dark-card rounded-2xl p-4 flex items-center gap-3 hover:bg-dark-border transition-all active:scale-[0.98] border border-dark-border relative"
+        >
+          <div className="w-10 h-10 rounded-xl bg-lime flex items-center justify-center">
+            <MessageCircle size={20} className="text-dark-bg" />
+          </div>
+          <div className="text-left flex-1">
+            <p className="text-white font-bold text-sm">Chat avec NIRIKA</p>
+            <p className="text-muted text-xs">Pose tes questions, reçois des conseils personnalisés</p>
+          </div>
+          {!isPremium && <span className="absolute top-2 right-2 px-1.5 py-0.5 bg-amber-500 text-[9px] text-white font-bold rounded-full">Premium</span>}
+        </button>
+
+        <button
           onClick={() => setView('profile')}
           className="w-full bg-dark-card rounded-2xl p-4 flex items-center gap-3 hover:bg-dark-border transition-all active:scale-[0.98] border border-dark-border"
         >
@@ -841,7 +1003,7 @@ export default function AICoach() {
           className="w-full bg-dark-card rounded-2xl p-4 flex items-center gap-3 hover:bg-dark-border transition-all active:scale-[0.98] border border-dark-border"
         >
           <div className="w-10 h-10 rounded-xl bg-lime/20 flex items-center justify-center">
-            <Bot size={20} className="text-lime" />
+            <Dumbbell size={20} className="text-lime" />
           </div>
           <div className="text-left flex-1">
             <p className="text-white font-bold text-sm">Générer un programme</p>

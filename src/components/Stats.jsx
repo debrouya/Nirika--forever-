@@ -15,6 +15,13 @@ import {
   Heart,
 } from 'lucide-react'
 import useStore from '../store/useStore'
+import CalisthenicsTracker from './CalisthenicsTracker'
+import CalisthenicsBilan from './CalisthenicsBilan'
+import Badges from './Badges'
+import PersonalRecords from './PersonalRecords'
+import WeightTracker from './WeightTracker'
+import TrainingReminders from './TrainingReminders'
+import ExportCSV from './ExportCSV'
 
 const MOTIVATION_KEY = 'nirika_motivation_phrases'
 const DEFAULT_PHRASES = [
@@ -73,7 +80,7 @@ function getGoalLabel(goal) {
 }
 
 export default function Stats() {
-  const { profile, sessionHistory, workoutHistory, getStreak } = useStore()
+  const { profile, sessionHistory, workoutHistory, getStreak, calisthenie30 } = useStore()
   const [phraseIndex, setPhraseIndex] = useState(0)
   const [phrases, setPhrases] = useState(getStoredPhrases)
 
@@ -236,7 +243,7 @@ export default function Stats() {
   }, [totalSessions, totalCalories, avgDuration, streak, weekSessions, targetSessionsPerWeek, sessionTrend, calorieTrend, adherence, profile])
 
   return (
-    <div className="space-y-5 p-4">
+    <div data-onboard="stats" className="space-y-5 p-4">
       {/* Title */}
       <h1 className="text-white font-bold text-2xl">Stats</h1>
 
@@ -265,6 +272,26 @@ export default function Stats() {
             </span>
           )}
         </div>
+      </div>
+
+      {/* 30-Day Calisthenics Tracker */}
+      {calisthenie30.startDate && (
+        <div className="space-y-4">
+          <h2 className="text-white font-semibold text-sm mb-3">NIRIKA CALISTHENIE 30 JOURS</h2>
+          <CalisthenicsTracker />
+          <CalisthenicsBilan />
+        </div>
+      )}
+
+      {/* Badges + Records + Weight + Reminders */}
+      <div className="space-y-3">
+        <div data-onboard="badges">
+          <Badges compact />
+        </div>
+        <PersonalRecords compact />
+        <WeightTracker compact />
+        <TrainingReminders />
+        <ExportCSV />
       </div>
 
       {/* Quick KPIs */}

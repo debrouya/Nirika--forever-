@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import exercises from '../data/exercises.js'
 
 const useStore = create(
   persist(
@@ -284,8 +285,274 @@ const useStore = create(
         }).slice(0, 6)
       },
 
+      // ==================== BADGES / ACHIEVEMENTS ====================
+      badges: {},
+      unlockBadge: (badgeId) =>
+        set((state) => {
+          if (state.badges[badgeId]) return state
+          return {
+            badges: {
+              ...state.badges,
+              [badgeId]: { unlockedAt: new Date().toISOString(), seen: false },
+            },
+          }
+        }),
+      markBadgeSeen: (badgeId) =>
+        set((state) => ({
+          badges: {
+            ...state.badges,
+            [badgeId]: { ...state.badges[badgeId], seen: true },
+          },
+        })),
+      checkBadges: () => {
+        const s = get()
+        const allSessions = [...s.workoutHistory, ...s.sessionHistory]
+        const totalSessions = allSessions.length
+        const streak = s.getStreak()
+        const exerciseCount = Object.keys(s.exerciseHistory).length
+        const totalCalories = allSessions.reduce((sum, x) => sum + (x.calories || 0), 0)
+        const totalDuration = allSessions.reduce((sum, x) => sum + (x.duration || x.durationMinutes || 0), 0)
+        const firstSessionDate = allSessions.length > 0 ? new Date(Math.min(...allSessions.map(x => new Date(x.completedAt || x.date).getTime()))) : null
+        const daysSinceFirst = firstSessionDate ? Math.floor((Date.now() - firstSessionDate.getTime()) / 86400000) : 0
+
+        const definitions = {
+          first_session: { condition: totalSessions >= 1, title: 'Premier Pas', desc: 'Première séance terminée', icon: '🎯', rarity: 'common' },
+          five_sessions: { condition: totalSessions >= 5, title: 'En Route', desc: '5 séances terminées', icon: '🚀', rarity: 'common' },
+          ten_sessions: { condition: totalSessions >= 10, title: 'Régulier', desc: '10 séances terminées', icon: '💪', rarity: 'common' },
+          twenty_five_sessions: { condition: totalSessions >= 25, title: 'Déterminé', desc: '25 séances terminées', icon: '⚡', rarity: 'rare' },
+          fifty_sessions: { condition: totalSessions >= 50, title: 'Infatigable', desc: '50 séances terminées', icon: '🔥', rarity: 'rare' },
+          hundred_sessions: { condition: totalSessions >= 100, title: 'Centurion', desc: '100 séances terminées', icon: '👑', rarity: 'epic' },
+          streak_3: { condition: streak >= 3, title: 'Série de 3', desc: '3 jours consécutifs', icon: '🔗', rarity: 'common' },
+          streak_7: { condition: streak >= 7, title: 'Une Semaine', desc: '7 jours consécutifs', icon: '🗓️', rarity: 'rare' },
+          streak_14: { condition: streak >= 14, title: 'Deux Semaines', desc: '14 jours consécutifs', icon: '💎', rarity: 'epic' },
+          streak_30: { condition: streak >= 30, title: 'Légende', desc: '30 jours consécutifs', icon: '🏆', rarity: 'legendary' },
+          calorie_1000: { condition: totalCalories >= 1000, title: 'Fournaise', desc: '1000 kcal brûlées', icon: '🔥', rarity: 'common' },
+          calorie_5000: { condition: totalCalories >= 5000, title: 'Brûleur', desc: '5000 kcal brûlées', icon: '💥', rarity: 'rare' },
+          calorie_10000: { condition: totalCalories >= 10000, title: 'Inferno', desc: '10 000 kcal brûlées', icon: '🌋', rarity: 'epic' },
+          duration_10h: { condition: totalDuration >= 600, title: 'Endurant', desc: '10h d\'entraînement', icon: '⏱️', rarity: 'common' },
+          duration_50h: { condition: totalDuration >= 3000, title: 'Marathonien', desc: '50h d\'entraînement', icon: '🏅', rarity: 'rare' },
+          exercises_10: { condition: exerciseCount >= 10, title: 'Explorateur', desc: '10 exercices différents', icon: '🗺️', rarity: 'common' },
+          exercises_30: { condition: exerciseCount >= 30, title: 'Polyvalent', desc: '30 exercices différents', icon: '🎨', rarity: 'rare' },
+          week_4: { condition: daysSinceFirst >= 28, title: 'Un Mois', desc: '4 semaines d\'inscription', icon: '📅', rarity: 'common' },
+          week_12: { condition: daysSinceFirst >= 84, title: 'Trimestre', desc: '3 mois d\'inscription', icon: '🌟', rarity: 'rare' },
+        }
+
+        let newUnlocked = []
+        Object.entries(definitions).forEach(([id, def]) => {
+          if (def.condition && !s.badges[id]) {
+            newUnlocked.push({ id, ...def })
+          }
+        })
+
+        if (newUnlocked.length > 0) {
+          const newBadges = { ...s.badges }
+          newUnlocked.forEach((b) => {
+            newBadges[b.id] = { unlockedAt: new Date().toISOString(), seen: false }
+          })
+          set({ badges: newBadges })
+        }
+        return newUnlocked
+      },
+      getNewBadgeCount: () => {
+        const { badges } = get()
+        return Object.values(badges).filter((b) => !b.seen).length
+      },
+
+      // ==================== RECORDS PERSONNELS ====================
+      getPersonalRecords: () => {
+        const { exerciseHistory } = get()
+        const records = {}
+
+        Object.entries(exerciseHistory).forEach(([exerciseId, history]) => {
+          if (!history || history.length === 0) return
+
+          let maxWeight = 0
+          let maxVolume = 0
+          let maxReps = 0
+          let bestDuration = 0
+          let totalSessions = history.length
+
+          history.forEach((record) => {
+            const weight = record.weight || 0
+            const reps = record.reps || 0
+            const sets = record.sets || 1
+            const volume = record.totalVolume || weight * reps * sets
+            const duration = record.duration || 0
+
+            if (weight > maxWeight) maxWeight = weight
+            if (volume > maxVolume) maxVolume = volume
+            if (reps > maxReps) maxReps = reps
+            if (duration > bestDuration) bestDuration = duration
+          })
+
+          records[exerciseId] = {
+            exerciseName: history[history.length - 1]?.exerciseName || exerciseId,
+            maxWeight,
+            maxVolume,
+            maxReps,
+            bestDuration,
+            totalSessions,
+            firstDate: history[0]?.date,
+            lastDate: history[history.length - 1]?.date,
+          }
+        })
+
+        return records
+      },
+
+      // ==================== POIDS CORPOREL ====================
+      weightHistory: [],
+      addWeightEntry: (weight, note) =>
+        set((state) => ({
+          weightHistory: [
+            ...state.weightHistory,
+            { weight, note: note || '', date: new Date().toISOString(), id: Date.now() },
+          ],
+        })),
+
+      // ==================== NOTES DE SEANCE ====================
+      sessionNotes: {},
+      addSessionNote: (sessionId, note) =>
+        set((state) => ({
+          sessionNotes: {
+            ...state.sessionNotes,
+            [sessionId]: { ...note, date: new Date().toISOString() },
+          },
+        })),
+
+      // ==================== WORKOUT DU JOUR ====================
+      dailyWorkout: null,
+      dailyWorkoutDate: null,
+      generateDailyWorkout: () => {
+        const s = get()
+        const { profile, exerciseHistory, workoutHistory } = s
+        const today = new Date().toISOString().slice(0, 10)
+
+        if (s.dailyWorkoutDate === today && s.dailyWorkout) return s.dailyWorkout
+
+        const last7Days = new Date(Date.now() - 7 * 86400000)
+        const recentSessions = workoutHistory.filter(w => new Date(w.completedAt) >= last7Days)
+        const recentMuscles = recentSessions.map(w => w.muscleGroup).filter(Boolean)
+        const muscleCounts = {}
+        recentMuscles.forEach(m => { muscleCounts[m] = (muscleCounts[m] || 0) + 1 })
+
+        const allMuscles = ['Pectoraux', 'Dos', 'Epaules', 'Jambes', 'Abdominaux', 'Bras']
+        const leastWorked = allMuscles.sort((a, b) => (muscleCounts[a] || 0) - (muscleCounts[b] || 0))
+
+        const exercises = []
+        const exercisesData = require('../data/exercises.js').default || require('../data/exercises.js')
+
+        const targetMuscles = leastWorked.slice(0, profile?.frequency >= 4 ? 3 : 2)
+        targetMuscles.forEach(muscle => {
+          const muscleExercises = exercises.filter(e => e.muscleGroup === muscle && e.equipment !== 'none')
+          if (muscleExercises.length > 0) {
+            const pick = muscleExercises[Math.floor(Math.random() * Math.min(3, muscleExercises.length))]
+            exercises.push({ ...pick, sets: 3, reps: '8-12' })
+          }
+        })
+
+        const workout = {
+          date: today,
+          name: `Workout du ${new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}`,
+          targetMuscles,
+          exercises,
+          estimatedDuration: exercises.length * 8,
+          estimatedCalories: exercises.length * 40,
+        }
+
+        set({ dailyWorkout: workout, dailyWorkoutDate: today })
+        return workout
+      },
+
       subscription: null,
       setSubscription: (sub) => set({ subscription: sub }),
+
+      // 30-Day Calisthenics Program Tracker
+      calisthenie30: {
+        startDate: null,
+        completedDays: {},
+        currentPhase: 1,
+      },
+      startCalisthenie30: () => {
+        const today = new Date().toISOString().slice(0, 10)
+        set({
+          calisthenie30: {
+            startDate: today,
+            completedDays: {},
+            currentPhase: 1,
+          },
+        })
+      },
+      completeCalisthenie30Day: (dayNumber, exercises) =>
+        set((state) => {
+          const completed = { ...state.calisthenie30.completedDays, [dayNumber]: new Date().toISOString() }
+          const totalDone = Object.keys(completed).length
+          let currentPhase = 1
+          if (totalDone >= 21) currentPhase = 3
+          else if (totalDone >= 11) currentPhase = 2
+
+          // Save to workoutHistory for Stats/Calendar
+          const newWorkout = {
+            id: Date.now(),
+            type: 'calisthenie30',
+            day: dayNumber,
+            phase: currentPhase,
+            exerciseCount: exercises?.length || 0,
+            completedAt: new Date().toISOString(),
+            duration: 30,
+            calories: Math.round((exercises?.length || 6) * 8),
+          }
+
+          // Save individual exercises to exerciseHistory
+          const newExerciseHistory = { ...state.exerciseHistory }
+          if (exercises) {
+            exercises.forEach(ex => {
+              const existing = newExerciseHistory[ex.id] || []
+              newExerciseHistory[ex.id] = [...existing, {
+                id: Date.now() + Math.random(),
+                date: new Date().toISOString(),
+                completedAt: new Date().toISOString(),
+                exerciseName: ex.name,
+                sets: 1,
+                reps: 1,
+                duration: 30,
+                totalVolume: 0,
+                source: 'calisthenie30',
+                day: dayNumber,
+              }]
+            })
+          }
+
+          return {
+            calisthenie30: {
+              ...state.calisthenie30,
+              completedDays: completed,
+              currentPhase,
+            },
+            workoutHistory: [...state.workoutHistory, newWorkout],
+            exerciseHistory: newExerciseHistory,
+          }
+        }),
+      uncompleteCalisthenie30Day: (dayNumber) =>
+        set((state) => {
+          const completed = { ...state.calisthenie30.completedDays }
+          delete completed[dayNumber]
+          const totalDone = Object.keys(completed).length
+          let currentPhase = 1
+          if (totalDone >= 21) currentPhase = 3
+          else if (totalDone >= 11) currentPhase = 2
+          return {
+            calisthenie30: {
+              ...state.calisthenie30,
+              completedDays: completed,
+              currentPhase,
+            },
+          }
+        }),
+      resetCalisthenie30: () =>
+        set({
+          calisthenie30: { startDate: null, completedDays: {}, currentPhase: 1 },
+        }),
     }),
     {
       name: 'nf-storage',

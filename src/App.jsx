@@ -15,10 +15,12 @@ import Stats from './components/Stats'
 import FitMatrix from './components/FitMatrix'
 import Calendar from './components/Calendar'
 import Programme from './components/Programme'
+import SessionPage from './components/SessionPage'
 import WorkoutDetail from './components/WorkoutDetail'
 import Pricing from './components/Pricing'
 import Paywall from './components/Paywall'
 import SplashScreen from './components/SplashScreen'
+import Onboarding, { useOnboarding } from './components/Onboarding'
 import { useSubscription } from './hooks/useSubscription'
 
 const ADMIN_EMAILS = ['jacques.frederic@icloud.com']
@@ -36,11 +38,14 @@ export default function App() {
   const [authLoading, setAuthLoading] = useState(true)
   const [showPaywall, setShowPaywall] = useState(false)
   const [splashDone, setSplashDone] = useState(false)
+  const { done: onboardingDone, complete: completeOnboarding } = useOnboarding()
 
   const supabaseReady = isSupabaseConfigured()
   const { subscription, isPremium } = useSubscription(user?.id)
   const isAdmin = checkAdmin(user) || profile?.role === 'admin'
+  const userPerms = profile?.permissions || {}
   const hasAccess = isAdmin || isPremium
+  const hasFeature = (key) => isAdmin || isPremium || userPerms[key] === true
 
   const handleSplashComplete = useCallback(() => setSplashDone(true), [])
 
@@ -146,11 +151,12 @@ export default function App() {
         {currentView === 'workout-detail' && <WorkoutDetail />}
         {currentView === 'calisthenics' && <Calisthenics isPremium={true} />}
         {currentView === 'cardio' && <Cardio />}
-        {currentView === 'ai' && <AICoach />}
+      {currentView === 'ai' && <AICoach isPremium={true} />}
         {currentView === 'stats' && <Stats isPremium={true} />}
         {currentView === 'fitmatrix' && <FitMatrix />}
         {currentView === 'calendar' && <Calendar />}
         {currentView === 'programme' && <Programme isPremium={true} />}
+        {currentView === 'session' && <SessionPage />}
         <Navigation active={currentView} onChange={(id) => useStore.getState().setCurrentView(id)} />
       </Layout>
     )
@@ -176,15 +182,17 @@ export default function App() {
       {currentView === 'workout-detail' && <WorkoutDetail />}
       {currentView === 'calisthenics' && <Calisthenics isPremium={hasAccess} onShowPaywall={() => !isAdmin && setShowPaywall(true)} />}
       {currentView === 'cardio' && <Cardio />}
-      {currentView === 'ai' && <AICoach />}
+      {currentView === 'ai' && <AICoach isPremium={hasFeature('chat_ia')} onShowPaywall={() => !isAdmin && setShowPaywall(true)} />}
       {currentView === 'stats' && <Stats />}
       {currentView === 'fitmatrix' && <FitMatrix />}
       {currentView === 'calendar' && <Calendar />}
-      {currentView === 'programme' && <Programme user={user} isPremium={hasAccess} />}
+      {currentView === 'programme' && <Programme user={user} isPremium={hasFeature('programmes')} />}
+      {currentView === 'session' && <SessionPage />}
       {currentView === 'pricing' && <Pricing subscription={subscription} />}
-      {!['dashboard','profile','workout-detail','calisthenics','cardio','ai','stats','fitmatrix','calendar','programme','pricing','admin'].includes(currentView) && <Dashboard />}
+      {!['dashboard','profile','workout-detail','calisthenics','cardio','ai','stats','fitmatrix','calendar','programme','session','pricing','admin'].includes(currentView) && <Dashboard />}
       <Navigation active={currentView} onChange={(id) => useStore.getState().setCurrentView(id)} isAdmin={isAdmin} userRole={profile?.role} onAdminClick={() => useStore.getState().setCurrentView('admin')} onLogout={handleLogout} onPricingClick={() => useStore.getState().setCurrentView('pricing')} />
       {showPaywall && <Paywall onClose={() => setShowPaywall(false)} />}
+      {!onboardingDone && <Onboarding onComplete={completeOnboarding} />}
     </Layout>
   )
 }

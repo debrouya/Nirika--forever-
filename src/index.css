@@ -78,11 +78,58 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 }
 .animate-streak-fire { animation: streak-fire 1.5s ease-in-out infinite; }
 
+@keyframes toast-in {
+  0% { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(198, 255, 0, 0.15), 0 0 60px rgba(198, 255, 0, 0.05); }
+  50% { box-shadow: 0 0 30px rgba(198, 255, 0, 0.25), 0 0 80px rgba(198, 255, 0, 0.1); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes ring-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes particle-float {
+  0% { opacity: 0; transform: translateY(20px) scale(0); }
+  20% { opacity: 1; transform: translateY(10px) scale(1); }
+  100% { opacity: 0; transform: translateY(-60px) scale(0.5); }
+}
+
+@keyframes hero-bg {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.5; }
+  100% { opacity: 0.3; }
+}
+
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }
 .delay-400 { animation-delay: 400ms; }
 .delay-500 { animation-delay: 500ms; }
+
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-glow-pulse { animation: glow-pulse 2.5s ease-in-out infinite; }
+.animate-gradient-shift { 
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite; 
+}
+.animate-ring-spin { animation: ring-spin 20s linear infinite; }
+.animate-hero-bg { animation: hero-bg 4s ease-in-out infinite; }
 
 @layer utilities {
   .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }

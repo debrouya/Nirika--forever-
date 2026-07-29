@@ -1,16 +1,17 @@
-import { Dumbbell } from 'lucide-react'
-
 export default function Layout({ children }) {
   return (
     <div className="min-h-screen flex flex-col max-w-lg mx-auto relative overflow-hidden bg-dark-bg">
-      <header className="sticky top-0 z-40 bg-dark-bg safe-top">
-        <div className="flex items-center justify-center gap-2.5 py-3 px-4">
-          <div className="w-28 h-28 rounded-3xl bg-dark-card flex items-center justify-center shadow-lg p-3 border border-dark-border">
-            <img src="/logo.png" alt="Nirika" className="w-full h-full object-contain" />
+      <header className="sticky top-0 z-40 bg-dark-bg/90 backdrop-blur-xl safe-top border-b border-dark-border/50">
+        <div className="flex items-center gap-3 py-3 px-4">
+          <div className="w-12 h-12 rounded-xl bg-dark-card flex items-center justify-center p-0.5 border border-dark-border animate-glow-pulse">
+            <img src="/logo.png" alt="Nirika" className="w-full h-full object-cover rounded-[10px]" />
           </div>
-          <h1 className="text-3xl font-black tracking-tight text-white">
-            NIRIKA <span className="text-white">FOR EVER</span>
-          </h1>
+          <div>
+            <h1 className="text-xl font-black tracking-tight text-white leading-tight">
+              NIRIKA <span className="text-white">FOR EVER</span>
+            </h1>
+            <p className="text-[10px] text-lime/60 font-medium tracking-widest uppercase">Ton coach personnel</p>
+          </div>
         </div>
       </header>
 

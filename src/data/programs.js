@@ -526,6 +526,77 @@ export const programs = [
       ],
     },
   },
+  {
+    id: 'calisthenie_30j',
+    name: 'NIRIKA CALISTHENIE 30 JOURS',
+    description: 'Programme poids du corps en 30 jours. Circuit training HIIT en 3 phases : Adaptation → Intensité → Performance. 15/30/45 min au choix.',
+    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=250&fit=crop',
+    level: 'debutant',
+    durationWeeks: 4,
+    daysPerWeek: 5,
+    goals: ['definition', 'endurance', 'masse'],
+    structure: {
+      'Phase 1 — Jour 1-3': [
+        { exerciseId: 'jumping_jacks', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'squat', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'push_up', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'planche', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'mountain_climber', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'crunch', sets: 1, reps: '30s ON / 15s OFF' },
+      ],
+      'Phase 1 — Jour 4-5': [
+        { exerciseId: 'jumping_jacks', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'squat', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'push_up', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'planche', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'mountain_climber', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'releve_jambes', sets: 1, reps: '30s ON / 15s OFF' },
+      ],
+      'Phase 1 — Jour 6-10': [
+        { exerciseId: 'jumping_jacks', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'squat', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'push_up', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'planche', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'mountain_climber', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'crunch', sets: 1, reps: '30s ON / 15s OFF' },
+        { exerciseId: 'releve_jambes', sets: 1, reps: '30s ON / 15s OFF' },
+      ],
+      'Phase 2 — Jour 11-15': [
+        { exerciseId: 'high_knees', sets: 1, reps: '40s ON / 20s OFF' },
+        { exerciseId: 'jump_squat', sets: 1, reps: '40s ON / 20s OFF' },
+        { exerciseId: 'push_up', sets: 1, reps: '40s ON / 20s OFF' },
+        { exerciseId: 'gainage_dynamique', sets: 1, reps: '40s ON / 20s OFF' },
+        { exerciseId: 'burpees_simples', sets: 1, reps: '40s ON / 20s OFF' },
+        { exerciseId: 'releve_jambes', sets: 1, reps: '40s ON / 20s OFF' },
+      ],
+      'Phase 2 — Jour 16-20': [
+        { exerciseId: 'high_knees', sets: 1, reps: '40s ON / 20s OFF' },
+        { exerciseId: 'jump_squat', sets: 1, reps: '40s ON / 20s OFF' },
+        { exerciseId: 'push_up', sets: 1, reps: '40s ON / 20s OFF' },
+        { exerciseId: 'gainage_dynamique', sets: 1, reps: '40s ON / 20s OFF' },
+        { exerciseId: 'burpees_simples', sets: 1, reps: '40s ON / 20s OFF' },
+        { exerciseId: 'russian_twist', sets: 1, reps: '40s ON / 20s OFF' },
+        { exerciseId: 'releve_jambes', sets: 1, reps: '40s ON / 20s OFF' },
+      ],
+      'Phase 3 — Jour 21-25': [
+        { exerciseId: 'burpees', sets: 1, reps: '45s ON / 15s OFF' },
+        { exerciseId: 'jump_squat', sets: 1, reps: '45s ON / 15s OFF' },
+        { exerciseId: 'pompees_decline', sets: 1, reps: '45s ON / 15s OFF' },
+        { exerciseId: 'mountain_climber', sets: 1, reps: '45s ON / 15s OFF' },
+        { exerciseId: 'gainage_dynamique', sets: 1, reps: '45s ON / 15s OFF' },
+        { exerciseId: 'russian_twist', sets: 1, reps: '45s ON / 15s OFF' },
+      ],
+      'Phase 3 — Jour 26-30': [
+        { exerciseId: 'burpees', sets: 1, reps: '45s ON / 15s OFF' },
+        { exerciseId: 'jump_squat', sets: 1, reps: '45s ON / 15s OFF' },
+        { exerciseId: 'pompees_decline', sets: 1, reps: '45s ON / 15s OFF' },
+        { exerciseId: 'mountain_climber', sets: 1, reps: '45s ON / 15s OFF' },
+        { exerciseId: 'gainage_dynamique', sets: 1, reps: '45s ON / 15s OFF' },
+        { exerciseId: 'russian_twist', sets: 1, reps: '45s ON / 15s OFF' },
+        { exerciseId: 'releve_jambes', sets: 1, reps: '45s ON / 15s OFF' },
+      ],
+    },
+  },
 ]
 
 export const onboardingQuestions = [
@@ -598,7 +669,7 @@ export function recommendationEngine(answers) {
     }
 
     if (equipment) {
-      if (equipment === 'bodyweight' && ['reddit_rr', 'barstarzz', 'freeletics'].includes(p.id)) score += 15
+      if (equipment === 'bodyweight' && ['reddit_rr', 'barstarzz', 'freeletics', 'calisthenie_30j'].includes(p.id)) score += 15
       else if (equipment === 'full_gym') score += 10
     }
 

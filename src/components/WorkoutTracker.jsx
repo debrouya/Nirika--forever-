@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import exercises from '../data/exercises'
 import useStore from '../store/useStore'
+import { fireStreakToast } from './StreakMotivation'
 import GlassCard from './GlassCard'
 
 const EXERCISE_MAP = {}
@@ -90,7 +91,7 @@ function RestTimer({ duration, onDone }) {
 }
 
 export default function WorkoutTracker({ program, onFinish, onCancel }) {
-  const { addWorkout, addSessionToHistory, profile } = useStore()
+  const { addWorkout, addSessionToHistory, profile, addExerciseRecord } = useStore()
   const [currentDayIndex, setCurrentDayIndex] = useState(0)
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0)
   const [sessionSets, setSessionSets] = useState([])
@@ -194,6 +195,24 @@ export default function WorkoutTracker({ program, onFinish, onCancel }) {
     }
 
     addWorkout(workout)
+    fireStreakToast()
+
+    // Save individual exercises to exerciseHistory
+    Object.entries(allSessionSets).forEach(([exId, exSets]) => {
+      if (exSets.length > 0) {
+        const totalVolume = exSets.reduce((sum, s) => sum + (s.weight || 0) * (s.reps || 0), 0)
+        const totalReps = exSets.reduce((sum, s) => sum + (s.reps || 0), 0)
+        addExerciseRecord(exId, {
+          exerciseName: exId,
+          sets: exSets.length,
+          totalReps,
+          totalVolume,
+          duration: 0,
+          calories: 0,
+          source: 'programme',
+        })
+      }
+    })
     addSessionToHistory({
       exerciseId: program?.id,
       exerciseName: program?.name || 'Programme',

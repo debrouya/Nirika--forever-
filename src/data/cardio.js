@@ -1,8 +1,9 @@
 export const cardioActivities = [
   {
     id: 'velo',
-    name: 'Vélo Stationnaire',
+    name: 'Vélo Stationaire',
     icon: '🚴',
+    image: '/images/cardio/velo.jpg',
     met: 8.0,
     color: '#10B981',
     levelConfig: {
@@ -17,6 +18,7 @@ export const cardioActivities = [
     id: 'tapis',
     name: 'Course à Pied',
     icon: '🏃',
+    image: '/images/cardio/tapis.jpg',
     met: 9.8,
     color: '#3B82F6',
     levelConfig: {
@@ -31,6 +33,7 @@ export const cardioActivities = [
     id: 'rameur',
     name: 'Rameur',
     icon: '🚣',
+    image: '/images/cardio/rameur.jpg',
     met: 7.0,
     color: '#8B5CF6',
     levelConfig: {
@@ -45,6 +48,7 @@ export const cardioActivities = [
     id: 'corde',
     name: 'Corde à Sauter',
     icon: '⚡',
+    image: 'https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=400&h=300&fit=crop',
     met: 12.3,
     color: '#F59E0B',
     levelConfig: {
@@ -59,6 +63,7 @@ export const cardioActivities = [
     id: 'elliptique',
     name: 'Elliptique',
     icon: '🔄',
+    image: '/images/cardio/elliptique.jpg',
     met: 5.0,
     color: '#EC4899',
     levelConfig: {
@@ -73,6 +78,7 @@ export const cardioActivities = [
     id: 'natation',
     name: 'Natation',
     icon: '🏊',
+    image: '/images/cardio/natation.jpg',
     met: 8.0,
     color: '#06B6D4',
     levelConfig: {
@@ -87,6 +93,7 @@ export const cardioActivities = [
     id: 'marche',
     name: 'Marche Rapide',
     icon: '🚶',
+    image: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=400&h=300&fit=crop',
     met: 4.3,
     color: '#84CC16',
     levelConfig: {
@@ -101,22 +108,9 @@ export const cardioActivities = [
     id: 'stepper',
     name: 'Stepper',
     icon: '🪜',
+    image: '/images/cardio/stepper.jpg',
     met: 9.0,
     color: '#F97316',
-    levelConfig: {
-      type: 'resistance',
-      min: 1,
-      max: 10,
-      step: 1,
-      default: 5,
-    },
-  },
-  {
-    id: 'aviron',
-    name: 'Aviron',
-    icon: '⛵',
-    met: 7.0,
-    color: '#6366F1',
     levelConfig: {
       type: 'resistance',
       min: 1,

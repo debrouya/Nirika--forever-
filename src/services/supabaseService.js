@@ -233,6 +233,18 @@ export async function adminUpdateUserRole(userId, role) {
   })
 }
 
+export async function adminUpdateUserPermissions(userId, permissions) {
+  if (!isSupabaseConfigured()) {
+    return { data: null, error: { message: 'Supabase not configured' } }
+  }
+  return await supabase
+    .from('profiles')
+    .update({ permissions })
+    .eq('id', userId)
+    .select('permissions')
+    .single()
+}
+
 export async function adminDeleteUser(userId) {
   if (!isSupabaseConfigured()) {
     return { data: null, error: { message: 'Supabase not configured' } }
@@ -339,6 +351,55 @@ export async function openCustomerPortal() {
       Authorization: `Bearer ${session.access_token}`,
       apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
     },
+  })
+
+  return await response.json()
+}
+
+// ==================== ADMIN ====================
+
+export async function adminUpdateSecret(name, value) {
+  if (!isSupabaseConfigured()) {
+    return { data: null, error: { message: 'Supabase not configured' } }
+  }
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { data: null, error: { message: 'Non connecté' } }
+
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+  try {
+    const response = await fetch(`${supabaseUrl}/functions/v1/admin-update-secret`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+        apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({ name, value }),
+    })
+    return await response.json()
+  } catch {
+    return { error: 'Erreur de connexion' }
+  }
+}
+
+// ==================== AI COACH ====================
+
+export async function askCoach(message, profile, history = []) {
+  if (!isSupabaseConfigured()) {
+    return { data: null, error: { message: 'Supabase not configured' } }
+  }
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { data: null, error: { message: 'Non connecté' } }
+
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+  const response = await fetch(`${supabaseUrl}/functions/v1/ai-coach`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session.access_token}`,
+      apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+    },
+    body: JSON.stringify({ message, profile, history }),
   })
 
   return await response.json()

@@ -36,6 +36,8 @@ import {
   Image,
   Bell,
   Globe,
+  Heart,
+  Key,
 } from 'lucide-react'
 import {
   BarChart,
@@ -49,6 +51,7 @@ import {
   adminGetAllUsers,
   adminGetUserStats,
   adminUpdateUserRole,
+  adminUpdateUserPermissions,
   adminDeleteUser,
   adminGetExercises,
   adminUpsertExercise,
@@ -56,6 +59,7 @@ import {
   adminGetPrograms,
   adminUpsertProgram,
   adminDeleteProgram,
+  adminUpdateSecret,
 } from '../services/supabaseService'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 
@@ -363,8 +367,33 @@ function UsersTab() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [expandedUser, setExpandedUser] = useState(null)
-  const [userStats, setUserStats] = useState({})
   const [detailUser, setDetailUser] = useState(null)
+  const [userStats, setUserStats] = useState({})
+  const [permsUser, setPermsUser] = useState(null)
+  const [permsValues, setPermsValues] = useState({})
+  const [permsSaving, setPermsSaving] = useState(false)
+
+  const handleSavePerms = async () => {
+    if (!permsUser) return
+    setPermsSaving(true)
+    try {
+      await adminUpdateUserPermissions(permsUser.id, permsValues)
+      setPermsUser(null)
+    } catch {}
+    setPermsSaving(false)
+  }
+
+  const openPerms = (u) => {
+    setPermsValues(u.permissions || {})
+    setPermsUser(u)
+  }
+
+  const PERMS_FEATURES = [
+    { key: 'chat_ia', label: 'Chat IA' },
+    { key: 'stats_avancees', label: 'Stats avancées' },
+    { key: 'programmes', label: 'Programmes illimités' },
+    { key: 'exercices', label: 'Tous les exercices' },
+  ]
 
   useEffect(() => { loadUsers() }, [])
 
@@ -514,8 +543,14 @@ function UsersTab() {
                       {u.role === 'premium' ? <><Lock size={12} /> Retirer Premium</> : <><Unlock size={12} /> Donner Premium</>}
                     </button>
                     <button
+                      onClick={() => openPerms(u)}
+                      className="flex items-center justify-center gap-1 px-3 py-2 rounded-xl text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 transition-all"
+                    >
+                      <Shield size={12} />
+                    </button>
+                    <button
                       onClick={() => handleDelete(u.id)}
-                      className="flex items-center justify-center gap-1 px-4 py-2 rounded-xl text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20 transition-all"
+                      className="flex items-center justify-center gap-1 px-3 py-2 rounded-xl text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20 transition-all"
                     >
                       <Trash2 size={12} />
                     </button>
@@ -529,6 +564,45 @@ function UsersTab() {
               <p className="text-muted text-xs">Aucun utilisateur trouvé</p>
             </div>
           )}
+        </div>
+      )}
+
+      {permsUser && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setPermsUser(null)} />
+          <div className="relative bg-dark-card rounded-2xl border border-dark-border p-5 w-full max-w-sm mx-auto space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Shield size={16} className="text-blue-400" />
+                <h3 className="text-white font-bold text-sm">Permissions</h3>
+              </div>
+              <button onClick={() => setPermsUser(null)} className="text-muted hover:text-white transition-colors">
+                <X size={16} />
+              </button>
+            </div>
+            <p className="text-muted text-xs">{permsUser.email}</p>
+            <div className="space-y-2">
+              {PERMS_FEATURES.map((f) => (
+                <label key={f.key} className="flex items-center justify-between bg-dark-bg rounded-xl px-3 py-2.5">
+                  <span className="text-white text-xs">{f.label}</span>
+                  <button
+                    onClick={() => setPermsValues((prev) => ({ ...prev, [f.key]: !prev[f.key] }))}
+                    className={`w-10 h-6 rounded-full transition-all relative ${permsValues[f.key] ? 'bg-blue-400' : 'bg-dark-border'}`}
+                  >
+                    <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-all ${permsValues[f.key] ? 'left-5' : 'left-1'}`} />
+                  </button>
+                </label>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => setPermsUser(null)} className="flex-1 py-2.5 bg-dark-border text-muted rounded-xl text-xs font-medium transition-all">
+                Annuler
+              </button>
+              <button onClick={handleSavePerms} disabled={permsSaving} className="flex-1 py-2.5 bg-blue-500 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50">
+                {permsSaving ? 'Enregistrement...' : 'Enregistrer'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -1110,6 +1184,28 @@ function SettingsTab() {
     }
   })
   const [saved, setSaved] = useState(false)
+  const [apiKeyInput, setApiKeyInput] = useState('')
+  const [apiKeySaving, setApiKeySaving] = useState(false)
+  const [apiKeyStatus, setApiKeyStatus] = useState('idle')
+
+  const handleSaveApiKey = async () => {
+    if (!apiKeyInput.trim()) return
+    setApiKeySaving(true)
+    setApiKeyStatus('idle')
+    try {
+      const result = await adminUpdateSecret('OPENAI_API_KEY', apiKeyInput.trim())
+      if (result.success || result.error === undefined) {
+        setApiKeyStatus('saved')
+        setApiKeyInput('')
+        setTimeout(() => setApiKeyStatus('idle'), 3000)
+      } else {
+        setApiKeyStatus('error')
+      }
+    } catch {
+      setApiKeyStatus('error')
+    }
+    setApiKeySaving(false)
+  }
 
   const handleSave = () => {
     localStorage.setItem('nirika_admin_settings', JSON.stringify(settings))
@@ -1176,6 +1272,33 @@ function SettingsTab() {
               <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-all ${settings.notificationsEnabled ? 'left-5' : 'left-1'}`} />
             </button>
           </label>
+        </div>
+      </div>
+
+      <div className="bg-dark-card rounded-2xl p-4 border border-dark-border space-y-4">
+        <div className="flex items-center gap-2">
+          <Key size={16} className="text-lime" />
+          <h3 className="text-white font-semibold text-sm">Configuration API</h3>
+        </div>
+
+        <div className="space-y-2">
+          <FormInput
+            label="Clé API OpenAI"
+            value={apiKeyInput}
+            onChange={setApiKeyInput}
+            placeholder="sk-..."
+            type="password"
+          />
+          <p className="text-muted text-[10px]">
+            {apiKeyStatus === 'saved' ? '✓ Clé mise à jour' : apiKeyStatus === 'error' ? '✗ Erreur lors de la mise à jour' : 'Sauvegardée côté serveur, mets à jour si nécessaire'}
+          </p>
+          <button
+            onClick={handleSaveApiKey}
+            disabled={!apiKeyInput.trim() || apiKeySaving}
+            className="w-full py-2 rounded-xl bg-lime text-dark-bg text-xs font-bold disabled:opacity-30 transition-all"
+          >
+            {apiKeySaving ? 'Enregistrement...' : 'Mettre à jour la clé API'}
+          </button>
         </div>
       </div>
 

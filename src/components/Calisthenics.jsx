@@ -57,7 +57,7 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
   }
 
   return (
-    <div className="space-y-4 p-4">
+    <div data-onboard="exercices" className="space-y-4 p-4">
       {/* Title */}
       <h1 className="text-white font-bold text-2xl">Exercices</h1>
 
@@ -99,9 +99,7 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
       {/* Exercise List */}
       <div className="space-y-3">
         {visibleExercises.map((exercise) => {
-          const lastSession = [...(sessionHistory || [])]
-            .filter((s) => s.exerciseId === exercise.id)
-            .pop()
+          const lastRecord = (exerciseHistory[exercise.id] || []).slice(-1)[0]
 
           return (
             <button
@@ -131,10 +129,10 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
                   <p className="text-muted text-xs">
                     {exercise.muscleGroup} · {exercise.equipment}
                   </p>
-                  {lastSession && (
+                  {lastRecord && (
                     <p className="text-lime text-[10px] mt-0.5">
-                      Dernière: {lastSession.totalReps || lastSession.sets?.length || 0} reps
-                      {lastSession.totalVolume ? ` · ${lastSession.totalVolume}kg` : ''}
+                      Dernière: {lastRecord.totalReps || lastRecord.sets?.length || 0} reps
+                      {lastRecord.totalVolume ? ` · ${lastRecord.totalVolume}kg` : ''}
                     </p>
                   )}
                 </div>

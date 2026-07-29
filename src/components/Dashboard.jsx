@@ -1,14 +1,21 @@
 import { useState, useMemo } from 'react'
 import {
-  Flame,
-  Clock,
-  Dumbbell,
   Search,
   ChevronRight,
+  Dumbbell,
+  Zap,
+  Activity,
+  TrendingUp,
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import { programs } from '../data/programs'
 import Recommendations from './Recommendations'
+import StreakMotivation from './StreakMotivation'
+import CalisthenicsTracker from './CalisthenicsTracker'
+import DailyWorkout from './DailyWorkout'
+
+const PROFILE_KEY = 'nirika_coach_profile'
+const USER_PROFILE_KEY = 'nirika-profile'
 
 const PLAN_IMAGES = [
   'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop',
@@ -17,37 +24,36 @@ const PLAN_IMAGES = [
   'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&h=300&fit=crop',
 ]
 
-function formatDurationShort(seconds) {
-  const h = Math.floor(seconds / 3600)
-  const m = Math.floor((seconds % 3600) / 60)
-  if (h > 0) return `${h}h ${m}m`
-  return `${m}m`
-}
+const QUICK_ACTIONS = [
+  { id: 'session', label: 'Séance', icon: Dumbbell, color: 'from-lime/20 to-lime/5', iconColor: 'text-lime' },
+  { id: 'cardio', label: 'Cardio', icon: Activity, color: 'from-blue-500/20 to-blue-500/5', iconColor: 'text-blue-400' },
+  { id: 'calisthenics', label: 'Exercices', icon: Zap, color: 'from-orange-500/20 to-orange-500/5', iconColor: 'text-orange-400' },
+  { id: 'stats', label: 'Stats', icon: TrendingUp, color: 'from-purple-500/20 to-purple-500/5', iconColor: 'text-purple-400' },
+]
 
 export default function Dashboard() {
-  const { profile, setCurrentView, workoutHistory, sessionHistory, exerciseHistory } = useStore()
+  const { profile, setCurrentView, workoutHistory, sessionHistory, exerciseHistory, calisthenie30 } = useStore()
   const [searchQuery, setSearchQuery] = useState('')
 
-  const firstName = profile?.full_name?.split(' ')[0] || profile?.name?.split(' ')[0] || ''
-
-  const weekStats = useMemo(() => {
-    const now = new Date()
-    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-    const allSessions = [
-      ...(workoutHistory || []),
-      ...(sessionHistory || []),
-    ].filter(s => new Date(s.completedAt || s.date || s.startedAt) >= weekAgo)
-    const totalCalories = allSessions.reduce((sum, s) => sum + (s.calories || 0), 0)
-    const totalDuration = allSessions.reduce((sum, s) => sum + (s.duration || s.durationMinutes || 0) * 60, 0)
-    let totalVolume = 0
-    Object.values(exerciseHistory || {}).forEach(records => {
-      records.forEach(r => {
-        const rDate = new Date(r.date || r.completedAt)
-        if (rDate >= weekAgo) totalVolume += r.totalVolume || 0
-      })
-    })
-    return { totalCalories, totalDuration, totalVolume, sessionCount: allSessions.length }
-  }, [workoutHistory, sessionHistory, exerciseHistory])
+  const firstName = useMemo(() => {
+    if (profile?.full_name) return profile.full_name.split(' ')[0]
+    if (profile?.name) return profile.name.split(' ')[0]
+    try {
+      const saved = localStorage.getItem(USER_PROFILE_KEY)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (parsed.name) return parsed.name.split(' ')[0]
+      }
+    } catch {}
+    try {
+      const saved = localStorage.getItem(PROFILE_KEY)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (parsed.name) return parsed.name.split(' ')[0]
+      }
+    } catch {}
+    return ''
+  }, [profile])
 
   const filteredPrograms = useMemo(() => {
     if (!searchQuery) return programs.slice(0, 4)
@@ -58,60 +64,81 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 p-4">
-      {/* Greeting */}
-      <div className="animate-fade-in">
-        <p className="text-muted text-sm">Bonjour{firstName ? `, ${firstName}` : ''},</p>
-        <h1 className="text-white font-bold text-2xl">Let's Workout</h1>
+      {/* Hero Greeting */}
+      <div data-onboard="hero" className="relative rounded-2xl overflow-hidden p-5 bg-gradient-to-br from-dark-card via-dark-bg to-dark-card border border-dark-border">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-lime/5 rounded-full blur-[60px] animate-hero-bg" />
+        <div className="relative z-10">
+          <p className="text-muted text-xs font-medium uppercase tracking-wider mb-1">
+            {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
+          </p>
+          <h1 className="text-white font-bold text-2xl mb-1">
+            Bonjour{firstName ? ` ${firstName}` : ''}
+          </h1>
+          <p className="text-lime text-sm font-semibold">Prêt pour ta séance ?</p>
+        </div>
       </div>
 
+      {/* Quick Actions */}
+      <div data-onboard="quick-actions" className="grid grid-cols-4 gap-2">
+        {QUICK_ACTIONS.map((action, i) => {
+          const Icon = action.icon
+          return (
+            <button
+              key={action.id}
+              onClick={() => setCurrentView(action.id)}
+              className={`animate-fade-in bg-gradient-to-br ${action.color} rounded-2xl p-3 flex flex-col items-center gap-2 border border-dark-border hover:scale-105 active:scale-95 transition-all`}
+              style={{ animationDelay: `${i * 80}ms`, opacity: 0, animationFillMode: 'forwards' }}
+            >
+              <Icon size={20} className={action.iconColor} />
+              <span className="text-white text-[10px] font-medium">{action.label}</span>
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Streak */}
+      <StreakMotivation />
+
+      {/* Daily Workout */}
+      <div data-onboard="daily-workout">
+        <DailyWorkout />
+      </div>
+
+      {/* Calisthenics 30 Days - if started */}
+      {calisthenie30.startDate && (
+        <div onClick={() => setCurrentView('programme')} className="cursor-pointer">
+          <CalisthenicsTracker />
+        </div>
+      )}
+
       {/* Smart Recommendations */}
-      <Recommendations />
+      <div data-onboard="recommendations">
+        <Recommendations />
+      </div>
 
       {/* Search Bar */}
-      <div className="animate-fade-in delay-100" style={{ opacity: 0, animationFillMode: 'forwards' }}>
+      <div className="animate-fade-in delay-200" style={{ opacity: 0, animationFillMode: 'forwards' }}>
         <div className="relative">
           <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
           <input
             type="text"
-            placeholder="Search"
+            placeholder="Rechercher un programme..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-dark-card text-white pl-10 pr-4 py-3 rounded-xl text-sm outline-none border border-dark-border placeholder:text-muted"
+            className="w-full bg-dark-card text-white pl-10 pr-4 py-3 rounded-xl text-sm outline-none border border-dark-border placeholder:text-muted focus:border-lime/30 transition-colors"
           />
-        </div>
-      </div>
-
-      {/* Last Week Result */}
-      <div className="animate-fade-in delay-200" style={{ opacity: 0, animationFillMode: 'forwards' }}>
-        <h2 className="text-white font-semibold text-lg mb-3">Dernière semaine</h2>
-        <div className="grid grid-cols-3 gap-3">
-          <div className="bg-dark-card rounded-2xl p-4 flex flex-col items-center">
-            <Flame size={24} className="text-lime mb-2" />
-            <span className="text-white text-xl font-bold">{weekStats.totalCalories > 0 ? weekStats.totalCalories.toLocaleString() : '—'}</span>
-            <span className="text-muted text-xs">Cal</span>
-          </div>
-          <div className="bg-dark-card rounded-2xl p-4 flex flex-col items-center">
-            <Clock size={24} className="text-lime mb-2" />
-            <span className="text-white text-xl font-bold">{weekStats.totalDuration > 0 ? formatDurationShort(weekStats.totalDuration) : '—'}</span>
-            <span className="text-muted text-xs">Durée</span>
-          </div>
-          <div className="bg-dark-card rounded-2xl p-4 flex flex-col items-center">
-            <Dumbbell size={24} className="text-lime mb-2" />
-            <span className="text-white text-xl font-bold">{weekStats.totalVolume > 0 ? `${weekStats.totalVolume.toLocaleString()}kg` : '—'}</span>
-            <span className="text-muted text-xs">Volume</span>
-          </div>
         </div>
       </div>
 
       {/* Your Plan */}
       <div className="animate-fade-in delay-300" style={{ opacity: 0, animationFillMode: 'forwards' }}>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-white font-semibold text-lg">Your Plan</h2>
+          <h2 className="text-white font-semibold text-lg">Ton Programme</h2>
           <button
             onClick={() => setCurrentView('programme')}
             className="text-lime text-sm font-medium flex items-center gap-1"
           >
-            See all <ChevronRight size={14} />
+            Voir tout <ChevronRight size={14} />
           </button>
         </div>
         <div className="grid grid-cols-2 gap-3">
@@ -122,25 +149,26 @@ export default function Dashboard() {
               className="relative rounded-2xl overflow-hidden aspect-[4/3] text-left group"
             >
               <img
-                src={PLAN_IMAGES[i % PLAN_IMAGES.length]}
+                src={program.image || PLAN_IMAGES[i % PLAN_IMAGES.length]}
                 alt={program.name}
-                className="w-full h-full object-cover group-active:scale-105 transition-transform"
+                className="w-full h-full object-cover group-active:scale-105 transition-transform duration-300"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-              <div className="absolute top-3 right-3 bg-black/60 px-2 py-1 rounded-full">
-                <span className="text-white text-[10px] font-medium">{program.daysPerWeek * program.durationWeeks} Variant</span>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute top-3 right-3 bg-lime/90 px-2 py-0.5 rounded-full">
+                <span className="text-dark-bg text-[10px] font-bold">{program.daysPerWeek}x/sem</span>
               </div>
               <div className="absolute bottom-3 left-3 right-3">
-                <span className="text-white font-bold text-sm">{program.name}</span>
+                <span className="text-white font-bold text-sm leading-tight block">{program.name}</span>
+                <span className="text-white/50 text-[10px]">{program.durationWeeks} semaines</span>
               </div>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Select Plan */}
+      {/* Quick Filters */}
       <div className="animate-fade-in delay-400" style={{ opacity: 0, animationFillMode: 'forwards' }}>
-        <h2 className="text-white font-semibold text-lg mb-3">Select Plan</h2>
+        <h2 className="text-white font-semibold text-lg mb-3">Explorer</h2>
         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
           {['Musculation', 'Calisthenics', 'Cardio', 'Débutant', 'Force', 'Endurance'].map((tag) => (
             <button
@@ -149,7 +177,7 @@ export default function Dashboard() {
                 setSearchQuery(tag)
                 setCurrentView('programme')
               }}
-              className="px-4 py-2 rounded-full bg-dark-card border border-dark-border text-white text-sm font-medium whitespace-nowrap hover:border-lime/50 transition-colors"
+              className="px-4 py-2 rounded-full bg-dark-card border border-dark-border text-white text-sm font-medium whitespace-nowrap hover:border-lime/50 hover:bg-lime/5 transition-all active:scale-95"
             >
               {tag}
             </button>

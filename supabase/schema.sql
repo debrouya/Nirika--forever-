@@ -84,6 +84,7 @@ CREATE TABLE public.profiles (
   session_duration INTEGER DEFAULT 60,
   medical_history TEXT DEFAULT '',
   avatar_url TEXT,
+  permissions JSONB DEFAULT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );

@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { cardioActivities, calculateCalories } from '../data/cardio'
 import useStore from '../store/useStore'
+import { fireStreakToast } from './StreakMotivation'
 
 const OBJECTIVES = [
   { id: 'fat_burn', label: 'Perte de gras', icon: Flame, color: 'text-orange-400', desc: 'Zone 2-3 stable, session longue' },
@@ -39,25 +40,25 @@ const ZONES = [
 
 const COACHING_MESSAGES = {
   fat_burn: {
-    zone1: ['Échauffement, prends ton temps 🧘', 'Monte doucement la intensité'],
-    zone2: ['Zone fat burn atteinte 🔥', 'Maintiens ce rythme, c\'est parfait 💪', 'Tu brûles du gras, continue !'],
-    zone3: ['Intensité un peu haute, ralentis 🧘', 'Reste en zone 2 pour optimiser'],
-    zone4: ['Trop intense ! Descends l\'intensité ⚠️', 'Respire, contrôle ta respiration'],
-    zone5: ['STOP — Récupère immédiatement 🛑', 'Zone dangereuse pour la perte de gras'],
+    zone1: ['Échauffement, prends ton temps', 'Monte doucement la intensité'],
+    zone2: ['Zone fat burn atteinte', 'Maintiens ce rythme, c\'est parfait', 'Tu brûles du gras, continue !'],
+    zone3: ['Intensité un peu haute, ralentis', 'Reste en zone 2 pour optimiser'],
+    zone4: ['Trop intense ! Descends l\'intensité', 'Respire, contrôle ta respiration'],
+    zone5: ['STOP — Récupère immédiatement', 'Zone dangereuse pour la perte de gras'],
   },
   endurance: {
-    zone1: ['Échauffement progressif 🚀', 'Prépare ton corps'],
-    zone2: ['Rythme endurance parfait ❤️', 'Stabilise ton BPM', 'Tu es dans la zone optimale 💪'],
-    zone3: ['Bon rythme, maintiens 🎯', 'Ta résistance augmente !'],
-    zone4: ['Un peu trop — surveille ton BPM 📊', 'Ralentis légèrement'],
-    zone5: ['Trop intense pour l\'endurance ⚠️', 'Descends pour maintenir la durée'],
+    zone1: ['Échauffement progressif', 'Prépare ton corps'],
+    zone2: ['Rythme endurance parfait', 'Stabilise ton BPM', 'Tu es dans la zone optimale'],
+    zone3: ['Bon rythme, maintiens', 'Ta résistance augmente !'],
+    zone4: ['Un peu trop — surveille ton BPM', 'Ralentis légèrement'],
+    zone5: ['Trop intense pour l\'endurance', 'Descends pour maintenir la durée'],
   },
   performance: {
-    zone1: ['Échauffement avant les intervalles ⚡', 'Prépare-toi à pousser'],
-    zone2: ['Zone de récupération active 🔄', 'Prépare le prochain sprint'],
-    zone3: ['Bonne intensité de travail 🎯', 'Push encore un peu !'],
-    zone4: ['Push push push ! 🚀', 'Tu es en zone performance !', 'Encore 30 secondes ! 💪'],
-    zone5: ['VO2 MAX — donne tout ! 🔥', 'Pic de performance — tiens bon !'],
+    zone1: ['Échauffement avant les intervalles', 'Prépare-toi à pousser'],
+    zone2: ['Zone de récupération active', 'Prépare le prochain sprint'],
+    zone3: ['Bonne intensité de travail', 'Push encore un peu !'],
+    zone4: ['Push push push !', 'Tu es en zone performance !', 'Encore 30 secondes !'],
+    zone5: ['VO2 MAX — donne tout !', 'Pic de performance — tiens bon !'],
   },
 }
 
@@ -70,7 +71,6 @@ const DIFFICULTY_MAP = {
   natation: 'moyen',
   marche: 'facile',
   stepper: 'moyen',
-  aviron: 'moyen',
 }
 
 const DIFFICULTY_COLORS = {
@@ -110,7 +110,7 @@ function getZone(intensityRatio) {
 }
 
 function getCoachingMessage(objective, zone, timeInZone) {
-  const msgs = COACHING_MESSAGES[objective]?.[`zone${zone.zone}`] || ['Continue ! 💪']
+  const msgs = COACHING_MESSAGES[objective]?.[`zone${zone.zone}`] || ['Continue !']
   const idx = Math.floor(timeInZone / 8) % msgs.length
   return msgs[idx]
 }
@@ -133,7 +133,6 @@ function calculateDistance(activityId, elapsed, level) {
     natation: level * 0.15,
     marche: level * 0.4,
     stepper: level * 0.2,
-    aviron: level * 0.25,
   }
   return Math.round((speedMap[activityId] || 0) * (elapsed / 3600) * 100) / 100
 }
@@ -292,6 +291,7 @@ export default function Cardio() {
     }
 
     addWorkout({ type: 'cardio', ...result })
+    fireStreakToast()
     setSummary(result)
     setView('summary')
   }, [selectedActivity, elapsed, currentLevel, weight, addWorkout, bpmHistory, zoneTime, objective])
@@ -340,7 +340,7 @@ export default function Cardio() {
               {summary.score}<span className="text-2xl text-muted">/100</span>
             </p>
             <p className="text-muted text-xs mt-1">
-              {summary.score >= 80 ? 'Excellente séance ! 🔥' : summary.score >= 50 ? 'Bonne séance, continue ! 💪' : 'À améliorer, mais tu as fait le bon pas !'}
+              {summary.score >= 80 ? 'Excellente séance !' : summary.score >= 50 ? 'Bonne séance, continue !' : 'À améliorer, mais tu as fait le bon pas !'}
             </p>
           </div>
 
@@ -454,9 +454,16 @@ export default function Cardio() {
           <ChevronLeft size={16} /> Retour
         </button>
 
-        <div className="bg-dark-card rounded-2xl p-4 border border-dark-border text-center">
-          <span className="text-4xl block mb-2">{selectedActivity.icon}</span>
-          <h2 className="text-white font-bold text-lg">{selectedActivity.name}</h2>
+        <div className="relative bg-dark-card rounded-2xl overflow-hidden h-40 border border-dark-border text-center">
+          <img
+            src={selectedActivity.image}
+            alt={selectedActivity.name}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="relative z-10 h-full flex flex-col items-center justify-end pb-4">
+            <h2 className="text-white font-bold text-lg">{selectedActivity.name}</h2>
+          </div>
         </div>
 
         <div>
@@ -507,10 +514,17 @@ export default function Cardio() {
         </button>
 
         {/* Activity Header */}
-        <div className="bg-dark-card rounded-2xl p-4 border border-dark-border text-center">
-          <span className="text-3xl block mb-1">{selectedActivity.icon}</span>
-          <h2 className="text-white font-bold">{selectedActivity.name}</h2>
-          <span className="text-lime text-[10px] font-medium uppercase">{OBJECTIVES.find(o => o.id === objective)?.label}</span>
+        <div className="relative bg-dark-card rounded-2xl overflow-hidden h-32 border border-dark-border text-center">
+          <img
+            src={selectedActivity.image}
+            alt={selectedActivity.name}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="relative z-10 h-full flex flex-col items-center justify-end pb-3">
+            <h2 className="text-white font-bold">{selectedActivity.name}</h2>
+            <span className="text-lime text-[10px] font-medium uppercase">{OBJECTIVES.find(o => o.id === objective)?.label}</span>
+          </div>
         </div>
 
         {/* Timer + BPM */}
@@ -656,30 +670,37 @@ export default function Cardio() {
 
   // ==================== GRID VIEW ====================
   return (
-    <div className="space-y-4 p-4">
+    <div data-onboard="cardio" className="space-y-4 p-4">
       <div className="mb-2">
         <h2 className="text-white font-bold text-lg">Cardio</h2>
         <p className="text-muted text-sm">Choisis ton activité</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         {cardioActivities.map((activity) => (
           <button
             key={activity.id}
             onClick={() => selectActivity(activity)}
-            className="bg-dark-card rounded-2xl p-4 flex flex-col items-center gap-2 hover:bg-dark-border transition-all active:scale-95 border border-dark-border"
+            className="relative bg-dark-card rounded-2xl overflow-hidden h-32 flex flex-col items-center justify-end hover:bg-dark-border transition-all active:scale-95 border border-dark-border"
           >
-            <span className="text-3xl">{activity.icon}</span>
-            <span className="text-white text-xs font-medium text-center leading-tight">
-              {activity.name}
-            </span>
-            <span
-              className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                DIFFICULTY_COLORS[DIFFICULTY_MAP[activity.id]] || 'bg-dark-bg text-muted'
-              }`}
-            >
-              {DIFFICULTY_MAP[activity.id] === 'facile' ? 'Facile' : DIFFICULTY_MAP[activity.id] === 'moyen' ? 'Moyen' : 'Difficile'}
-            </span>
+            <img
+              src={activity.image}
+              alt={activity.name}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <div className="relative z-10 w-full p-3 text-center">
+              <span className="text-white text-xs font-bold leading-tight block">
+                {activity.name}
+              </span>
+              <span
+                className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-medium mt-1 ${
+                  DIFFICULTY_COLORS[DIFFICULTY_MAP[activity.id]] || 'bg-dark-bg text-muted'
+                }`}
+              >
+                {DIFFICULTY_MAP[activity.id] === 'facile' ? 'Facile' : DIFFICULTY_MAP[activity.id] === 'moyen' ? 'Moyen' : 'Difficile'}
+              </span>
+            </div>
           </button>
         ))}
       </div>

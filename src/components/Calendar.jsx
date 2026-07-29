@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import GlassCard from './GlassCard'
+import YearHeatmap from './YearHeatmap'
 
 const MONTH_NAMES = [
   'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
@@ -28,7 +29,7 @@ function getFirstDayOfMonth(year, month) {
 }
 
 export default function Calendar() {
-  const { sessionHistory, workoutHistory } = useStore()
+  const { sessionHistory, workoutHistory, calisthenie30 } = useStore()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDay, setSelectedDay] = useState(null)
 
@@ -164,6 +165,27 @@ export default function Calendar() {
               new Date().getMonth() === month &&
               new Date().getDate() === day
 
+            // 30-Day Calisthenics tracking
+            const isCalisthenieDay = (() => {
+              if (!calisthenie30.startDate) return false
+              const start = new Date(calisthenie30.startDate)
+              const current = new Date(year, month, day)
+              const diff = Math.floor((current - start) / 86400000) + 1
+              return diff >= 1 && diff <= 30
+            })()
+
+            const calisthenieDay = (() => {
+              if (!calisthenie30.startDate) return 0
+              const start = new Date(calisthenie30.startDate)
+              const current = new Date(year, month, day)
+              return Math.floor((current - start) / 86400000) + 1
+            })()
+
+            const isCalisthenieCompleted = calisthenie30.completedDays?.[calisthenieDay] || calisthenie30.completedDays?.[String(calisthenieDay)]
+
+            const calistheniePhase = calisthenieDay <= 10 ? 1 : calisthenieDay <= 20 ? 2 : 3
+            const phaseColor = calistheniePhase === 1 ? 'bg-green-400' : calistheniePhase === 2 ? 'bg-yellow-400' : 'bg-red-400'
+
             return (
               <button
                 key={day}
@@ -171,19 +193,26 @@ export default function Calendar() {
                 className={`aspect-square rounded-xl flex flex-col items-center justify-center relative transition-all ${
                   isSelected
                     ? 'bg-mint-500/30 border border-mint-500/50'
-                    : isToday
-                    ? 'bg-white/10 border border-white/20'
-                    : 'hover:bg-white/5'
+                    : isCalisthenieCompleted
+                      ? `${phaseColor}/20 border border-${phaseColor}/50`
+                      : isToday
+                        ? 'bg-white/10 border border-white/20'
+                        : isCalisthenieDay
+                          ? 'bg-dark-bg/50 border border-dark-border'
+                          : 'hover:bg-white/5'
                 }`}
               >
                 <span
                   className={`text-xs font-medium ${
-                    isToday ? 'text-mint-400' : isSelected ? 'text-white' : 'text-white/60'
+                    isToday ? 'text-mint-400' : isSelected ? 'text-white' : isCalisthenieCompleted ? 'text-white' : 'text-white/60'
                   }`}
                 >
                   {day}
                 </span>
-                {daySessions.length > 0 && (
+                {isCalisthenieCompleted && (
+                  <div className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-lime" />
+                )}
+                {!isCalisthenieCompleted && daySessions.length > 0 && (
                   <div className="flex gap-0.5 mt-0.5">
                     {hasExercise && (
                       <div className="w-1.5 h-1.5 rounded-full bg-mint-400" />
@@ -200,7 +229,7 @@ export default function Calendar() {
       </GlassCard>
 
       {/* Legend */}
-      <div className="flex items-center justify-center gap-4">
+      <div className="flex items-center justify-center gap-4 flex-wrap">
         <div className="flex items-center gap-1.5">
           <div className="w-2 h-2 rounded-full bg-mint-400" />
           <span className="text-white/40 text-[10px]">Exercice</span>
@@ -209,6 +238,22 @@ export default function Calendar() {
           <div className="w-2 h-2 rounded-full bg-pink-400" />
           <span className="text-white/40 text-[10px]">Cardio</span>
         </div>
+        {calisthenie30.startDate && (
+          <>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full bg-green-400" />
+              <span className="text-white/40 text-[10px]">Phase 1</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full bg-yellow-400" />
+              <span className="text-white/40 text-[10px]">Phase 2</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full bg-red-400" />
+              <span className="text-white/40 text-[10px]">Phase 3</span>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Selected day sessions */}
@@ -248,6 +293,9 @@ export default function Calendar() {
           )}
         </GlassCard>
       )}
+
+      {/* Year Heatmap */}
+      <YearHeatmap />
 
       {/* Recent sessions */}
       <GlassCard className="p-4">

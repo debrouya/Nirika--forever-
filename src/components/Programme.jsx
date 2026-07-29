@@ -25,6 +25,7 @@ import exercises from '../data/exercises'
 import { getUserProgram, upsertUserProgram, deleteUserProgram } from '../services/supabaseService'
 import { useNotifications } from '../hooks/useNotifications'
 import ExerciseTracker from './ExerciseTracker'
+import CalisthenicsTracker from './CalisthenicsTracker'
 import useStore from '../store/useStore'
 
 const exerciseMap = Object.fromEntries(exercises.map(e => [e.id, e]))
@@ -56,7 +57,7 @@ function formatDuration(seconds) {
 }
 
 export default function Programme({ user, isPremium }) {
-  const { sessionHistory, addExerciseRecord, getExerciseHistory } = useStore()
+  const { sessionHistory, addExerciseRecord, getExerciseHistory, calisthenie30, addWorkout } = useStore()
   const [view, setView] = useState('list')
   const [expandedId, setExpandedId] = useState(null)
   const [activeProgram, setActiveProgram] = useState(null)
@@ -133,10 +134,27 @@ export default function Programme({ user, isPremium }) {
   const toggleExerciseComplete = (dayKey, exerciseId) => {
     const exKey = `${dayKey}__${exerciseId}`
     const newExercises = { ...completedExercises }
+    const isCompleting = !newExercises[exKey]
+
     if (newExercises[exKey]) {
       delete newExercises[exKey]
     } else {
       newExercises[exKey] = { completedAt: new Date().toISOString() }
+
+      // Save individual exercise to exerciseHistory
+      const ex = exercises.find(e => e.id === exerciseId)
+      if (ex) {
+        addExerciseRecord(exerciseId, {
+          exerciseName: ex.name,
+          sets: 1,
+          reps: 1,
+          duration: 0,
+          totalVolume: 0,
+          source: 'programme',
+          day: dayKey,
+          programId: activeProgram?.program_id,
+        })
+      }
     }
     setCompletedExercises(newExercises)
 
@@ -179,16 +197,42 @@ export default function Programme({ user, isPremium }) {
     } else {
       const program = programs.find(p => p.id === activeProgram?.program_id)
       const dayName = dayKey.replace(`${activeProgram?.program_id}_`, '')
+      const dayExercises = program?.structure[dayName] || []
       newCompleted[dayKey] = {
         completedAt: new Date().toISOString(),
-        exercises: program?.structure[dayName]?.map(ex => ex.exerciseId) || [],
+        exercises: dayExercises.map(ex => ex.exerciseId),
       }
       // Also mark all exercises as done
       const newExercises = { ...completedExercises }
-      program?.structure[dayName]?.forEach(ex => {
+      dayExercises.forEach(ex => {
         newExercises[`${dayKey}__${ex.exerciseId}`] = { completedAt: new Date().toISOString() }
+        // Save each exercise to exerciseHistory
+        const exData = exercises.find(e => e.id === ex.exerciseId)
+        if (exData) {
+          addExerciseRecord(ex.exerciseId, {
+            exerciseName: exData.name,
+            sets: ex.sets || 1,
+            reps: 1,
+            duration: 0,
+            totalVolume: 0,
+            source: 'programme',
+            day: dayKey,
+            programId: activeProgram?.program_id,
+          })
+        }
       })
       setCompletedExercises(newExercises)
+
+      // Save day to workoutHistory for Stats/Calendar
+      addWorkout({
+        type: 'programme',
+        programId: activeProgram?.program_id,
+        programName: program?.name || 'Programme',
+        day: dayName,
+        exerciseCount: dayExercises.length,
+        completedExercises: dayExercises.map(ex => ex.exerciseId),
+      })
+
       saveProgress(newCompleted, newExercises)
       return
     }
@@ -447,7 +491,7 @@ export default function Programme({ user, isPremium }) {
 
   // LIST VIEW
   return (
-    <div className="space-y-5 p-4">
+    <div data-onboard="programmes" className="space-y-5 p-4">
       <h1 className="text-white font-bold text-2xl">Programmes</h1>
 
       {/* Active Program Banner */}
@@ -483,6 +527,9 @@ export default function Programme({ user, isPremium }) {
         </button>
       )}
 
+      {/* 30-Day Calisthenics Tracker */}
+      <CalisthenicsTracker />
+
       {/* Program Cards */}
       <div className="space-y-4">
         {programs.map((program, i) => {
@@ -501,7 +548,7 @@ export default function Programme({ user, isPremium }) {
                 className="w-full text-left"
               >
                 <div className="relative h-36">
-                  <img src={PROGRAM_IMAGES[i % PROGRAM_IMAGES.length]} alt={program.name} className="w-full h-full object-cover" />
+                  <img src={program.image || PROGRAM_IMAGES[i % PROGRAM_IMAGES.length]} alt={program.name} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   <div className="absolute top-3 right-3 flex gap-1.5">
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${levelColors[program.level]}`}>

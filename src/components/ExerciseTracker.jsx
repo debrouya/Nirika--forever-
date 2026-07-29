@@ -42,7 +42,7 @@ function getIntensityLabel(sets, avgReps, avgWeight) {
 }
 
 export default function ExerciseTracker({ exercise, sessionHistory, onComplete }) {
-  const { addExerciseRecord } = useStore()
+  const { addExerciseRecord, addWorkout } = useStore()
   const [isActive, setIsActive] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [timer, setTimer] = useState(0)
@@ -119,6 +119,18 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
       sets,
       totalReps,
       totalVolume,
+      calories,
+    })
+
+    addWorkout({
+      type: 'exercise',
+      exerciseId: exercise.id,
+      exerciseName: exercise.name,
+      muscleGroup: exercise.muscleGroup,
+      sets: sets.length,
+      totalReps,
+      totalVolume,
+      duration: Math.floor(timer / 60),
       calories,
     })
 

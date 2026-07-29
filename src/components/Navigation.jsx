@@ -5,7 +5,6 @@ import {
   BarChart3,
   Menu,
   X,
-  LayoutDashboard,
   CalendarRange,
   Dumbbell,
   HeartPulse,
@@ -16,8 +15,8 @@ import {
 } from 'lucide-react'
 
 const MAIN_TABS = [
-  { id: 'dashboard', label: 'Home', icon: Home },
-  { id: 'calendar', label: 'Calendar', icon: CalendarDays },
+  { id: 'dashboard', label: 'Accueil', icon: Home },
+  { id: 'calendar', label: 'Calendrier', icon: CalendarDays },
   { id: 'stats', label: 'Stats', icon: BarChart3 },
 ]
 
@@ -66,15 +65,15 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
       {/* Menu Overlay */}
       {menuOpen && (
         <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)}>
-          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="absolute bottom-20 left-3 right-3 bg-dark-card rounded-2xl p-4 space-y-1 animate-fade-in-up border border-dark-border"
+            className="absolute bottom-20 left-3 right-3 bg-dark-card rounded-2xl p-4 space-y-1 animate-fade-in-up border border-dark-border shadow-2xl shadow-black/30"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 px-1">
-              <span className="text-muted text-xs uppercase tracking-wide">Menu</span>
-              <button onClick={() => setMenuOpen(false)}>
-                <X size={18} className="text-muted" />
+              <span className="text-muted text-xs uppercase tracking-wide font-medium">Menu</span>
+              <button onClick={() => setMenuOpen(false)} className="p-1 rounded-lg hover:bg-white/5 transition-colors">
+                <X size={16} className="text-muted" />
               </button>
             </div>
 
@@ -84,9 +83,11 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
                 <button
                   key={item.id}
                   onClick={() => handleMenuAction(item.id)}
-                  className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-colors text-left"
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-all active:scale-[0.98] text-left"
                 >
-                  <Icon size={20} className="text-muted" />
+                  <div className="w-9 h-9 rounded-xl bg-dark-bg flex items-center justify-center border border-dark-border">
+                    <Icon size={18} className="text-muted" />
+                  </div>
                   <span className="text-white text-sm font-medium">{item.label}</span>
                 </button>
               )
@@ -96,18 +97,22 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
 
             <button
               onClick={() => { setMenuOpen(false); onPricingClick?.() }}
-              className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-colors text-left"
+              className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-lime/5 transition-all active:scale-[0.98] text-left"
             >
-              <Crown size={20} className="text-lime" />
+              <div className="w-9 h-9 rounded-xl bg-lime/10 flex items-center justify-center border border-lime/20">
+                <Crown size={18} className="text-lime" />
+              </div>
               <span className="text-lime text-sm font-medium">Premium</span>
             </button>
 
             {isAdmin && (
               <button
                 onClick={() => { setMenuOpen(false); onAdminClick?.() }}
-                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-colors text-left"
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-all active:scale-[0.98] text-left"
               >
-                <Shield size={20} className="text-muted" />
+                <div className="w-9 h-9 rounded-xl bg-dark-bg flex items-center justify-center border border-dark-border">
+                  <Shield size={18} className="text-muted" />
+                </div>
                 <span className="text-white text-sm font-medium">Admin</span>
               </button>
             )}
@@ -115,9 +120,11 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
             {onLogout && (
               <button
                 onClick={() => { setMenuOpen(false); onLogout() }}
-                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-colors text-left"
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-red-500/5 transition-all active:scale-[0.98] text-left"
               >
-                <LogOut size={20} className="text-red-400" />
+                <div className="w-9 h-9 rounded-xl bg-red-500/10 flex items-center justify-center border border-red-500/20">
+                  <LogOut size={18} className="text-red-400" />
+                </div>
                 <span className="text-red-400 text-sm font-medium">Déconnexion</span>
               </button>
             )}
@@ -129,7 +136,7 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-lg z-50 px-3 pb-3">
         <nav
           ref={containerRef}
-          className="bg-dark-card rounded-2xl px-2 py-2 flex items-center relative border border-dark-border"
+          className="bg-dark-card/95 backdrop-blur-xl rounded-2xl px-2 py-2 flex items-center relative border border-dark-border shadow-xl shadow-black/20"
         >
           {!menuOpen && (
             <div
@@ -146,12 +153,15 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
                 key={tab.id}
                 ref={(el) => (btnRefs.current[tab.id] = el)}
                 onClick={() => handleMainTab(tab.id)}
-                className={`relative z-10 flex flex-col items-center justify-center flex-1 py-2 rounded-xl transition-colors duration-200 ${
-                  isActive ? 'text-lime' : 'text-muted'
+                className={`relative z-10 flex flex-col items-center justify-center flex-1 py-2.5 rounded-xl transition-all duration-200 ${
+                  isActive ? 'text-lime scale-105' : 'text-muted hover:text-white/60'
                 }`}
               >
                 <Icon size={20} strokeWidth={isActive ? 2.5 : 1.5} />
                 <span className="text-[10px] mt-0.5 font-medium">{tab.label}</span>
+                {isActive && (
+                  <div className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-lime" />
+                )}
               </button>
             )
           })}
@@ -159,12 +169,15 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
           {/* Menu Button */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className={`relative z-10 flex flex-col items-center justify-center flex-1 py-2 rounded-xl transition-colors duration-200 ${
-              menuOpen ? 'text-lime' : 'text-muted'
+            className={`relative z-10 flex flex-col items-center justify-center flex-1 py-2.5 rounded-xl transition-all duration-200 ${
+              menuOpen ? 'text-lime scale-105' : 'text-muted hover:text-white/60'
             }`}
           >
             {menuOpen ? <X size={20} strokeWidth={2.5} /> : <Menu size={20} strokeWidth={1.5} />}
             <span className="text-[10px] mt-0.5 font-medium">Menu</span>
+            {menuOpen && (
+              <div className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-lime" />
+            )}
           </button>
         </nav>
       </div>

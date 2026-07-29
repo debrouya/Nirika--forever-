@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nirika-v4'
+const CACHE_NAME = 'nirika-v6'
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -40,6 +40,20 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
+  // Network-first for HTML (always get latest index.html)
+  if (request.mode === 'navigate' || request.url.endsWith('.html') || request.url.endsWith('/')) {
+    event.respondWith(
+      fetch(request).then((response) => {
+        if (response.ok) {
+          const clone = response.clone()
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone))
+        }
+        return response
+      }).catch(() => caches.match(request))
+    )
+    return
+  }
+
   event.respondWith(
     caches.match(request).then((cached) => {
       const fetched = fetch(request).then((response) => {
@@ -50,9 +64,6 @@ self.addEventListener('fetch', (event) => {
         return response
       }).catch(() => {
         if (cached) return cached
-        if (request.mode === 'navigate') {
-          return caches.match('/index.html')
-        }
         return new Response('Hors ligne', { status: 503, headers: { 'Content-Type': 'text/plain' } })
       })
 
