@@ -63,7 +63,7 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
       <h1 className="text-white font-bold text-2xl">Exercices</h1>
 
       {/* Search */}
-      <div className="relative">
+      <div data-onboard="tutorials" className="relative">
         <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
         <input
           type="text"

@@ -398,7 +398,7 @@ export default function Stats() {
       </div>
 
       {/* Google Fit */}
-      <GoogleFit />
+      <div data-onboard="google-fit"><GoogleFit /></div>
 
       {/* Motivation */}
       <div className="bg-gradient-to-r from-lime/10 to-lime/5 rounded-2xl p-4 border border-lime/20">

@@ -48,6 +48,20 @@ const STEPS = [
     icon: '💪',
   },
   {
+    view: 'calisthenics',
+    target: '[data-onboard="custom-exercises"]',
+    title: 'Exercices personnalisés',
+    desc: 'Crée tes propres exercices ou laisse l\'IA les générer. Ils s\'intègrent automatiquement à tous tes programmes.',
+    icon: '🛠️',
+  },
+  {
+    view: 'calisthenics',
+    target: '[data-onboard="tutorials"]',
+    title: 'Tutoriels vidéo',
+    desc: 'Chaque exercice cherche automatiquement sa vidéo YouTube. Parfait pour apprendre le bon geste.',
+    icon: '▶️',
+  },
+  {
     view: 'cardio',
     target: '[data-onboard="cardio"]',
     title: 'Cardio Intelligent',
@@ -63,6 +77,13 @@ const STEPS = [
   },
   {
     view: 'stats',
+    target: '[data-onboard="google-fit"]',
+    title: 'Google Fit',
+    desc: 'Connecte montres et applis santé. Pas, calories, fréquence cardiaque, activité — tout synchronisé.',
+    icon: '📱',
+  },
+  {
+    view: 'stats',
     target: '[data-onboard="badges"]',
     title: 'Badges',
     desc: 'Débloque des récompenses en t\'entraînant régulièrement.',
@@ -74,6 +95,34 @@ const STEPS = [
     title: 'Coach NIRIKA',
     desc: 'Configure ton profil pour des programmes adaptés à tes objectifs.',
     icon: '🏋️',
+  },
+  {
+    view: 'ai',
+    target: null,
+    title: 'Timer Repos Auto',
+    desc: 'Entre chaque série, un chronomètre s\'adapte : 30s cardio, 60s poids du corps, 90s force.',
+    icon: '⏱️',
+  },
+  {
+    view: 'ai',
+    target: null,
+    title: 'Mode Rapide',
+    desc: 'Pour les experts : timer minimal avec juste le nom et Start/Finish. Zéro distraction.',
+    icon: '⚡',
+  },
+  {
+    view: 'profile',
+    target: '[data-onboard="premium"]',
+    title: 'Premium 7,99€/mois',
+    desc: 'Débloque le Coach IA illimité, les statistiques avancées et le bilan forme complet.',
+    icon: '👑',
+  },
+  {
+    view: 'fitmatrix',
+    target: '[data-onboard="fitmatrix"]',
+    title: 'FitMatrix',
+    desc: 'Check-in quotidien : sommeil, humeur, eau, pas, calories, force, cardio. Suis tes 7 piliers.',
+    icon: '📅',
   },
 ]
 

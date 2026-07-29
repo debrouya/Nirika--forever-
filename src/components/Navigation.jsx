@@ -82,9 +82,11 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
 
             {MENU_ITEMS.map((item) => {
               const Icon = item.icon
+              const onboardAttr = item.id === 'custom-exercises' ? { 'data-onboard': 'custom-exercises' } : {}
               return (
                 <button
                   key={item.id}
+                  {...onboardAttr}
                   onClick={() => handleMenuAction(item.id)}
                   className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-all active:scale-[0.98] text-left"
                 >
@@ -99,6 +101,7 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
             <div className="border-t border-dark-border my-2" />
 
             <button
+              data-onboard="premium"
               onClick={() => { setMenuOpen(false); onPricingClick?.() }}
               className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-lime/5 transition-all active:scale-[0.98] text-left"
             >

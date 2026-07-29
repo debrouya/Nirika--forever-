@@ -1279,7 +1279,7 @@ function SettingsTab() {
             </button>
           </label>
 
-          <label className="flex items-center justify-between">
+          <label data-onboard="quick-mode" className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Zap size={14} className="text-muted" />
               <span className="text-white text-xs">Mode rapide (expert)</span>
