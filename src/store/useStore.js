@@ -553,6 +553,26 @@ const useStore = create(
         set({
           calisthenie30: { startDate: null, completedDays: {}, currentPhase: 1 },
         }),
+
+      customExercises: [],
+      addCustomExercise: (ex) =>
+        set((state) => ({
+          customExercises: [...state.customExercises, { ...ex, id: `custom_${Date.now()}` }],
+        })),
+      updateCustomExercise: (id, updates) =>
+        set((state) => ({
+          customExercises: state.customExercises.map((e) =>
+            e.id === id ? { ...e, ...updates } : e
+          ),
+        })),
+      deleteCustomExercise: (id) =>
+        set((state) => ({
+          customExercises: state.customExercises.filter((e) => e.id !== id),
+        })),
+      getAllExercises: () => {
+        const state = get()
+        return [...exercises, ...state.customExercises]
+      },
     }),
     {
       name: 'nf-storage',

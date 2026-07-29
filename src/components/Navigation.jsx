@@ -24,6 +24,7 @@ const MAIN_TABS = [
 const MENU_ITEMS = [
   { id: 'programme', label: 'Programme', icon: CalendarRange },
   { id: 'calisthenics', label: 'Exercices', icon: Dumbbell },
+  { id: 'custom-exercises', label: 'Mes exercices', icon: Plus },
   { id: 'cardio', label: 'Cardio', icon: HeartPulse },
   { id: 'ai', label: 'Coach NIRIKA', icon: MessageSquareMore },
 ]

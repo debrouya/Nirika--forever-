@@ -9,6 +9,7 @@ import Navigation from './components/Navigation'
 import Dashboard from './components/Dashboard'
 import Profile from './components/Profile'
 import Calisthenics from './components/Calisthenics'
+import CustomExercisePanel from './components/CustomExercisePanel'
 import Cardio from './components/Cardio'
 import AICoach from './components/AICoach'
 import Stats from './components/Stats'
@@ -173,6 +174,10 @@ export default function App() {
 
   if (isAdmin && currentView === 'admin') {
     return <AdminPanel user={user} profile={profile} onLogout={() => useStore.getState().setCurrentView('dashboard')} />
+  }
+
+  if (currentView === 'custom-exercises') {
+    return <CustomExercisePanel onClose={() => useStore.getState().setCurrentView('calisthenics')} />
   }
 
   return (

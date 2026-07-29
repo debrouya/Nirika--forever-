@@ -27,7 +27,55 @@ serve(async (req) => {
       })
     }
 
-    const { message, profile, history } = await req.json()
+    const { message, profile, history, type } = await req.json()
+
+    if (type === "analyze") {
+      const { name, description, muscleGroup } = message
+      const analyzePrompt = `Tu es un coach sportif expert. Analyse cet exercice et réponds UNIQUEMENT avec un objet JSON (pas de texte avant/après) :
+{
+  "restTime": nombre de secondes de repos recommandé entre les séries (30-120),
+  "recommendedReps": "fourchette de répétitions conseillée, ex: \"8-12\" ou \"10-15\"",
+  "tips": ["conseil 1", "conseil 2", "conseil 3"]
+}
+
+Exercice: ${name}
+Description: ${description || "Non fournie"}
+Groupe musculaire: ${muscleGroup}
+
+Adapte le temps de repos selon le type : force (60-90s), cardio (30-45s), endurance (30s).`
+      const analyzeMessages = [
+        { role: "system", content: "Tu es un coach sportif expert. Tu réponds uniquement en JSON valide, sans texte autour." },
+        { role: "user", content: analyzePrompt },
+      ]
+
+      const analyzeResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${openaiKey}`,
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: analyzeMessages,
+          max_tokens: 500,
+          temperature: 0.3,
+        }),
+      })
+
+      const analyzeData = await analyzeResponse.json()
+      const content = analyzeData.choices?.[0]?.message?.content || ""
+
+      try {
+        const parsed = JSON.parse(content.match(/\{[\s\S]*\}/)?.[0] || "{}")
+        return new Response(JSON.stringify({ analysis: parsed }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        })
+      } catch {
+        return new Response(JSON.stringify({ analysis: { restTime: 60, recommendedReps: "8-12", tips: ["Contrôle le mouvement", "Respire régulièrement", "Garde une bonne forme"] } }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        })
+      }
+    }
 
     const systemPrompt = `Tu es NIRIKA, un coach sportif expert. Tu parles français.
 

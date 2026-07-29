@@ -384,6 +384,27 @@ export async function adminUpdateSecret(name, value) {
 
 // ==================== AI COACH ====================
 
+export async function analyzeExercise(name, description, muscleGroup) {
+  if (!isSupabaseConfigured()) {
+    return { data: null, error: { message: 'Supabase not configured' } }
+  }
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { data: null, error: { message: 'Non connecté' } }
+
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+  const response = await fetch(`${supabaseUrl}/functions/v1/ai-coach`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session.access_token}`,
+      apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+    },
+    body: JSON.stringify({ message: { name, description, muscleGroup }, type: 'analyze' }),
+  })
+
+  return await response.json()
+}
+
 export async function askCoach(message, profile, history = []) {
   if (!isSupabaseConfigured()) {
     return { data: null, error: { message: 'Supabase not configured' } }
