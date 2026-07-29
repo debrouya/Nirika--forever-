@@ -473,6 +473,9 @@ const useStore = create(
       // ==================== WORKOUT DU JOUR ====================
       dailyWorkout: null,
       dailyWorkoutDate: null,
+      pendingDailyWorkout: null,
+      setPendingDailyWorkout: (w) => set({ pendingDailyWorkout: w }),
+      clearPendingDailyWorkout: () => set({ pendingDailyWorkout: null }),
       generateDailyWorkout: () => {
         const s = get()
         const { profile, exerciseHistory, workoutHistory } = s

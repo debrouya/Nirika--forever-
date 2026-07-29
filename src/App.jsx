@@ -21,6 +21,7 @@ import WorkoutDetail from './components/WorkoutDetail'
 import Pricing from './components/Pricing'
 import Paywall from './components/Paywall'
 import SplashScreen from './components/SplashScreen'
+import DailyWorkoutSession from './components/DailyWorkoutSession'
 import Onboarding, { useOnboarding } from './components/Onboarding'
 import { useSubscription } from './hooks/useSubscription'
 
@@ -158,6 +159,7 @@ export default function App() {
         {currentView === 'calendar' && <Calendar />}
         {currentView === 'programme' && <Programme isPremium={true} />}
         {currentView === 'session' && <SessionPage />}
+        {currentView === 'daily-workout' && <DailyWorkoutSession />}
         <Navigation active={currentView} onChange={(id) => useStore.getState().setCurrentView(id)} />
       </Layout>
     )
@@ -193,8 +195,9 @@ export default function App() {
       {currentView === 'calendar' && <Calendar />}
       {currentView === 'programme' && <Programme user={user} isPremium={hasFeature('programmes')} />}
       {currentView === 'session' && <SessionPage />}
+      {currentView === 'daily-workout' && <DailyWorkoutSession />}
       {currentView === 'pricing' && <Pricing subscription={subscription} />}
-      {!['dashboard','profile','workout-detail','calisthenics','cardio','ai','stats','fitmatrix','calendar','programme','session','pricing','admin'].includes(currentView) && <Dashboard />}
+      {!['dashboard','profile','workout-detail','calisthenics','cardio','ai','stats','fitmatrix','calendar','programme','session','daily-workout','pricing','admin'].includes(currentView) && <Dashboard />}
       <Navigation active={currentView} onChange={(id) => useStore.getState().setCurrentView(id)} isAdmin={isAdmin} userRole={profile?.role} onAdminClick={() => useStore.getState().setCurrentView('admin')} onLogout={handleLogout} onPricingClick={() => useStore.getState().setCurrentView('pricing')} />
       {showPaywall && <Paywall onClose={() => setShowPaywall(false)} />}
       {!onboardingDone && <Onboarding onComplete={completeOnboarding} />}
