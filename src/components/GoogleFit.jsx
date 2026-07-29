@@ -31,6 +31,12 @@ export default function GoogleFit() {
   const [syncing, setSyncing] = useState(false)
   const [data, setData] = useState(null)
   const [tokenClient, setTokenClient] = useState(null)
+  const [disabled, setDisabled] = useState(false)
+
+  useEffect(() => {
+    const settings = JSON.parse(localStorage.getItem('nirika_admin_settings') || '{}')
+    if (settings.googleFitEnabled === false) { setDisabled(true); return }
+  }, [])
 
   useEffect(() => {
     if (window.google?.accounts?.oauth2) {
@@ -158,6 +164,8 @@ export default function GoogleFit() {
     }
     tokenClient.requestAccessToken({ prompt: '' })
   }
+
+  if (disabled) return null
 
   return (
     <div className="bg-dark-card rounded-2xl p-4 border border-dark-border space-y-4">

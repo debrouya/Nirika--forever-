@@ -1170,6 +1170,8 @@ function SettingsTab() {
         maxFreeExercises: '20',
         coachEnabled: false,
         notificationsEnabled: true,
+        youtubeEnabled: true,
+        googleFitEnabled: true,
       }
     } catch {
       return {
@@ -1180,6 +1182,8 @@ function SettingsTab() {
         maxFreeExercises: '20',
         coachEnabled: false,
         notificationsEnabled: true,
+        youtubeEnabled: true,
+        googleFitEnabled: true,
       }
     }
   })
@@ -1272,6 +1276,51 @@ function SettingsTab() {
               <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-all ${settings.notificationsEnabled ? 'left-5' : 'left-1'}`} />
             </button>
           </label>
+        </div>
+      </div>
+
+      <div className="bg-dark-card rounded-2xl p-4 border border-dark-border space-y-4">
+        <div className="flex items-center gap-2">
+          <Globe size={16} className="text-lime" />
+          <h3 className="text-white font-semibold text-sm">Intégrations</h3>
+        </div>
+
+        {/* YouTube */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full ${import.meta.env.VITE_YOUTUBE_API_KEY ? 'bg-green-400' : 'bg-red-400'}`} />
+            <div>
+              <p className="text-white text-xs font-medium">YouTube Data API</p>
+              <p className="text-muted text-[10px]">
+                {import.meta.env.VITE_YOUTUBE_API_KEY ? 'Clé configurée' : 'Clé manquante'}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setSettings({ ...settings, youtubeEnabled: !settings.youtubeEnabled })}
+            className={`w-10 h-6 rounded-full transition-all relative ${settings.youtubeEnabled ? 'bg-lime' : 'bg-dark-border'}`}
+          >
+            <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-all ${settings.youtubeEnabled ? 'left-5' : 'left-1'}`} />
+          </button>
+        </div>
+
+        {/* Google Fit */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full ${import.meta.env.VITE_GOOGLE_FIT_CLIENT_ID ? 'bg-green-400' : 'bg-red-400'}`} />
+            <div>
+              <p className="text-white text-xs font-medium">Google Fit</p>
+              <p className="text-muted text-[10px]">
+                {import.meta.env.VITE_GOOGLE_FIT_CLIENT_ID ? 'Client ID configuré' : 'Client ID manquant'}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setSettings({ ...settings, googleFitEnabled: !settings.googleFitEnabled })}
+            className={`w-10 h-6 rounded-full transition-all relative ${settings.googleFitEnabled ? 'bg-lime' : 'bg-dark-border'}`}
+          >
+            <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-all ${settings.googleFitEnabled ? 'left-5' : 'left-1'}`} />
+          </button>
         </div>
       </div>
 

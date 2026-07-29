@@ -129,7 +129,8 @@ export default function ExerciseTutorial({ exercise, onClose }) {
   useEffect(() => {
     if (!exercise.youtubeId) {
       const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY
-      if (!apiKey) { setSearching(false); return }
+      const settings = JSON.parse(localStorage.getItem('nirika_admin_settings') || '{}')
+      if (!apiKey || settings.youtubeEnabled === false) { setSearching(false); return }
 
       const query = `${exercise.name} exercice technique forme`
       fetch(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&maxResults=1&type=video&videoEmbeddable=true&key=${apiKey}`)
