@@ -1176,9 +1176,9 @@ function SettingsTab() {
       }
     } catch {
       return {
-        monthlyPrice: '4.99',
-        yearlyPrice: '39.99',
-        yearlyDiscount: '33',
+        monthlyPrice: '7.99',
+        yearlyPrice: '69.99',
+        yearlyDiscount: '39',
         maxFreePrograms: '3',
         maxFreeExercises: '20',
         coachEnabled: false,

@@ -123,20 +123,20 @@ export default function Pricing({ subscription }) {
                 >
                   Annuel
                   <span className="absolute -top-2 -right-1 px-1.5 py-0.5 bg-amber-500 text-[9px] text-white font-bold rounded-full">
-                    -33%
+                    -39%
                   </span>
                 </button>
               </div>
 
               <div className="text-center mb-4">
                 <span className="text-3xl font-bold text-white">
-                  {period === 'monthly' ? '4,99€' : '3,33€'}
+                  {period === 'monthly' ? '7,99€' : '5,83€'}
                 </span>
                 <span className="text-sm text-white/40">
                   /mois
                 </span>
                 {period === 'yearly' && (
-                  <p className="text-xs text-white/30 mt-1">39,99€ facturé annuellement</p>
+                  <p className="text-xs text-white/30 mt-1">69,99€ facturé annuellement</p>
                 )}
               </div>
 
