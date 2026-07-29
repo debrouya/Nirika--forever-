@@ -299,6 +299,30 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
   }
 
   if (!isActive) {
+    const settings = JSON.parse(localStorage.getItem('nirika_admin_settings') || '{}')
+    const isQuickMode = settings.quickMode
+
+    if (isQuickMode) {
+      return (
+        <div className="p-4">
+          <button
+            onClick={startSession}
+            className="bg-dark-card rounded-2xl p-4 border border-dark-border w-full text-left active:scale-[0.98] transition-all"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-white font-semibold text-sm">{exercise.name}</h3>
+                <p className="text-muted text-[10px]">{exercise.muscleGroup}</p>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-lime/20 flex items-center justify-center">
+                <Play size={20} className="text-lime ml-0.5" fill="currentColor" />
+              </div>
+            </div>
+          </button>
+        </div>
+      )
+    }
+
     return (
       <div className="space-y-4 p-4">
         <div className="bg-dark-card rounded-2xl p-4">

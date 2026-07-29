@@ -1172,6 +1172,7 @@ function SettingsTab() {
         notificationsEnabled: true,
         youtubeEnabled: true,
         googleFitEnabled: true,
+        quickMode: false,
       }
     } catch {
       return {
@@ -1184,6 +1185,7 @@ function SettingsTab() {
         notificationsEnabled: true,
         youtubeEnabled: true,
         googleFitEnabled: true,
+        quickMode: false,
       }
     }
   })
@@ -1274,6 +1276,19 @@ function SettingsTab() {
               className={`w-10 h-6 rounded-full transition-all relative ${settings.notificationsEnabled ? 'bg-lime' : 'bg-dark-border'}`}
             >
               <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-all ${settings.notificationsEnabled ? 'left-5' : 'left-1'}`} />
+            </button>
+          </label>
+
+          <label className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Zap size={14} className="text-muted" />
+              <span className="text-white text-xs">Mode rapide (expert)</span>
+            </div>
+            <button
+              onClick={() => setSettings({ ...settings, quickMode: !settings.quickMode })}
+              className={`w-10 h-6 rounded-full transition-all relative ${settings.quickMode ? 'bg-lime' : 'bg-dark-border'}`}
+            >
+              <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-all ${settings.quickMode ? 'left-5' : 'left-1'}`} />
             </button>
           </label>
         </div>
