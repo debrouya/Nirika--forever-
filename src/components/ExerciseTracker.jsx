@@ -13,6 +13,8 @@ import {
   Lightbulb,
   Rocket,
   Trophy,
+  SkipForward,
+  Zap,
 } from 'lucide-react'
 import useStore from '../store/useStore'
 
@@ -51,8 +53,18 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
   const [weightInput, setWeightInput] = useState('')
   const [showSummary, setShowSummary] = useState(false)
   const [coachingTip, setCoachingTip] = useState(COACHING_TIPS[0])
+  const [restActive, setRestActive] = useState(false)
+  const [restTime, setRestTime] = useState(0)
+  const [restDuration, setRestDuration] = useState(0)
   const timerRef = useRef(null)
   const tipIntervalRef = useRef(null)
+  const restTimerRef = useRef(null)
+
+  const getRestDuration = useCallback(() => {
+    if (exercise.muscleGroup === 'Cardio') return 30
+    if (exercise.equipment === 'none') return 60
+    return 90
+  }, [exercise])
 
   useEffect(() => {
     if (isActive && !isPaused) {
@@ -73,6 +85,23 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
     }
     return () => clearInterval(tipIntervalRef.current)
   }, [isActive])
+
+  useEffect(() => {
+    if (restActive && restTime > 0) {
+      restTimerRef.current = setInterval(() => {
+        setRestTime((t) => {
+          if (t <= 1) {
+            clearInterval(restTimerRef.current)
+            setRestActive(false)
+            navigator.vibrate?.([200, 100, 200])
+            return 0
+          }
+          return t - 1
+        })
+      }, 1000)
+    }
+    return () => clearInterval(restTimerRef.current)
+  }, [restActive, restTime])
 
   const startSession = () => {
     setIsActive(true)
@@ -100,6 +129,10 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
     ])
     setRepsInput('')
     setWeightInput('')
+    const dur = getRestDuration()
+    setRestDuration(dur)
+    setRestTime(dur)
+    setRestActive(true)
   }
 
   const removeSet = (index) => {
@@ -136,7 +169,10 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
 
     setIsActive(false)
     setShowSummary(true)
+    setRestActive(false)
+    setRestTime(0)
     clearInterval(tipIntervalRef.current)
+    clearInterval(restTimerRef.current)
   }
 
   const totalReps = sets.reduce((sum, s) => sum + s.reps, 0)
@@ -303,6 +339,34 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
 
   return (
     <div className="space-y-4 p-4">
+      {/* Rest Timer */}
+      {restActive && (
+        <div className="bg-dark-card rounded-2xl p-6 border border-lime/20 text-center animate-fade-in">
+          <div className="w-16 h-16 rounded-full bg-lime/10 flex items-center justify-center mx-auto mb-3">
+            <Clock size={32} className="text-lime" />
+          </div>
+          <p className="text-muted text-xs uppercase mb-1">Repos</p>
+          <p className="text-white text-5xl font-mono font-bold mb-1">
+            {Math.floor(restTime / 60)}:{String(restTime % 60).padStart(2, '0')}
+          </p>
+          <p className="text-lime text-xs font-medium mb-4">
+            {restTime === restDuration ? 'Bon repos 💪' : restTime < 5 ? 'Prêt ! 🔥' : 'Continue à respirer'}
+          </p>
+          <div className="w-full h-1.5 rounded-full bg-dark-bg mb-4 overflow-hidden">
+            <div
+              className="h-full rounded-full bg-lime transition-all duration-1000"
+              style={{ width: `${(restTime / restDuration) * 100}%` }}
+            />
+          </div>
+          <button
+            onClick={() => { setRestActive(false); setRestTime(0) }}
+            className="px-6 py-2 rounded-xl bg-dark-bg border border-dark-border text-muted text-xs font-medium hover:text-white transition-colors flex items-center gap-2 mx-auto"
+          >
+            <SkipForward size={14} /> Passer
+          </button>
+        </div>
+      )}
+
       {/* Live Header */}
       <div className="bg-dark-card rounded-2xl p-4 border border-lime/20">
         <div className="flex items-center justify-between mb-3">
