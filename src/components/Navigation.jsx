@@ -12,6 +12,7 @@ import {
   Shield,
   LogOut,
   Crown,
+  FileText,
 } from 'lucide-react'
 
 const MAIN_TABS = [
@@ -116,6 +117,18 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
                 <span className="text-white text-sm font-medium">Admin</span>
               </button>
             )}
+
+            <a
+              href="/privacy.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-all active:scale-[0.98] text-left"
+            >
+              <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center border border-dark-border">
+                <FileText size={18} className="text-muted" />
+              </div>
+              <span className="text-muted text-sm font-medium">Confidentialité</span>
+            </a>
 
             {onLogout && (
               <button

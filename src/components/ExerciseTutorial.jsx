@@ -132,12 +132,22 @@ export default function ExerciseTutorial({ exercise, onClose }) {
       const settings = JSON.parse(localStorage.getItem('nirika_admin_settings') || '{}')
       if (!apiKey || settings.youtubeEnabled === false) { setSearching(false); return }
 
+      const cacheKey = `yt_cache_${exercise.name}`
+      try {
+        const cached = JSON.parse(localStorage.getItem(cacheKey))
+        if (cached && Date.now() - cached.ts < 86400000) {
+          if (cached.id) { setYoutubeId(cached.id); setSearching(false); return }
+        }
+      } catch {}
+
       const query = `${exercise.name} exercice technique forme`
       fetch(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&maxResults=1&type=video&videoEmbeddable=true&key=${apiKey}`)
         .then(r => r.json())
         .then(data => {
-          if (data?.items?.[0]?.id?.videoId) {
-            setYoutubeId(data.items[0].id.videoId)
+          const videoId = data?.items?.[0]?.id?.videoId
+          if (videoId) {
+            setYoutubeId(videoId)
+            try { localStorage.setItem(cacheKey, JSON.stringify({ id: videoId, ts: Date.now() })) } catch {}
           }
         })
         .catch(() => {})
