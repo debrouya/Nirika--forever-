@@ -22,6 +22,7 @@ import PersonalRecords from './PersonalRecords'
 import WeightTracker from './WeightTracker'
 import TrainingReminders from './TrainingReminders'
 import ExportCSV from './ExportCSV'
+import GoogleFit from './GoogleFit'
 
 const MOTIVATION_KEY = 'nirika_motivation_phrases'
 const DEFAULT_PHRASES = [
@@ -395,6 +396,9 @@ export default function Stats() {
           ))}
         </div>
       </div>
+
+      {/* Google Fit */}
+      <GoogleFit />
 
       {/* Motivation */}
       <div className="bg-gradient-to-r from-lime/10 to-lime/5 rounded-2xl p-4 border border-lime/20">

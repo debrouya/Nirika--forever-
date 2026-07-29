@@ -121,9 +121,28 @@ const DIFFICULTY_CONFIG = {
 }
 
 export default function ExerciseTutorial({ exercise, onClose }) {
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
   const [showTips, setShowTips] = useState(false)
+  const [youtubeId, setYoutubeId] = useState(exercise.youtubeId)
+  const [searching, setSearching] = useState(!exercise.youtubeId)
   const iframeRef = useRef(null)
+
+  useEffect(() => {
+    if (!exercise.youtubeId) {
+      const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY
+      if (!apiKey) { setSearching(false); return }
+
+      const query = `${exercise.name} exercice technique forme`
+      fetch(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&maxResults=1&type=video&videoEmbeddable=true&key=${apiKey}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data?.items?.[0]?.id?.videoId) {
+            setYoutubeId(data.items[0].id.videoId)
+          }
+        })
+        .catch(() => {})
+        .finally(() => setSearching(false))
+    }
+  }, [exercise.youtubeId, exercise.name])
 
   const tips = EXERCISE_TIPS[exercise.id] || [
     'Garde une bonne forme pendant tout le mouvement',
@@ -157,10 +176,17 @@ export default function ExerciseTutorial({ exercise, onClose }) {
       <div className="overflow-y-auto h-[calc(100vh-65px)] pb-8">
         {/* Video */}
         <div className="relative w-full aspect-video bg-black">
-          {exercise.youtubeId ? (
+          {searching ? (
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-10 h-10 border-2 border-dark-border border-t-lime rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-muted text-sm">Recherche vidéo...</p>
+              </div>
+            </div>
+          ) : youtubeId ? (
             <iframe
               ref={iframeRef}
-              src={`https://www.youtube.com/embed/${exercise.youtubeId}?rel=0&modestbranding=1&playsinline=1`}
+              src={`https://www.youtube.com/embed/${youtubeId}?rel=0&modestbranding=1&playsinline=1`}
               title={exercise.name}
               className="w-full h-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
