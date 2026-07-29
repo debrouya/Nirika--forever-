@@ -100,7 +100,7 @@ export default function FitMatrix() {
     <div data-onboard="fitmatrix" className="space-y-4 p-4">
       <GlassCard className="p-4 text-center space-y-2">
         <div className="flex items-center justify-center gap-2">
-          <LayoutGrid size={20} className="text-mint-400" />
+          <LayoutGrid size={20} className="text-lime" />
           <h2 className="text-white font-bold text-lg">FitMatrix Pro</h2>
         </div>
         <p className="text-white/50 text-xs">

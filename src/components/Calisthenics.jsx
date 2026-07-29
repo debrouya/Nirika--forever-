@@ -67,7 +67,7 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
         <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
         <input
           type="text"
-          placeholder="Search"
+          placeholder="Rechercher"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full bg-dark-card text-white pl-10 pr-4 py-3 rounded-xl text-sm outline-none border border-dark-border placeholder:text-muted"

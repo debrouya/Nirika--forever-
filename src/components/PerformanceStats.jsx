@@ -151,7 +151,7 @@ export default function PerformanceStats() {
       <div className="grid grid-cols-2 gap-3">
         <GlassCard className="p-3">
           <div className="flex items-center gap-2 mb-1">
-            <Dumbbell size={12} className="text-mint-400" />
+            <Dumbbell size={12} className="text-lime" />
             <span className="text-white/40 text-[10px] uppercase">Séances</span>
           </div>
           <p className="text-white text-lg font-bold">{totalSessions}</p>
@@ -183,7 +183,7 @@ export default function PerformanceStats() {
       {exerciseGroupData.length > 0 && (
         <GlassCard className="p-4">
           <div className="flex items-center gap-2 mb-3">
-            <TrendingUp size={14} className="text-mint-400" />
+            <TrendingUp size={14} className="text-lime" />
             <span className="text-white/50 text-[10px] uppercase tracking-wide">Volume par exercice</span>
           </div>
           <div className="h-44">
@@ -250,7 +250,7 @@ export default function PerformanceStats() {
           {allSessions.slice(0, 10).map((s, i) => (
             <div key={i} className="flex items-center justify-between bg-white/5 rounded-xl px-3 py-2">
               <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${s._type === 'exercise' ? 'bg-mint-400' : 'bg-pink-400'}`} />
+                <div className={`w-2 h-2 rounded-full ${s._type === 'exercise' ? 'bg-lime' : 'bg-pink-400'}`} />
                 <div>
                   <p className="text-white text-xs font-medium">{s.exerciseName || s.activityName || 'Séance'}</p>
                   <p className="text-white/30 text-[10px]">

@@ -354,7 +354,7 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
             className="w-full py-4 rounded-2xl bg-lime text-dark-bg font-bold text-base flex items-center justify-center gap-2"
           >
             <Play size={20} fill="currentColor" />
-            Start
+            Commencer
           </button>
         </div>
       </div>

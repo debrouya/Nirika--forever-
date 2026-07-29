@@ -82,7 +82,7 @@ export default function MachineSettings({ exerciseId, currentWeight, onChange })
               step={5}
               value={weight}
               onChange={(e) => updateWeight(parseInt(e.target.value, 10))}
-              className="w-full accent-mint-500 h-2 rounded-full appearance-none cursor-pointer"
+              className="w-full accent-lime h-2 rounded-full appearance-none cursor-pointer"
               style={{
                 background: `linear-gradient(to right, #34d399 0%, #34d399 ${((weight - 5) / 195) * 100}%, rgba(255,255,255,0.1) ${((weight - 5) / 195) * 100}%, rgba(255,255,255,0.1) 100%)`,
               }}
@@ -107,7 +107,7 @@ export default function MachineSettings({ exerciseId, currentWeight, onChange })
                 onClick={() => { updateWeight(w); setSaved(false); }}
                 className={`py-2 rounded-xl text-sm font-medium transition-all ${
                   weight === w
-                    ? 'bg-mint-500 text-black'
+                    ? 'bg-lime text-black'
                     : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'
                 }`}
               >
@@ -123,7 +123,7 @@ export default function MachineSettings({ exerciseId, currentWeight, onChange })
           className={`w-full rounded-xl py-3 text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
             saved
               ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-              : 'bg-mint-500 hover:bg-mint-400 text-black'
+              : 'bg-lime hover:brightness-110 text-black'
           }`}
         >
           {saved ? (

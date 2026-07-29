@@ -56,7 +56,7 @@ export default function ProgramSelector({ onSelect }) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Rechercher un programme..."
-            className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-mint-400/50 transition-all"
+            className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-lime/50 transition-all"
           />
         </div>
         <button
@@ -66,7 +66,7 @@ export default function ProgramSelector({ onSelect }) {
           <Filter size={12} />
           Filtres
           {(levelFilter !== 'all' || goalFilter !== 'all') && (
-            <span className="bg-mint-500 text-black rounded-full w-4 h-4 text-[10px] font-bold flex items-center justify-center">
+            <span className="bg-lime text-black rounded-full w-4 h-4 text-[10px] font-bold flex items-center justify-center">
               !
             </span>
           )}
@@ -84,7 +84,7 @@ export default function ProgramSelector({ onSelect }) {
                   onClick={() => setLevelFilter(l.value)}
                   className={`px-2.5 py-1 rounded-full text-[10px] font-medium transition-all ${
                     levelFilter === l.value
-                      ? 'bg-mint-500 text-black'
+                      ? 'bg-lime text-black'
                       : 'bg-white/5 text-white/50 border border-white/10'
                   }`}
                 >
@@ -102,7 +102,7 @@ export default function ProgramSelector({ onSelect }) {
                   onClick={() => setGoalFilter(g.value)}
                   className={`px-2.5 py-1 rounded-full text-[10px] font-medium transition-all ${
                     goalFilter === g.value
-                      ? 'bg-mint-500 text-black'
+                      ? 'bg-lime text-black'
                       : 'bg-white/5 text-white/50 border border-white/10'
                   }`}
                 >

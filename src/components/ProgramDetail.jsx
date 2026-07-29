@@ -81,7 +81,7 @@ export default function ProgramDetail({ program, onStart, onBack }) {
       <div className="grid grid-cols-2 gap-3">
         <GlassCard className="p-3">
           <div className="flex items-center gap-2 mb-1">
-            <Calendar size={12} className="text-mint-400" />
+            <Calendar size={12} className="text-lime" />
             <span className="text-white/40 text-[10px] uppercase">Jours / sem</span>
           </div>
           <p className="text-white text-lg font-bold">{program.daysPerWeek}</p>
@@ -118,7 +118,7 @@ export default function ProgramDetail({ program, onStart, onBack }) {
           <GlassCard key={dayName} className="p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <ChevronRight size={14} className="text-mint-400" />
+                <ChevronRight size={14} className="text-lime" />
                 <span className="text-white font-bold text-sm">{dayName}</span>
               </div>
               <span className="text-white/30 text-[10px]">
@@ -132,7 +132,7 @@ export default function ProgramDetail({ program, onStart, onBack }) {
                   className="flex items-center justify-between bg-white/5 rounded-lg px-3 py-2"
                 >
                   <span className="text-white/70 text-xs">{ex.exerciseId}</span>
-                  <span className="text-mint-400 text-[10px] font-bold">
+                  <span className="text-lime text-[10px] font-bold">
                     {ex.sets}×{ex.reps}
                   </span>
                 </div>
@@ -145,7 +145,7 @@ export default function ProgramDetail({ program, onStart, onBack }) {
       {/* Start */}
       <button
         onClick={() => onStart(program)}
-        className="w-full bg-mint-500 hover:bg-mint-400 text-black font-semibold rounded-xl py-3.5 text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-mint-500/20"
+        className="w-full bg-lime hover:brightness-110 text-black font-semibold rounded-xl py-3.5 text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-lime/20"
       >
         <Play size={18} /> Commencer ce programme
       </button>

@@ -34,7 +34,7 @@ function FieldGroup({ icon: Icon, label, children }) {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        <Icon size={14} className="text-mint-400" />
+        <Icon size={14} className="text-lime" />
         <span className="text-white/50 text-[10px] uppercase tracking-wide">{label}</span>
       </div>
       {children}
@@ -49,7 +49,7 @@ function TextInput({ value, onChange, placeholder, type = 'text' }) {
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-mint-400/50 transition-all"
+      className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-lime/50 transition-all"
     />
   )
 }
@@ -63,7 +63,7 @@ function OptionPills({ options, value, onChange }) {
           onClick={() => onChange(opt)}
           className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
             value === opt
-              ? 'bg-mint-500 text-black'
+              ? 'bg-lime text-black'
               : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'
           }`}
         >
@@ -146,8 +146,8 @@ export default function Profile({ user, onLogout }) {
     <div className="space-y-4 p-4">
       {/* Avatar + Header */}
       <GlassCard className="p-4 flex items-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-mint-500/20 flex items-center justify-center border-2 border-mint-500/30">
-          <User size={28} className="text-mint-400" />
+        <div className="w-16 h-16 rounded-full bg-lime/20 flex items-center justify-center border-2 border-lime/30">
+          <User size={28} className="text-lime" />
         </div>
         <div className="flex-1">
           <TextInput
@@ -222,7 +222,7 @@ export default function Profile({ user, onLogout }) {
                 onClick={() => toggleDay(day)}
                 className={`flex-1 py-2 rounded-xl text-xs font-medium transition-all ${
                   profile.availableDays.includes(day)
-                    ? 'bg-mint-500 text-black'
+                    ? 'bg-lime text-black'
                     : 'bg-white/5 text-white/40 border border-white/10'
                 }`}
               >
@@ -243,7 +243,7 @@ export default function Profile({ user, onLogout }) {
                 onClick={() => toggleGoal(goal)}
                 className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
                   profile.goals.includes(goal)
-                    ? 'bg-mint-500 text-black'
+                    ? 'bg-lime text-black'
                     : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'
                 }`}
               >
@@ -355,7 +355,7 @@ export default function Profile({ user, onLogout }) {
       <div className="space-y-2">
         <button
           onClick={handleSave}
-          className="w-full bg-mint-500 hover:bg-mint-400 text-black font-semibold rounded-xl py-3 text-sm transition-all flex items-center justify-center gap-2"
+          className="w-full bg-lime hover:brightness-110 text-black font-semibold rounded-xl py-3 text-sm transition-all flex items-center justify-center gap-2"
         >
           <Save size={16} /> Enregistrer le profil
         </button>

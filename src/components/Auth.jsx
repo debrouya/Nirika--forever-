@@ -12,7 +12,7 @@ function InputField({ icon: Icon, type: inputType, placeholder, value, onChange,
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-10 pr-12 text-white placeholder-white/30 text-sm focus:outline-none focus:border-mint-400/50 focus:ring-1 focus:ring-mint-400/20 transition-all"
+        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-10 pr-12 text-white placeholder-white/30 text-sm focus:outline-none focus:border-lime/50 focus:ring-1 focus:ring-lime/20 transition-all"
       />
       {rightSlot && (
         <div className="absolute right-3 top-1/2 -translate-y-1/2">{rightSlot}</div>
@@ -78,7 +78,7 @@ export function LoginView({ onSwitch, onForgot }) {
           <button
             type="submit"
             disabled={loading || !email || !password}
-            className="w-full bg-mint-500 hover:bg-mint-400 disabled:opacity-40 text-black font-semibold rounded-xl py-3 text-sm transition-all flex items-center justify-center gap-2"
+            className="w-full bg-lime hover:brightness-110 disabled:opacity-40 text-black font-semibold rounded-xl py-3 text-sm transition-all flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 size={16} className="animate-spin" /> : null}
             {loading ? 'Connexion...' : 'Se connecter'}
@@ -135,7 +135,7 @@ export function SignupView({ onSwitch }) {
     return (
       <div className="flex items-center justify-center min-h-screen px-4">
         <GlassCard className="w-full max-w-sm p-6 text-center space-y-4">
-          <CheckCircle2 size={48} className="mx-auto text-mint-400" />
+          <CheckCircle2 size={48} className="mx-auto text-lime" />
           <h2 className="text-xl font-bold text-white">Vérifie ta boîte mail</h2>
           <p className="text-white/40 text-sm">
             Un lien de confirmation a été envoyé à <span className="text-white/60">{email}</span>.
@@ -187,7 +187,7 @@ export function SignupView({ onSwitch }) {
           <button
             type="submit"
             disabled={loading || !email || !password}
-            className="w-full bg-mint-500 hover:bg-mint-400 disabled:opacity-40 text-black font-semibold rounded-xl py-3 text-sm transition-all flex items-center justify-center gap-2"
+            className="w-full bg-lime hover:brightness-110 disabled:opacity-40 text-black font-semibold rounded-xl py-3 text-sm transition-all flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 size={16} className="animate-spin" /> : null}
             {loading ? 'Création...' : "S'inscrire"}
@@ -238,7 +238,7 @@ export function ForgotPasswordView({ onBack }) {
     return (
       <div className="flex items-center justify-center min-h-screen px-4">
         <GlassCard className="w-full max-w-sm p-6 text-center space-y-4">
-          <CheckCircle2 size={48} className="mx-auto text-mint-400" />
+          <CheckCircle2 size={48} className="mx-auto text-lime" />
           <h2 className="text-xl font-bold text-white">Email envoyé</h2>
           <p className="text-white/40 text-sm">
             Vérifie ta boîte mail pour réinitialiser ton mot de passe.
@@ -283,7 +283,7 @@ export function ForgotPasswordView({ onBack }) {
           <button
             type="submit"
             disabled={loading || !email}
-            className="w-full bg-mint-500 hover:bg-mint-400 disabled:opacity-40 text-black font-semibold rounded-xl py-3 text-sm transition-all flex items-center justify-center gap-2"
+            className="w-full bg-lime hover:brightness-110 disabled:opacity-40 text-black font-semibold rounded-xl py-3 text-sm transition-all flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 size={16} className="animate-spin" /> : null}
             {loading ? 'Envoi...' : 'Envoyer le lien'}

@@ -439,9 +439,6 @@ const useStore = create(
         const allMuscles = ['Pectoraux', 'Dos', 'Epaules', 'Jambes', 'Abdominaux', 'Bras']
         const leastWorked = allMuscles.sort((a, b) => (muscleCounts[a] || 0) - (muscleCounts[b] || 0))
 
-        const exercises = []
-        const exercisesData = require('../data/exercises.js').default || require('../data/exercises.js')
-
         const targetMuscles = leastWorked.slice(0, profile?.frequency >= 4 ? 3 : 2)
         targetMuscles.forEach(muscle => {
           const muscleExercises = exercises.filter(e => e.muscleGroup === muscle && e.equipment !== 'none')

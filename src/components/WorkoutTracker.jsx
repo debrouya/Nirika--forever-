@@ -257,7 +257,7 @@ export default function WorkoutTracker({ program, onFinish, onCancel }) {
         </div>
         <div className="h-1 bg-white/10 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-mint-500 to-mint-400 rounded-full transition-all"
+            className="h-full bg-gradient-to-r from-lime to-lime rounded-full transition-all"
             style={{
               width: `${((currentDayIndex * currentDayExercises.length + currentExerciseIndex + 1) /
                 Math.max(1, dayEntries.reduce((sum, [, exs]) => sum + exs.length, 0))) *
@@ -281,7 +281,7 @@ export default function WorkoutTracker({ program, onFinish, onCancel }) {
               <p className="text-white/40 text-xs">{currentExercise.muscleGroup}</p>
             </div>
             <div className="text-right">
-              <p className="text-mint-400 font-bold text-sm">
+              <p className="text-lime font-bold text-sm">
                 {currentExerciseConfig.sets}×{currentExerciseConfig.reps}
               </p>
             </div>
@@ -308,7 +308,7 @@ export default function WorkoutTracker({ program, onFinish, onCancel }) {
               value={repsInput}
               onChange={(e) => setRepsInput(e.target.value)}
               placeholder="Reps"
-              className="flex-1 bg-white/5 border border-white/10 rounded-xl py-2 px-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-mint-400/50 text-center"
+              className="flex-1 bg-white/5 border border-white/10 rounded-xl py-2 px-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-lime/50 text-center"
               onKeyDown={(e) => e.key === 'Enter' && confirmSet()}
             />
             <input
@@ -316,12 +316,12 @@ export default function WorkoutTracker({ program, onFinish, onCancel }) {
               value={weightInput}
               onChange={(e) => setWeightInput(e.target.value)}
               placeholder="Poids (kg)"
-              className="flex-1 bg-white/5 border border-white/10 rounded-xl py-2 px-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-mint-400/50 text-center"
+              className="flex-1 bg-white/5 border border-white/10 rounded-xl py-2 px-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-lime/50 text-center"
               onKeyDown={(e) => e.key === 'Enter' && confirmSet()}
             />
             <button
               onClick={confirmSet}
-              className="bg-mint-500 hover:bg-mint-400 text-black rounded-xl px-4 font-bold text-sm transition-all"
+              className="bg-lime hover:brightness-110 text-black rounded-xl px-4 font-bold text-sm transition-all"
             >
               <Plus size={16} />
             </button>
@@ -360,7 +360,7 @@ export default function WorkoutTracker({ program, onFinish, onCancel }) {
           disabled={exerciseCompleted}
           className={`flex-1 rounded-xl py-3 text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
             exerciseCompleted
-              ? 'bg-mint-500 hover:bg-mint-400 text-black'
+              ? 'bg-lime hover:brightness-110 text-black'
               : 'bg-white/10 text-white/30 cursor-not-allowed'
           }`}
         >

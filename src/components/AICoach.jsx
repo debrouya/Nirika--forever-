@@ -379,33 +379,38 @@ export default function AICoach({ isPremium = false, onShowPaywall }) {
   const [view, setView] = useState('main')
   const [generatedSplit, setGeneratedSplit] = useState(null)
   const [selectedDay, setSelectedDay] = useState(null)
-  const [coachProfile, setCoachProfile] = useState(() => loadProfile() || {
-    firstName: '',
-    age: '',
-    sex: 'homme',
-    height: '',
-    weight: '',
-    targetWeight: '',
-    goals: [],
-    level: '',
-    frequency: 3,
-    sessionsPerWeekActual: '',
-    sleepQuality: '',
-    stressLevel: '',
-    fatigueLevel: '',
-    injuries: [],
-    workType: 'sedentaire',
-    hoursSitting: '',
-    sleepHours: '',
-    preferredTime: 'matin',
-    location: 'salle',
-    material: [],
-    favoriteExercises: '',
-    hatedExercises: '',
-    mealsPerDay: '',
-    waterIntake: '',
-    alcoholConsumption: '',
-    healthIssues: '',
+  const [coachProfile, setCoachProfile] = useState(() => {
+    const saved = loadProfile()
+    if (saved) return saved
+    return {
+      firstName: storeProfile?.name || '',
+      age: storeProfile?.age?.toString() || '',
+      sex: storeProfile?.sex === 'Femme' ? 'femme' : storeProfile?.sex === 'Homme' ? 'homme' : 'homme',
+      height: storeProfile?.height?.toString() || '',
+      weight: storeProfile?.weight?.toString() || '',
+      targetWeight: storeProfile?.weight?.toString() || '',
+      goals: storeProfile?.goals || [],
+      level: storeProfile?.level || '',
+      frequency: storeProfile?.frequency || 3,
+      sessionsPerWeekActual: storeProfile?.frequency?.toString() || '',
+      sleepQuality: '',
+      stressLevel: '',
+      fatigueLevel: '',
+      injuries: storeProfile?.injuries || [],
+      workType: 'sedentaire',
+      hoursSitting: '',
+      sleepHours: '',
+      preferredTime: 'matin',
+      location: storeProfile?.location || 'salle',
+      material: [],
+      favoriteExercises: '',
+      hatedExercises: '',
+      mealsPerDay: '',
+      waterIntake: '',
+      alcoholConsumption: '',
+      healthIssues: '',
+      dietType: '',
+    }
   })
   const [saved, setSaved] = useState(false)
   const [chatMessages, setChatMessages] = useState([])

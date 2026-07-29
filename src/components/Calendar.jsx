@@ -124,7 +124,7 @@ export default function Calendar() {
       {/* Month stats */}
       <div className="grid grid-cols-3 gap-2">
         <GlassCard className="p-2 text-center">
-          <Dumbbell size={12} className="text-mint-400 mx-auto mb-1" />
+          <Dumbbell size={12} className="text-lime mx-auto mb-1" />
           <p className="text-white font-bold text-sm">{monthStats.totalSessions}</p>
           <p className="text-white/30 text-[9px]">Séances</p>
         </GlassCard>
@@ -192,7 +192,7 @@ export default function Calendar() {
                 onClick={() => setSelectedDay(isSelected ? null : day)}
                 className={`aspect-square rounded-xl flex flex-col items-center justify-center relative transition-all ${
                   isSelected
-                    ? 'bg-mint-500/30 border border-mint-500/50'
+                    ? 'bg-lime/30 border border-lime/50'
                     : isCalisthenieCompleted
                       ? `${phaseColor}/20 border border-${phaseColor}/50`
                       : isToday
@@ -204,7 +204,7 @@ export default function Calendar() {
               >
                 <span
                   className={`text-xs font-medium ${
-                    isToday ? 'text-mint-400' : isSelected ? 'text-white' : isCalisthenieCompleted ? 'text-white' : 'text-white/60'
+                    isToday ? 'text-lime' : isSelected ? 'text-white' : isCalisthenieCompleted ? 'text-white' : 'text-white/60'
                   }`}
                 >
                   {day}
@@ -215,7 +215,7 @@ export default function Calendar() {
                 {!isCalisthenieCompleted && daySessions.length > 0 && (
                   <div className="flex gap-0.5 mt-0.5">
                     {hasExercise && (
-                      <div className="w-1.5 h-1.5 rounded-full bg-mint-400" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-lime" />
                     )}
                     {hasCardio && (
                       <div className="w-1.5 h-1.5 rounded-full bg-pink-400" />
@@ -231,7 +231,7 @@ export default function Calendar() {
       {/* Legend */}
       <div className="flex items-center justify-center gap-4 flex-wrap">
         <div className="flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-full bg-mint-400" />
+          <div className="w-2 h-2 rounded-full bg-lime" />
           <span className="text-white/40 text-[10px]">Exercice</span>
         </div>
         <div className="flex items-center gap-1.5">
@@ -270,13 +270,13 @@ export default function Calendar() {
                 <div key={i} className="flex items-center gap-3 bg-white/5 rounded-xl px-3 py-2">
                   <div
                     className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                      s._type === 'cardio' ? 'bg-pink-500/20' : 'bg-mint-500/20'
+                      s._type === 'cardio' ? 'bg-pink-500/20' : 'bg-lime/20'
                     }`}
                   >
                     {s._type === 'cardio' ? (
                       <Heart size={14} className="text-pink-400" />
                     ) : (
-                      <Dumbbell size={14} className="text-mint-400" />
+                      <Dumbbell size={14} className="text-lime" />
                     )}
                   </div>
                   <div className="flex-1">
@@ -308,13 +308,13 @@ export default function Calendar() {
             <div key={i} className="flex items-center gap-3 bg-white/5 rounded-xl px-3 py-2">
               <div
                 className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                  s._type === 'cardio' ? 'bg-pink-500/20' : 'bg-mint-500/20'
+                  s._type === 'cardio' ? 'bg-pink-500/20' : 'bg-lime/20'
                 }`}
               >
                 {s._type === 'cardio' ? (
                   <Heart size={14} className="text-pink-400" />
                 ) : (
-                  <Dumbbell size={14} className="text-mint-400" />
+                  <Dumbbell size={14} className="text-lime" />
                 )}
               </div>
               <div className="flex-1 min-w-0">
