@@ -4,8 +4,8 @@ import {
   CheckCircle2,
   Play,
 } from 'lucide-react'
-import exercises from '../data/exercises'
 import useStore from '../store/useStore'
+import useExercises from '../hooks/useExercises'
 
 const WORKOUT_IMAGE = 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=500&fit=crop'
 
@@ -20,6 +20,7 @@ const SAMPLE_EXERCISES = [
 
 export default function WorkoutDetail({ workout }) {
   const { setCurrentView } = useStore()
+  const exercises = useExercises()
   const [completed, setCompleted] = useState(new Set())
 
   const workoutExercises = SAMPLE_EXERCISES.map((item) => {

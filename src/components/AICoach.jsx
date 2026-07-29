@@ -21,24 +21,9 @@ import {
   ChevronRight,
   Send,
 } from 'lucide-react'
-import exercises from '../data/exercises'
 import useStore from '../store/useStore'
+import useExercises from '../hooks/useExercises'
 import { askCoach } from '../services/supabaseService'
-
-const MUSCLE_GROUPS = {
-  Pectoraux: { icon: '🏋️', exercises: [] },
-  Dos: { icon: '💪', exercises: [] },
-  Epaules: { icon: '🤸', exercises: [] },
-  Jambes: { icon: '🦵', exercises: [] },
-  Abdominaux: { icon: '🔥', exercises: [] },
-  Bras: { icon: '💪', exercises: [] },
-}
-
-exercises.forEach((ex) => {
-  if (MUSCLE_GROUPS[ex.muscleGroup]) {
-    MUSCLE_GROUPS[ex.muscleGroup].exercises.push(ex)
-  }
-})
 
 const INJURY_EXCLUSION_MAP = {
   genou: ['squat', 'fentes', 'leg_press', 'hack_squat', 'sissy_squat'],
@@ -204,7 +189,18 @@ function getExcludedExerciseIds(injuries) {
   return Array.from(excluded)
 }
 
-function generateWorkout(profile, excludedIds) {
+function generateWorkout(profile, excludedIds, exercises) {
+  const MUSCLE_GROUPS = {
+    Pectoraux: { icon: '🏋️', exercises: [] },
+    Dos: { icon: '💪', exercises: [] },
+    Epaules: { icon: '🤸', exercises: [] },
+    Jambes: { icon: '🦵', exercises: [] },
+    Abdominaux: { icon: '🔥', exercises: [] },
+    Bras: { icon: '💪', exercises: [] },
+  }
+  exercises.forEach((ex) => {
+    if (MUSCLE_GROUPS[ex.muscleGroup]) MUSCLE_GROUPS[ex.muscleGroup].exercises.push(ex)
+  })
   const { level, goals, frequency, location, material } = profile
   const goal = Array.isArray(goals) ? goals[0] : goals
   const availableMuscles = Object.keys(MUSCLE_GROUPS).filter((m) => MUSCLE_GROUPS[m].exercises.length > 0)
@@ -379,6 +375,7 @@ function SliderInput({ label, value, onChange, min = 0, max = 10, step = 1 }) {
 
 export default function AICoach({ isPremium = false, onShowPaywall }) {
   const { profile: storeProfile, workoutHistory, sessionHistory } = useStore()
+  const exercises = useExercises()
   const [view, setView] = useState('main')
   const [generatedSplit, setGeneratedSplit] = useState(null)
   const [selectedDay, setSelectedDay] = useState(null)
@@ -469,10 +466,10 @@ export default function AICoach({ isPremium = false, onShowPaywall }) {
   }, [])
 
   const handleGenerate = useCallback(() => {
-    const split = generateWorkout(coachProfile, excludedIds)
+    const split = generateWorkout(coachProfile, excludedIds, exercises)
     setGeneratedSplit(split)
     setView('workout')
-  }, [coachProfile, excludedIds])
+  }, [coachProfile, excludedIds, exercises])
 
   const handleDaySelect = useCallback((dayIndex) => {
     setSelectedDay(dayIndex)

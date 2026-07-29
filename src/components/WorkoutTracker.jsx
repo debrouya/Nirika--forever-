@@ -11,13 +11,10 @@ import {
   Dumbbell,
   Flame,
 } from 'lucide-react'
-import exercises from '../data/exercises'
 import useStore from '../store/useStore'
+import useExercises from '../hooks/useExercises'
 import { fireStreakToast } from './StreakMotivation'
 import GlassCard from './GlassCard'
-
-const EXERCISE_MAP = {}
-exercises.forEach((e) => (EXERCISE_MAP[e.id] = e))
 
 function formatTime(seconds) {
   const m = Math.floor(seconds / 60)
@@ -92,6 +89,9 @@ function RestTimer({ duration, onDone }) {
 
 export default function WorkoutTracker({ program, onFinish, onCancel }) {
   const { addWorkout, addSessionToHistory, profile, addExerciseRecord } = useStore()
+  const exercises = useExercises()
+  const EXERCISE_MAP = {}
+  exercises.forEach((e) => (EXERCISE_MAP[e.id] = e))
   const [currentDayIndex, setCurrentDayIndex] = useState(0)
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0)
   const [sessionSets, setSessionSets] = useState([])

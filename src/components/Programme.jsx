@@ -21,14 +21,12 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import { programs } from '../data/programs'
-import exercises from '../data/exercises'
 import { getUserProgram, upsertUserProgram, deleteUserProgram } from '../services/supabaseService'
 import { useNotifications } from '../hooks/useNotifications'
+import useExercises from '../hooks/useExercises'
 import ExerciseTracker from './ExerciseTracker'
 import CalisthenicsTracker from './CalisthenicsTracker'
 import useStore from '../store/useStore'
-
-const exerciseMap = Object.fromEntries(exercises.map(e => [e.id, e]))
 
 const levelColors = {
   debutant: 'text-lime bg-lime/10',
@@ -69,6 +67,8 @@ export default function Programme({ user, isPremium }) {
   const [loading, setLoading] = useState(true)
   const [starting, setStarting] = useState(null)
   const { permission, requestPermission } = useNotifications(user?.id)
+  const exercises = useExercises()
+  const exerciseMap = Object.fromEntries(exercises.map(e => [e.id, e]))
 
   const loadActiveProgram = useCallback(async () => {
     if (!user?.id) { setLoading(false); return }

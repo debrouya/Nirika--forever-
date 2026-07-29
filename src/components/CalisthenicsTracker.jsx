@@ -14,11 +14,9 @@ import {
   BarChart3,
 } from 'lucide-react'
 import useStore from '../store/useStore'
-import exercises from '../data/exercises'
+import useExercises from '../hooks/useExercises'
 import ExerciseTutorial from './ExerciseTutorial'
 import CalisthenicsBilan from './CalisthenicsBilan'
-
-const exerciseMap = Object.fromEntries(exercises.map(e => [e.id, e]))
 
 const PHASES = [
   { id: 1, name: 'Adaptation', color: 'text-green-400', bg: 'bg-green-400', emoji: '🟢', days: 'Jour 1-10', timing: '30s / 15s' },
@@ -83,6 +81,8 @@ function getMotivation(day) {
 
 export default function CalisthenicsTracker({ onStartExercise }) {
   const { calisthenie30, startCalisthenie30, completeCalisthenie30Day, uncompleteCalisthenie30Day, resetCalisthenie30 } = useStore()
+  const exercises = useExercises()
+  const exerciseMap = Object.fromEntries(exercises.map(e => [e.id, e]))
   const [selectedDay, setSelectedDay] = useState(null)
   const [tutorialExercise, setTutorialExercise] = useState(null)
   const [showBilan, setShowBilan] = useState(false)

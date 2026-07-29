@@ -7,7 +7,7 @@ import {
   Search,
 } from 'lucide-react'
 import useStore from '../store/useStore'
-import exercises from '../data/exercises'
+import useExercises from '../hooks/useExercises'
 import ExerciseTracker from './ExerciseTracker'
 
 const MUSCLE_GROUPS = [
@@ -34,6 +34,7 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
   const [activeGroup, setActiveGroup] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedExercise, setSelectedExercise] = useState(null)
+  const exercises = useExercises()
 
   const filtered = exercises.filter((e) => {
     const matchGroup = activeGroup === 'all' || e.muscleGroup === activeGroup
