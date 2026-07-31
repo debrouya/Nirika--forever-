@@ -84,7 +84,7 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
         <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="absolute bottom-20 left-3 right-3 bg-dark-card rounded-2xl p-4 space-y-1 animate-fade-in-up border border-dark-border shadow-2xl shadow-black/30"
+            className="absolute bottom-20 left-3 right-3 bg-dark-card rounded-2xl p-4 space-y-1 animate-fade-in-up border border-dark-border shadow-2xl shadow-black/30 max-h-[50vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 px-1">

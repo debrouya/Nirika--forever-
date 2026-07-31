@@ -5,11 +5,17 @@ import aliments from '../data/aliments'
 import FeatureGuide from './FeatureGuide'
 
 export default function NutritionTracker() {
-  const { nutritionPlan, setNutritionPlan, nutritionMeals, addNutritionMeal, removeNutritionMeal, pushView } = useStore()
+  const store = useStore()
+  const nutritionPlan = store.nutritionPlan || { dailyCalories: 2000, protein: 150, carbs: 200, fat: 65 }
+  const setNutritionPlan = store.setNutritionPlan
+  const nutritionMeals = store.nutritionMeals || []
+  const addNutritionMeal = store.addNutritionMeal || (() => {})
+  const removeNutritionMeal = store.removeNutritionMeal || (() => {})
+  const pushView = store.pushView
   const [tab, setTab] = useState('journal')
   const [search, setSearch] = useState('')
   const [editingCalories, setEditingCalories] = useState(false)
-  const [calInput, setCalInput] = useState(nutritionPlan.dailyCalories.toString())
+  const [calInput, setCalInput] = useState(() => String(nutritionPlan?.dailyCalories || 2000))
 
   const filteredAliments = aliments.filter((a) =>
     a.name.toLowerCase().includes(search.toLowerCase()) ||

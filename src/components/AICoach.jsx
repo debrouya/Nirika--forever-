@@ -968,103 +968,41 @@ export default function AICoach({ isPremium = false, onShowPaywall }) {
 
   // ==================== MAIN VIEW ====================
   return (
-    <div data-onboard="coach" className="space-y-4 p-4">
-      {/* Score Ring */}
-      <div className="bg-dark-card rounded-2xl p-6 border border-dark-border flex flex-col items-center gap-3">
-        <ScoreRing score={fitnessScore} />
-        <div className="text-center">
-          <p className="text-muted text-xs uppercase tracking-wide">Niveau Fitness</p>
-          <p className="text-white font-bold text-sm">{getScoreLabel(fitnessScore)}</p>
+    <div data-onboard="coach" className="space-y-3 p-4">
+      {/* Compact Chat */}
+      <div className="bg-dark-card rounded-2xl border border-dark-border overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-dark-border/50">
+          <div className="flex items-center gap-2"><Bot size={16} className="text-lime" /><span className="text-white font-medium text-sm">Coach NIRIKA</span></div>
+          <button onClick={() => setView('chat')} className="text-[10px] text-lime/70 hover:text-lime">Plein écran</button>
+        </div>
+        <div className="max-h-[180px] overflow-y-auto px-4 py-3 space-y-3">
+          {chatMessages.length === 0 ? <p className="text-muted text-xs">Pose une question ou lance un programme.</p> : chatMessages.slice(-3).map((msg, i) => (<div key={i} className={`flex ${msg.role==='user'?'justify-end':'justify-start'}`}><div className={`max-w-[85%] rounded-xl px-3 py-2 text-xs ${msg.role==='user'?'bg-lime/20 text-white':'bg-dark-bg text-white/80'}`}>{msg.content.length>300?msg.content.slice(0,300)+'...':msg.content}</div></div>))}
+          {chatLoading && <div className="flex justify-start"><div className="bg-dark-bg rounded-xl px-3 py-2 flex gap-1"><div className="w-1.5 h-1.5 rounded-full bg-lime/40 animate-bounce"/><div className="w-1.5 h-1.5 rounded-full bg-lime/60 animate-bounce" style={{animationDelay:'150ms'}}/><div className="w-1.5 h-1.5 rounded-full bg-lime animate-bounce" style={{animationDelay:'300ms'}}/></div></div>}
+        </div>
+        <div className="flex items-center gap-2 p-2 border-t border-dark-border/50">
+          <input type="text" value={chatInput} onChange={e=>setChatInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleSendMessage()} placeholder="Message..." className="flex-1 bg-dark-bg border border-dark-border rounded-xl text-white text-xs px-3 py-2 placeholder-white/30 focus:outline-none"/>
+          <button onClick={handleSendMessage} disabled={!chatInput.trim()||chatLoading} className="w-8 h-8 rounded-lg bg-lime flex items-center justify-center disabled:opacity-40 shrink-0"><Send size={14} className="text-dark-bg"/></button>
         </div>
       </div>
 
-      {/* Stats rapides */}
+      {/* Score + Stats */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-dark-card rounded-2xl p-3 border border-dark-border">
-          <div className="flex items-center gap-2 mb-1">
-            <Trophy size={14} className="text-yellow-400" />
-            <span className="text-muted text-[10px] uppercase">Séances totales</span>
-          </div>
-          <p className="text-white text-xl font-bold">{totalSessions}</p>
+        <div className="bg-dark-card rounded-2xl p-4 border border-dark-border flex flex-col items-center gap-2">
+          <ScoreRing score={fitnessScore} />
+          <p className="text-white font-bold text-xs">{getScoreLabel(fitnessScore)}</p>
         </div>
-        <div className="bg-dark-card rounded-2xl p-3 border border-dark-border">
-          <div className="flex items-center gap-2 mb-1">
-            <Target size={14} className="text-lime" />
-            <span className="text-muted text-[10px] uppercase">Fréquence</span>
-          </div>
-          <p className="text-white text-xl font-bold">{coachProfile.frequency || 3}x / sem</p>
+        <div className="flex flex-col gap-2">
+          <div className="bg-dark-card rounded-xl p-3 border border-dark-border flex-1"><div className="flex items-center gap-2 mb-1"><Trophy size={14} className="text-yellow-400"/><span className="text-muted text-[10px] uppercase">Séances</span></div><p className="text-white text-xl font-bold">{totalSessions}</p></div>
+          <div className="bg-dark-card rounded-xl p-3 border border-dark-border flex-1"><div className="flex items-center gap-2 mb-1"><Target size={14} className="text-lime"/><span className="text-muted text-[10px] uppercase">Fréquence</span></div><p className="text-white text-xl font-bold">{coachProfile.frequency||3}x/sem</p></div>
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="space-y-2">
-        <button
-          onClick={() => isPremium ? setView('chat') : onShowPaywall?.()}
-          className="w-full bg-dark-card rounded-2xl p-4 flex items-center gap-3 hover:bg-dark-border transition-all active:scale-[0.98] border border-dark-border relative"
-        >
-          <div className="w-10 h-10 rounded-xl bg-lime flex items-center justify-center">
-            <MessageCircle size={20} className="text-dark-bg" />
-          </div>
-          <div className="text-left flex-1">
-            <p className="text-white font-bold text-sm">Chat avec NIRIKA</p>
-            <p className="text-muted text-xs">Pose tes questions, reçois des conseils personnalisés</p>
-          </div>
-          {!isPremium && <span className="absolute top-2 right-2 px-1.5 py-0.5 bg-amber-500 text-[9px] text-white font-bold rounded-full">Premium</span>}
-        </button>
-
-        <button
-          onClick={() => setView('profile')}
-          className="w-full bg-dark-card rounded-2xl p-4 flex items-center gap-3 hover:bg-dark-border transition-all active:scale-[0.98] border border-dark-border"
-        >
-          <div className="w-10 h-10 rounded-xl bg-lime/20 flex items-center justify-center">
-            <User size={20} className="text-lime" />
-          </div>
-          <div className="text-left flex-1">
-            <p className="text-white font-bold text-sm">Mon Profil</p>
-            <p className="text-muted text-xs">{coachProfile.firstName ? `${coachProfile.firstName} — ${coachProfile.level || 'Non défini'}` : 'Configure ton profil pour un coaching adapté'}</p>
-          </div>
-          <ChevronRight size={16} className="text-muted" />
-        </button>
-
-        <button
-          onClick={handleGenerate}
-          className="w-full bg-dark-card rounded-2xl p-4 flex items-center gap-3 hover:bg-dark-border transition-all active:scale-[0.98] border border-dark-border"
-        >
-          <div className="w-10 h-10 rounded-xl bg-lime/20 flex items-center justify-center">
-            <Dumbbell size={20} className="text-lime" />
-          </div>
-          <div className="text-left flex-1">
-            <p className="text-white font-bold text-sm">Générer un programme</p>
-            <p className="text-muted text-xs">Basé sur ton profil et tes objectifs</p>
-          </div>
-        </button>
-
-        <button
-          onClick={() => isPremium ? handlePlanSemaine() : onShowPaywall?.()}
-          className="w-full bg-dark-card rounded-2xl p-4 flex items-center gap-3 hover:bg-dark-border transition-all active:scale-[0.98] border border-dark-border relative"
-        >
-          <div className="w-10 h-10 rounded-xl bg-lime/20 flex items-center justify-center">
-            <CalendarRange size={20} className="text-lime" />
-          </div>
-          <div className="text-left flex-1">
-            <p className="text-white font-bold text-sm">Plan semaine</p>
-            <p className="text-muted text-xs">Programme IA personnalisé selon ton niveau</p>
-          </div>
-          {!isPremium && <span className="absolute top-2 right-2 px-1.5 py-0.5 bg-amber-500 text-[9px] text-white font-bold rounded-full">Premium</span>}
-        </button>
-
-        <button
-          onClick={() => setView('bilan')}
-          className="w-full bg-dark-card rounded-2xl p-4 flex items-center gap-3 hover:bg-dark-border transition-all active:scale-[0.98] border border-dark-border"
-        >
-          <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
-            <BarChart3 size={20} className="text-blue-400" />
-          </div>
-          <div className="text-left flex-1">
-            <p className="text-white font-bold text-sm">Bilan & Statistiques</p>
-            <p className="text-muted text-xs">Analyse de tes performances</p>
-          </div>
-        </button>
+      {/* Actions bar */}
+      <div className="flex gap-2">
+        <button onClick={()=>isPremium?handlePlanSemaine():onShowPaywall?.()} className="flex-1 py-3 rounded-xl bg-lime/10 border border-lime/30 text-lime font-bold text-xs flex items-center justify-center gap-1.5 relative"><CalendarRange size={14}/>Plan{!isPremium&&<span className="absolute -top-1 -right-1 px-1 py-0.5 bg-amber-500 text-[8px] text-white rounded-full">Premium</span>}</button>
+        <button onClick={handleGenerate} className="flex-1 py-3 rounded-xl bg-dark-card border border-dark-border text-white font-bold text-xs flex items-center justify-center gap-1.5"><Dumbbell size={14}/>Générer</button>
+        <button onClick={()=>setView('profile')} className="flex-1 py-3 rounded-xl bg-dark-card border border-dark-border text-white font-bold text-xs flex items-center justify-center gap-1.5"><User size={14}/>Profil</button>
+        <button onClick={()=>setView('bilan')} className="py-3 px-3 rounded-xl bg-dark-card border border-dark-border text-white font-bold text-xs"><BarChart3 size={14}/></button>
       </div>
 
       {/* Generated Plan */}
@@ -1097,23 +1035,9 @@ export default function AICoach({ isPremium = false, onShowPaywall }) {
         </div>
       )}
 
-      {/* Résumé profil */}
-      {coachProfile.firstName && (
-        <div className="bg-dark-card rounded-2xl p-4 border border-dark-border">
-          <div className="flex items-center gap-2 mb-3">
-            <User size={14} className="text-lime" />
-            <span className="text-muted text-[10px] uppercase">Résumé profil</span>
-          </div>
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            {coachProfile.age && <p className="text-white"><span className="text-muted">Âge : </span>{coachProfile.age} ans</p>}
-            {coachProfile.height && <p className="text-white"><span className="text-muted">Taille : </span>{coachProfile.height}cm</p>}
-            {coachProfile.weight && <p className="text-white"><span className="text-muted">Poids : </span>{coachProfile.weight}kg</p>}
-            {bmi && <p className="text-white"><span className="text-muted">IMC : </span><span className={bmiCategory?.color}>{bmi}</span></p>}
-            {coachProfile.level && <p className="text-white"><span className="text-muted">Niveau : </span>{LEVELS.find(l => l.value === coachProfile.level)?.label}</p>}
-            {coachProfile.goals?.length > 0 && <p className="text-white"><span className="text-muted">Objectif : </span>{GOALS.find(g => g.value === coachProfile.goals[0])?.label}</p>}
-          </div>
-        </div>
-      )}
+      <div className="bg-dark-card rounded-2xl p-3 border border-dark-border text-xs text-white/60 space-y-0.5">
+        {coachProfile.firstName ? <><p className="text-white font-medium">{coachProfile.firstName}</p>{coachProfile.age&&<p><span className="text-muted">Âge: </span>{coachProfile.age}ans</p>}{coachProfile.level&&<p><span className="text-muted">Niveau: </span>{LEVELS.find(l=>l.value===coachProfile.level)?.label}</p>}{coachProfile.goals?.length>0&&<p><span className="text-muted">Objectif: </span>{GOALS.find(g=>g.value===coachProfile.goals[0])?.label}</p>}</> : <p className="text-muted">Configure ton profil pour un coaching personnalisé</p>}
+      </div>
     </div>
   )
 }
