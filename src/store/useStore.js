@@ -647,6 +647,28 @@ const useStore = create(
         set((state) => ({
           workoutTemplates: [...state.workoutTemplates, { ...template, id: `template_${Date.now()}` }],
         })),
+
+      nutritionMeals: [],
+      addNutritionMeal: (aliment) =>
+        set((state) => ({
+          nutritionMeals: [...state.nutritionMeals, { ...aliment, id: Date.now(), date: new Date().toISOString().slice(0, 10) }],
+        })),
+      removeNutritionMeal: (id) =>
+        set((state) => ({
+          nutritionMeals: state.nutritionMeals.filter((m) => m.id !== id),
+        })),
+
+      formCheckNotes: [],
+      addFormCheckNote: (exerciseName, note) =>
+        set((state) => ({
+          formCheckNotes: [...state.formCheckNotes, { exerciseName, note, date: new Date().toISOString(), id: Date.now() }],
+        })),
+
+      warmupHistory: [],
+      addWarmupSession: (type) =>
+        set((state) => ({
+          warmupHistory: [...state.warmupHistory, { type, date: new Date().toISOString(), id: Date.now() }],
+        })),
     }),
     {
       name: 'nf-storage',
