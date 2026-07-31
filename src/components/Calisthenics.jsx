@@ -8,7 +8,6 @@ import {
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
-import ExerciseTracker from './ExerciseTracker'
 
 const MUSCLE_GROUPS = [
   { id: 'all', label: 'Tout' },
@@ -30,10 +29,9 @@ const EQUIPMENT_ICONS = {
 }
 
 export default function Calisthenics({ isPremium, onShowPaywall }) {
-  const { exerciseHistory } = useStore()
+  const { exerciseHistory, startSession, setCurrentView } = useStore()
   const [activeGroup, setActiveGroup] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedExercise, setSelectedExercise] = useState(null)
   const exercises = useExercises()
 
   const filtered = exercises.filter((e) => {
@@ -46,15 +44,10 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
   const visibleExercises = isPremium ? filtered : filtered.slice(0, FREE_LIMIT)
   const lockedCount = isPremium ? 0 : Math.max(0, filtered.length - FREE_LIMIT)
 
-  if (selectedExercise) {
-    const lastRecord = (exerciseHistory[selectedExercise.id] || []).slice(-1)[0]
-    return (
-      <ExerciseTracker
-        exercise={selectedExercise}
-        sessionHistory={lastRecord ? [lastRecord] : []}
-        onComplete={() => setSelectedExercise(null)}
-      />
-    )
+  const handleStartExercise = (ex) => {
+    if (!isPremium && filtered.indexOf(ex) >= FREE_LIMIT) { onShowPaywall?.(); return }
+    startSession(ex.id, ex.name)
+    setCurrentView('session')
   }
 
   return (
@@ -105,7 +98,7 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
           return (
             <button
               key={exercise.id}
-              onClick={() => setSelectedExercise(exercise)}
+              onClick={() => handleStartExercise(exercise)}
               className="w-full bg-dark-card rounded-2xl p-4 text-left hover:bg-dark-card/80 transition-all active:scale-[0.98]"
             >
               <div className="flex items-center gap-3">

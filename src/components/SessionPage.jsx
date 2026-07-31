@@ -6,6 +6,7 @@ import {
   Dumbbell,
   Activity,
   Zap,
+  ChevronLeft,
   ChevronRight,
   Clock,
   Flame,
@@ -15,6 +16,7 @@ import {
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import SessionNotes from './SessionNotes'
+import ExerciseTracker from './ExerciseTracker'
 import PersonalRecords from './PersonalRecords'
 
 function formatDuration(seconds) {
@@ -56,6 +58,21 @@ export default function SessionPage() {
   }, [workoutHistory])
 
   const hasActiveSession = activeSession && activeSession.startedAt
+
+  if (hasActiveSession) {
+    const ex = useStore.getState().getAllExercises?.()?.find(e => e.id === activeSession.exerciseId)
+    const currentExercise = ex || { id: activeSession.exerciseId, name: activeSession.exerciseName, muscleGroup: 'Autre', equipment: 'none' }
+    const lastRecord = (useStore.getState().exerciseHistory?.[activeSession.exerciseId] || []).slice(-1)[0]
+    return (
+      <div className="space-y-3 p-4">
+        <div className="flex items-center gap-3">
+          <button onClick={() => setCurrentView('dashboard')} className="p-1"><ChevronLeft size={20} className="text-muted" /></button>
+          <div className="flex-1"><h1 className="text-white font-bold text-sm">Séance en cours</h1><p className="text-muted text-[10px]">{activeSession.exerciseName} · {activeSession.sets?.length || 0} séries</p></div>
+        </div>
+        <ExerciseTracker key={activeSession.exerciseId + activeSession.startedAt} exercise={currentExercise} sessionHistory={lastRecord ? [lastRecord] : []} onComplete={() => setCurrentView('dashboard')} />
+      </div>
+    )
+  }
   const records = useMemo(() => getPersonalRecords(), [getPersonalRecords])
   const hasRecords = Object.keys(records).length > 0
 
