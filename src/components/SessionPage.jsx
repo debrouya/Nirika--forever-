@@ -10,9 +10,12 @@ import {
   Clock,
   Flame,
   Calendar,
+  Trophy,
+  FileText,
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import SessionNotes from './SessionNotes'
+import PersonalRecords from './PersonalRecords'
 
 function formatDuration(seconds) {
   const m = Math.floor(seconds / 60)
@@ -45,7 +48,7 @@ function getTypeLabel(type) {
 }
 
 export default function SessionPage() {
-  const { activeSession, workoutHistory, setCurrentView } = useStore()
+  const { activeSession, workoutHistory, workoutTemplates, setCurrentWorkoutTemplate, pushView, setCurrentView, getPersonalRecords } = useStore()
 
   const lastWorkout = useMemo(() => {
     if (workoutHistory.length === 0) return null
@@ -53,6 +56,8 @@ export default function SessionPage() {
   }, [workoutHistory])
 
   const hasActiveSession = activeSession && activeSession.startedAt
+  const records = useMemo(() => getPersonalRecords(), [getPersonalRecords])
+  const hasRecords = Object.keys(records).length > 0
 
   return (
     <div className="space-y-4 p-4">
@@ -192,6 +197,7 @@ export default function SessionPage() {
           </button>
         </div>
       </div>
+      {hasRecords && <PersonalRecords compact />}
       {/* Session Note (for last workout) */}
       {lastWorkout && (
         <SessionNotes sessionId={lastWorkout.id} />
