@@ -3,9 +3,12 @@ import {
   Search,
   ChevronRight,
   Dumbbell,
+  Apple,
   Zap,
   Activity,
   TrendingUp,
+  Layout,
+  LayoutDashboard,
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import { programs } from '../data/programs'
@@ -25,15 +28,17 @@ const PLAN_IMAGES = [
 ]
 
 const QUICK_ACTIONS = [
-  { id: 'session', label: 'Séance', icon: Dumbbell, color: 'from-lime/20 to-lime/5', iconColor: 'text-lime' },
+  { id: 'nutrition', label: 'Nutrition', icon: Apple, color: 'from-lime/20 to-lime/5', iconColor: 'text-lime' },
   { id: 'cardio', label: 'Cardio', icon: Activity, color: 'from-blue-500/20 to-blue-500/5', iconColor: 'text-blue-400' },
   { id: 'calisthenics', label: 'Exercices', icon: Zap, color: 'from-orange-500/20 to-orange-500/5', iconColor: 'text-orange-400' },
-  { id: 'stats', label: 'Stats', icon: TrendingUp, color: 'from-purple-500/20 to-purple-500/5', iconColor: 'text-purple-400' },
 ]
 
 export default function Dashboard() {
   const { profile, setCurrentView, workoutHistory, sessionHistory, exerciseHistory, calisthenie30 } = useStore()
   const [searchQuery, setSearchQuery] = useState('')
+  const [simpleMode, setSimpleMode] = useState(() => {
+    try { return localStorage.getItem('nirika_dashboard_mode') === 'simple' } catch { return false }
+  })
 
   const firstName = useMemo(() => {
     if (profile?.full_name) return profile.full_name.split(' ')[0]
@@ -78,8 +83,16 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Mode Toggle */}
+      <div className="flex justify-end -mt-2 mb-2">
+        <button onClick={() => { const next = !simpleMode; setSimpleMode(next); try { localStorage.setItem('nirika_dashboard_mode', next ? 'simple' : 'full') } catch {} }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-dark-card border border-dark-border text-muted hover:text-white transition-colors text-[10px]">
+          {simpleMode ? <LayoutDashboard size={12} /> : <Layout size={12} />}
+          {simpleMode ? 'Complet' : 'Simplifié'}
+        </button>
+      </div>
+
       {/* Quick Actions */}
-      <div data-onboard="quick-actions" className="grid grid-cols-4 gap-2">
+      <div data-onboard="quick-actions" className="grid grid-cols-3 gap-2">
         {QUICK_ACTIONS.map((action, i) => {
           const Icon = action.icon
           return (

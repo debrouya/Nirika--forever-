@@ -246,7 +246,7 @@ export default function Stats() {
   return (
     <div data-onboard="stats" className="space-y-5 p-4">
       {/* Title */}
-      <h1 className="text-white font-bold text-2xl">Stats</h1>
+      <h1 className="text-white font-bold text-2xl">Performances</h1>
 
       {/* User Profile Summary */}
       <div className="bg-dark-card rounded-2xl p-4">

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import {
   Home,
+  Play,
   CalendarDays,
   BarChart3,
   Menu,
@@ -14,20 +15,33 @@ import {
   Crown,
   Plus,
   FileText,
+  Camera,
 } from 'lucide-react'
 
 const MAIN_TABS = [
   { id: 'dashboard', label: 'Accueil', icon: Home },
-  { id: 'calendar', label: 'Calendrier', icon: CalendarDays },
-  { id: 'stats', label: 'Stats', icon: BarChart3 },
+  { id: 'session', label: 'Séance', icon: Play },
 ]
 
-const MENU_ITEMS = [
-  { id: 'programme', label: 'Programme', icon: CalendarRange },
-  { id: 'calisthenics', label: 'Exercices', icon: Dumbbell },
-  { id: 'custom-exercises', label: 'Mes exercices', icon: Plus },
-  { id: 'cardio', label: 'Cardio', icon: HeartPulse },
-  { id: 'ai', label: 'Coach NIRIKA', icon: MessageSquareMore },
+const CATEGORIES = [
+  {
+    label: null,
+    items: [
+      { id: 'ai', label: 'Coach NIRIKA', icon: MessageSquareMore },
+      { id: 'programme', label: 'Programme', icon: CalendarRange },
+      { id: 'stats', label: 'Performances', icon: BarChart3 },
+      { id: 'calendar', label: 'Calendrier', icon: CalendarDays },
+      { id: 'templates', label: 'Templates séance', icon: FileText },
+      { id: 'custom-exercises', label: 'Mes exercices', icon: Plus },
+    ],
+  },
+  {
+    label: 'Bien-être',
+    items: [
+      { id: 'photos', label: 'Photos progression', icon: Camera },
+      { id: 'form-check', label: 'Analyse technique', icon: Shield },
+    ],
+  },
 ]
 
 export default function Navigation({ active, onChange, userRole, isAdmin, onAdminClick, onLogout, onPricingClick }) {
@@ -80,25 +94,31 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
               </button>
             </div>
 
-            {MENU_ITEMS.map((item) => {
-              const Icon = item.icon
-              const onboardAttr = item.id === 'custom-exercises' ? { 'data-onboard': 'custom-exercises' } : {}
-              return (
-                <button
-                  key={item.id}
-                  {...onboardAttr}
-                  onClick={() => handleMenuAction(item.id)}
-                  className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-all active:scale-[0.98] text-left"
-                >
-                  <div className="w-9 h-9 rounded-xl bg-dark-bg flex items-center justify-center border border-dark-border">
-                    <Icon size={18} className="text-muted" />
-                  </div>
-                  <span className="text-white text-sm font-medium">{item.label}</span>
-                </button>
-              )
-            })}
-
-            <div className="border-t border-dark-border my-2" />
+            {CATEGORIES.map((cat, ci) => (
+              <div key={ci}>
+                {cat.label && (
+                  <p className="text-muted text-[10px] uppercase tracking-wider font-medium px-3 py-1.5">{cat.label}</p>
+                )}
+                {cat.items.map((item) => {
+                  const Icon = item.icon
+                  const onboardAttr = item.id === 'custom-exercises' ? { 'data-onboard': 'custom-exercises' } : {}
+                  return (
+                    <button
+                      key={item.id}
+                      {...onboardAttr}
+                      onClick={() => handleMenuAction(item.id)}
+                      className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-all active:scale-[0.98] text-left"
+                    >
+                      <div className="w-9 h-9 rounded-xl bg-dark-bg flex items-center justify-center border border-dark-border">
+                        <Icon size={18} className="text-muted" />
+                      </div>
+                      <span className="text-white text-sm font-medium">{item.label}</span>
+                    </button>
+                  )
+                })}
+                {ci < CATEGORIES.length - 1 && <div className="border-t border-dark-border my-2" />}
+              </div>
+            ))}
 
             <button
               data-onboard="premium"

@@ -20,10 +20,13 @@ import {
   ChevronDown,
   ChevronRight,
   Send,
+  CalendarRange,
+  Camera,
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
 import { askCoach } from '../services/supabaseService'
+import { generateWeekPlan, findAlternativeExercises } from '../services/aiCoaching'
 
 const INJURY_EXCLUSION_MAP = {
   genou: ['squat', 'fentes', 'leg_press', 'hack_squat', 'sissy_squat'],
@@ -416,6 +419,7 @@ export default function AICoach({ isPremium = false, onShowPaywall }) {
   const [chatMessages, setChatMessages] = useState([])
   const [chatInput, setChatInput] = useState('')
   const [chatLoading, setChatLoading] = useState(false)
+  const [altExerciseId, setAltExerciseId] = useState(null)
   const chatEndRef = useRef(null)
 
   useEffect(() => {
@@ -482,12 +486,27 @@ export default function AICoach({ isPremium = false, onShowPaywall }) {
   }, [])
 
   const handleBack = useCallback(() => {
-    if (view === 'dayDetail') setView('workout')
+    if (view === 'dayDetail') { setView('workout'); setAltExerciseId(null) }
     else if (view === 'workout') setView('main')
     else if (view === 'bilan') setView('main')
     else if (view === 'profile') setView('main')
     else if (view === 'chat') setView('main')
   }, [view])
+
+  const handlePlanSemaine = useCallback(() => {
+    const storeState = useStore.getState()
+    const prompt = generateWeekPlan(coachProfile, storeState.exerciseHistory, coachProfile.goals)
+    setChatMessages([{ role: 'user', content: prompt }])
+    setChatLoading(true)
+    setView('chat')
+    askCoach(prompt, coachProfile, [])
+      .then(result => {
+        if (result.reply) setChatMessages(prev => [...prev, { role: 'assistant', content: result.reply }])
+        else if (result.error) setChatMessages(prev => [...prev, { role: 'assistant', content: `❌ ${result.error}` }])
+      })
+      .catch(() => setChatMessages(prev => [...prev, { role: 'assistant', content: '❌ Erreur de connexion' }]))
+      .finally(() => setChatLoading(false))
+  }, [coachProfile])
 
   // ==================== DAY DETAIL VIEW ====================
   if (view === 'dayDetail' && generatedSplit && selectedDay !== null) {
@@ -501,16 +520,23 @@ export default function AICoach({ isPremium = false, onShowPaywall }) {
           <h3 className="text-white font-bold text-lg mb-1">Jour {day.day} — {day.name}</h3>
           <p className="text-muted text-xs mb-4">{day.exercises.length} exercices · {day.totalSets} séries</p>
           <div className="space-y-3">
-            {day.exercises.map((ex, i) => (
-              <div key={i} className="bg-dark-bg rounded-xl p-3">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-white font-medium text-sm">{ex.name}</span>
-                  <span className="text-lime text-xs font-bold">{ex.sets}×{ex.reps}</span>
+            {day.exercises.map((ex, i) => {
+              const isAltOpen = altExerciseId === ex.id || altExerciseId === ex.name
+              const alternatives = isAltOpen ? findAlternativeExercises(ex.name || ex.id, exercises) : []
+              return (
+                <div key={i} className="bg-dark-bg rounded-xl p-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-white font-medium text-sm">{ex.name}</span>
+                    <span className="text-lime text-xs font-bold">{ex.sets}×{ex.reps}</span>
+                  </div>
+                  <p className="text-muted text-xs">{ex.muscleGroup} · {ex.equipment}</p>
+                  {ex.description && <p className="text-white/30 text-xs mt-1 line-clamp-2">{ex.description}</p>}
+                  <button onClick={() => setAltExerciseId(isAltOpen ? null : (ex.id || ex.name))} className="mt-2 text-[10px] text-lime/70 hover:text-lime">{isAltOpen ? 'Fermer' : 'Alternatives'}</button>
+                  {isAltOpen && alternatives.length > 0 && <div className="mt-2 space-y-1.5 pl-2 border-l border-lime/20">{alternatives.map((alt, j) => (<div key={j} className="flex items-center justify-between"><span className="text-white/70 text-[10px]">{alt.name}</span><span className="text-muted text-[9px]">{alt.equipment}</span></div>))}</div>}
+                  {isAltOpen && alternatives.length === 0 && <p className="mt-2 text-muted text-[10px] pl-2 border-l border-lime/20">Aucune alternative trouvée</p>}
                 </div>
-                <p className="text-muted text-xs">{ex.muscleGroup} · {ex.equipment}</p>
-                {ex.description && <p className="text-white/30 text-xs mt-1 line-clamp-2">{ex.description}</p>}
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </div>
@@ -1014,6 +1040,20 @@ export default function AICoach({ isPremium = false, onShowPaywall }) {
         </button>
 
         <button
+          onClick={() => isPremium ? handlePlanSemaine() : onShowPaywall?.()}
+          className="w-full bg-dark-card rounded-2xl p-4 flex items-center gap-3 hover:bg-dark-border transition-all active:scale-[0.98] border border-dark-border relative"
+        >
+          <div className="w-10 h-10 rounded-xl bg-lime/20 flex items-center justify-center">
+            <CalendarRange size={20} className="text-lime" />
+          </div>
+          <div className="text-left flex-1">
+            <p className="text-white font-bold text-sm">Plan semaine</p>
+            <p className="text-muted text-xs">Programme IA personnalisé selon ton niveau</p>
+          </div>
+          {!isPremium && <span className="absolute top-2 right-2 px-1.5 py-0.5 bg-amber-500 text-[9px] text-white font-bold rounded-full">Premium</span>}
+        </button>
+
+        <button
           onClick={() => setView('bilan')}
           className="w-full bg-dark-card rounded-2xl p-4 flex items-center gap-3 hover:bg-dark-border transition-all active:scale-[0.98] border border-dark-border"
         >
@@ -1026,6 +1066,23 @@ export default function AICoach({ isPremium = false, onShowPaywall }) {
           </div>
         </button>
       </div>
+
+      {/* Generated Plan */}
+      {generatedSplit && generatedSplit.length > 0 && (
+        <div className="bg-dark-card rounded-2xl p-4 border border-lime/30 space-y-3">
+          <div className="flex items-center gap-2"><Bot size={14} className="text-lime" /><span className="text-white font-bold text-sm">Programme généré</span></div>
+          {generatedSplit.map((day, i) => (
+            <div key={i} className="bg-dark-bg rounded-xl p-3">
+              <div className="flex items-center justify-between mb-2"><span className="text-white font-medium text-sm">Jour {day.day} — {day.name}</span><span className="text-lime text-[10px] font-bold">{day.exercises.length} exos · {day.totalSets} séries</span></div>
+              <div className="space-y-1">{day.exercises.slice(0, 4).map((ex, j) => (<div key={j} className="flex items-center justify-between text-[10px]"><span className="text-white/70">{ex.name}</span><span className="text-white/40">{ex.sets}×{ex.reps}</span></div>))}{day.exercises.length > 4 && <p className="text-muted text-[10px]">+{day.exercises.length - 4} exercices...</p>}</div>
+            </div>
+          ))}
+          <div className="flex gap-2">
+            <button onClick={() => { const today = new Date(); const sessions = generatedSplit.map((d, i) => { const date = new Date(today); date.setDate(date.getDate() + i); return { date: date.toISOString().slice(0, 10), day: d.name, exercises: d.exercises, name: d.name, source: 'ai' } }); useStore.getState().addPlannedWeek(sessions); setGeneratedSplit(null); alert('Ajouté au calendrier !') }} className="flex-1 py-2.5 rounded-xl bg-lime text-dark-bg font-bold text-xs">Valider → Calendrier</button>
+            <button onClick={() => { useStore.getState().addWorkoutTemplate({ name: 'Programme IA', exercises: generatedSplit.flatMap(d => d.exercises) }); setGeneratedSplit(null); alert('Template enregistré !') }} className="flex-1 py-2.5 rounded-xl bg-dark-bg border border-dark-border text-white font-bold text-xs">Template</button>
+          </div>
+        </div>
+      )}
 
       {/* Avertissement blessures */}
       {hasInjuries && (

@@ -633,6 +633,20 @@ const useStore = create(
         const state = get()
         return [...exercises, ...state.customExercises]
       },
+
+      plannedSessions: [],
+      addPlannedWeek: (sessions) =>
+        set((state) => {
+          const dates = new Set(sessions.map((s) => s.date))
+          const filtered = state.plannedSessions.filter((s) => !dates.has(s.date))
+          return { plannedSessions: [...filtered, ...sessions] }
+        }),
+
+      workoutTemplates: [],
+      addWorkoutTemplate: (template) =>
+        set((state) => ({
+          workoutTemplates: [...state.workoutTemplates, { ...template, id: `template_${Date.now()}` }],
+        })),
     }),
     {
       name: 'nf-storage',

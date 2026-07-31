@@ -2,16 +2,17 @@ import { useMemo } from 'react'
 import {
   Zap,
   TrendingUp,
+  TrendingDown,
   AlertTriangle,
   Calendar,
   Trophy,
   Moon,
-  Target,
   Activity,
   Flame,
-  ArrowRight,
+  BarChart3,
 } from 'lucide-react'
 import useStore from '../store/useStore'
+import { detectPlateaus, getRecoveryScore, predict1RM } from '../services/aiCoaching'
 
 const TYPE_CONFIG = {
   motivation: { icon: Trophy, color: 'text-yellow-400', bg: 'bg-yellow-400/10', border: 'border-yellow-400/20' },
@@ -23,7 +24,7 @@ const TYPE_CONFIG = {
 }
 
 export default function Recommendations() {
-  const { getRecommendations, workoutHistory, sessionHistory, getStreak, profile } = useStore()
+  const { getRecommendations, workoutHistory, sessionHistory, getStreak, profile, exerciseHistory } = useStore()
   const recommendations = useMemo(() => getRecommendations(), [workoutHistory, sessionHistory, profile])
 
   const allSessions = [...workoutHistory, ...sessionHistory]
@@ -42,7 +43,18 @@ export default function Recommendations() {
     return thisWeekSessions.reduce((sum, s) => sum + (s.duration || 0), 0)
   }, [thisWeekSessions])
 
-  if (recommendations.length === 0) return null
+  const plateaus = useMemo(() => detectPlateaus(exerciseHistory), [exerciseHistory])
+  const recovery = useMemo(() => {
+    const fitData = (() => { try { const cp = JSON.parse(localStorage.getItem('nirika_coach_profile') || '{}'); return { sleepQuality: cp.sleepQuality, sleepHours: cp.sleepHours, fatigue: cp.fatigueLevel, waterIntake: cp.waterIntake } } catch { return {} } })()
+    return getRecoveryScore(fitData, allSessions)
+  }, [allSessions])
+  const topPRs = useMemo(() => {
+    const entries = Object.entries(exerciseHistory || {})
+    if (!entries.length) return []
+    return entries.filter(([, records]) => Array.isArray(records) && records.length >= 2).map(([id, records]) => ({ id, name: records[0]?.exerciseName || id, count: records.length, ...predict1RM(exerciseHistory, id) })).filter((pr) => pr.estimatedRM > 0).sort((a, b) => b.estimatedRM - a.estimatedRM).slice(0, 3)
+  }, [exerciseHistory])
+
+  if (recommendations.length === 0 && plateaus.length === 0 && topPRs.length === 0) return null
 
   return (
     <div className="space-y-3">
@@ -64,6 +76,21 @@ export default function Recommendations() {
           <p className="text-muted text-[9px]">Série</p>
         </div>
       </div>
+
+      {/* Recovery Score */}
+      <div className="bg-dark-card rounded-2xl p-3 border border-dark-border">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2"><Activity size={14} className={recovery.status === 'ready' ? 'text-lime' : recovery.status === 'moderate' ? 'text-yellow-400' : 'text-red-400'} /><span className="text-white font-semibold text-xs">Récupération</span></div>
+          <span className={`text-xs font-bold ${recovery.status === 'ready' ? 'text-lime' : recovery.status === 'moderate' ? 'text-yellow-400' : 'text-red-400'}`}>{recovery.score}/100</span>
+        </div>
+        <p className="text-muted text-[10px] mt-1.5 leading-relaxed">{recovery.explanation}</p>
+      </div>
+
+      {/* Plateau Alerts */}
+      {plateaus.length > 0 && (<div className="bg-yellow-400/10 border border-yellow-400/20 rounded-2xl p-3"><div className="flex items-center gap-2 mb-2"><TrendingDown size={14} className="text-yellow-400" /><span className="text-white font-semibold text-xs">Plateau détecté</span></div><div className="space-y-1.5">{plateaus.slice(0, 2).map((p, i) => (<p key={i} className="text-yellow-300/80 text-[10px] leading-relaxed"><span className="text-white font-medium">{p.exerciseName}</span> — stagnation depuis {p.weeks} sem.</p>))}</div></div>)}
+
+      {/* PR Projections */}
+      {topPRs.length > 0 && (<div className="bg-lime/5 border border-lime/20 rounded-2xl p-3"><div className="flex items-center gap-2 mb-2"><BarChart3 size={14} className="text-lime" /><span className="text-white font-semibold text-xs">Projections 1RM</span></div><div className="space-y-1.5">{topPRs.map((pr, i) => (<div key={i} className="flex items-center justify-between"><span className="text-white text-[10px] truncate flex-1 mr-2">{pr.name}</span><span className="text-lime text-[10px] font-bold">{pr.estimatedRM}kg</span></div>))}</div></div>)}
 
       {/* Recommendations List */}
       <div>

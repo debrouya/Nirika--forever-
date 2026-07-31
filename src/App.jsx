@@ -22,6 +22,13 @@ import Pricing from './components/Pricing'
 import Paywall from './components/Paywall'
 import SplashScreen from './components/SplashScreen'
 import DailyWorkoutSession from './components/DailyWorkoutSession'
+import WarmupCooldown from './components/WarmupCooldown'
+import WorkoutTemplates from './components/WorkoutTemplates'
+import NutritionTracker from './components/NutritionTracker'
+import ProgressPhotos from './components/ProgressPhotos'
+import FormCheck from './components/FormCheck'
+import Toasts from './components/Toasts'
+import FloatingWorkoutControls from './components/FloatingWorkoutControls'
 import Onboarding, { useOnboarding } from './components/Onboarding'
 import { useSubscription } from './hooks/useSubscription'
 
@@ -160,6 +167,12 @@ export default function App() {
         {currentView === 'programme' && <Programme isPremium={true} />}
         {currentView === 'session' && <SessionPage />}
         {currentView === 'daily-workout' && <DailyWorkoutSession />}
+        {currentView === 'warmup' && <WarmupCooldown />}
+        {currentView === 'cooldown' && <WarmupCooldown type="cooldown" />}
+        {currentView === 'templates' && <WorkoutTemplates />}
+        {currentView === 'nutrition' && <NutritionTracker />}
+        {currentView === 'photos' && <ProgressPhotos />}
+        {currentView === 'form-check' && <FormCheck />}
         <Navigation active={currentView} onChange={(id) => useStore.getState().setCurrentView(id)} />
       </Layout>
     )
@@ -196,11 +209,19 @@ export default function App() {
       {currentView === 'programme' && <Programme user={user} isPremium={hasFeature('programmes')} />}
       {currentView === 'session' && <SessionPage />}
       {currentView === 'daily-workout' && <DailyWorkoutSession />}
+      {currentView === 'warmup' && <WarmupCooldown />}
+      {currentView === 'cooldown' && <WarmupCooldown type="cooldown" />}
+      {currentView === 'templates' && <WorkoutTemplates />}
+      {currentView === 'nutrition' && <NutritionTracker />}
+      {currentView === 'photos' && <ProgressPhotos />}
+      {currentView === 'form-check' && <FormCheck />}
       {currentView === 'pricing' && <Pricing subscription={subscription} />}
-      {!['dashboard','profile','workout-detail','calisthenics','cardio','ai','stats','fitmatrix','calendar','programme','session','daily-workout','pricing','admin'].includes(currentView) && <Dashboard />}
+      {!['dashboard','profile','workout-detail','calisthenics','cardio','ai','stats','fitmatrix','calendar','programme','session','daily-workout','warmup','cooldown','templates','nutrition','photos','form-check','pricing','admin'].includes(currentView) && <Dashboard />}
       <Navigation active={currentView} onChange={(id) => useStore.getState().setCurrentView(id)} isAdmin={isAdmin} userRole={profile?.role} onAdminClick={() => useStore.getState().setCurrentView('admin')} onLogout={handleLogout} onPricingClick={() => useStore.getState().setCurrentView('pricing')} />
       {showPaywall && <Paywall onClose={() => setShowPaywall(false)} />}
       {!onboardingDone && <Onboarding onComplete={completeOnboarding} />}
+      <Toasts />
+      <FloatingWorkoutControls />
     </Layout>
   )
 }

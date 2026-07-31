@@ -29,7 +29,7 @@ function getFirstDayOfMonth(year, month) {
 }
 
 export default function Calendar() {
-  const { sessionHistory, workoutHistory, calisthenie30 } = useStore()
+  const { sessionHistory, workoutHistory, calisthenie30, plannedSessions } = useStore()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDay, setSelectedDay] = useState(null)
 
@@ -65,8 +65,16 @@ export default function Calendar() {
         map[day].push(s)
       }
     })
+    plannedSessions.forEach((s) => {
+      const d = new Date(s.date)
+      if (d.getFullYear() === year && d.getMonth() === month) {
+        const day = d.getDate()
+        if (!map[day]) map[day] = []
+        map[day].push({ ...s, _type: 'planned', date: s.date, exerciseName: s.name, durationMinutes: Math.round(s.exercises?.length * 8) || 0 })
+      }
+    })
     return map
-  }, [allSessions, year, month])
+  }, [allSessions, plannedSessions, year, month])
 
   const daysInMonth = getDaysInMonth(year, month)
   const firstDay = getFirstDayOfMonth(year, month)
@@ -159,6 +167,7 @@ export default function Calendar() {
             const daySessions = sessionsByDay[day] || []
             const hasExercise = daySessions.some((s) => s._type === 'exercise')
             const hasCardio = daySessions.some((s) => s._type === 'cardio')
+            const hasPlanned = daySessions.some((s) => s._type === 'planned')
             const isSelected = selectedDay === day
             const isToday =
               new Date().getFullYear() === year &&
@@ -220,6 +229,9 @@ export default function Calendar() {
                     {hasCardio && (
                       <div className="w-1.5 h-1.5 rounded-full bg-pink-400" />
                     )}
+                    {hasPlanned && (
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                    )}
                   </div>
                 )}
               </button>
@@ -237,6 +249,10 @@ export default function Calendar() {
         <div className="flex items-center gap-1.5">
           <div className="w-2 h-2 rounded-full bg-pink-400" />
           <span className="text-white/40 text-[10px]">Cardio</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-2 h-2 rounded-full bg-blue-400" />
+          <span className="text-white/40 text-[10px]">Planifié</span>
         </div>
         {calisthenie30.startDate && (
           <>
