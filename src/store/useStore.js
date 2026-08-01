@@ -667,6 +667,29 @@ const useStore = create(
         set((state) => ({
           workoutTemplates: [...state.workoutTemplates, { ...template, id: `template_${Date.now()}` }],
         })),
+      updateWorkoutTemplate: (id, updates) =>
+        set((state) => ({
+          workoutTemplates: state.workoutTemplates.map((t) => (t.id === id ? { ...t, ...updates } : t)),
+        })),
+      deleteWorkoutTemplate: (id) =>
+        set((state) => ({
+          workoutTemplates: state.workoutTemplates.filter((t) => t.id !== id),
+        })),
+      currentWorkoutTemplate: null,
+      setCurrentWorkoutTemplate: (template) => set({ currentWorkoutTemplate: template }),
+
+      nutritionPlan: { dailyCalories: 2000, protein: 150, carbs: 200, fat: 65 },
+      setNutritionPlan: (plan) => set({ nutritionPlan: { ...plan } }),
+
+      progressPhotos: [],
+      addProgressPhoto: (photo) =>
+        set((state) => ({
+          progressPhotos: [...state.progressPhotos, { ...photo, id: Date.now(), date: new Date().toISOString() }],
+        })),
+      deleteProgressPhoto: (id) =>
+        set((state) => ({
+          progressPhotos: state.progressPhotos.filter((p) => p.id !== id),
+        })),
 
       nutritionMeals: [],
       addNutritionMeal: (aliment) =>

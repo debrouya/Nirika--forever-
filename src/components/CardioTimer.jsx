@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { Play, Pause, SkipForward, ArrowLeft, Activity, Flame } from 'lucide-react'
-import { useSessionCtx } from '../store/sessionContext'
+import useStore from '../store/useStore'
 
 function f(s) { const m = Math.floor(s / 60); return `${m}:${String(s % 60).padStart(2, '0')}` }
 
 export default function CardioTimer({ onComplete }) {
-  const { session, endSession } = useSessionCtx()
+  const store = useStore
+  const activeSession = store((s) => s.activeSession)
   const [elapsed, setElapsed] = useState(0)
   const [paused, setPaused] = useState(false)
   const [done, setDone] = useState(false)
@@ -45,16 +46,16 @@ export default function CardioTimer({ onComplete }) {
         <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-lime font-bold text-xl">{f(elapsed)}</p><p className="text-muted text-[10px]">durée</p></div>
         <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-orange-400 font-bold text-xl">{calories}</p><p className="text-muted text-[10px]">kcal</p></div>
       </div>
-      <button onClick={() => { endSession(); onComplete() }} className="w-full max-w-xs py-3 rounded-xl bg-lime text-dark-bg font-bold">Terminer</button>
+      <button onClick={() => { store.getState().endSession(); onComplete() }} className="w-full max-w-xs py-3 rounded-xl bg-lime text-dark-bg font-bold">Terminer</button>
     </div>
   )
 
   return (
     <div className="fixed inset-0 z-50 bg-dark-bg flex flex-col items-center justify-between p-4">
       <div className="w-full flex items-center justify-between">
-        <button onClick={() => { clearInterval(intervalRef.current); endSession(); onComplete() }} className="p-2 text-white/50 hover:text-white"><ArrowLeft size={24} /></button>
+        <button onClick={() => { clearInterval(intervalRef.current); store.getState().endSession(); onComplete() }} className="p-2 text-white/50 hover:text-white"><ArrowLeft size={24} /></button>
         <div className="text-center">
-          <h1 className="text-white font-bold text-2xl uppercase">{session?.exerciseName || 'Cardio'}</h1>
+          <h1 className="text-white font-bold text-2xl uppercase">{activeSession?.exerciseName || 'Cardio'}</h1>
           <p className="text-white/40 text-sm flex items-center justify-center gap-1"><Flame size={12} />{calories} kcal</p>
         </div>
         <div className="w-10" />
