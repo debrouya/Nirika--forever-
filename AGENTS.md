@@ -1,3 +1,12 @@
+# Règles de sécurité (PRIORITAIRES)
+- **Avant tout `git checkout` ou `git reset`** : `git stash` obligatoire
+- **Avant chaque déploiement** : `npm run build` + vérifier qu'il n'y a pas d'erreurs
+- **Pas de subagent pour le code critique** — je code tout moi-même
+- **Un commit par feature** : chaque changement fonctionnel → commit dédié. Si ça casse → `git revert` du commit, pas de rustine
+- **Vérifier les imports** après chaque modification de fichier : si un composant importe un symbole qui n'existe pas (icône lucide, fonction store), l'app crash au runtime
+- **Ne pas utiliser `useStore()` dans un widget flottant** — utiliser `useStore(selector)` ou `useStore(s => s.xxx)` pour éviter les re-renders en cascade
+- **Tester mentalement le flow utilisateur** après chaque changement : est-ce que le parcours fonctionne du début à la fin ?
+
 # Règles d'économie de tokens
 
 ## Comportement par défaut
