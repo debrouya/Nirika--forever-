@@ -18,6 +18,7 @@ import useStore from '../store/useStore'
 import { useSessionCtx } from '../store/sessionContext'
 import SessionNotes from './SessionNotes'
 import WorkoutScreen from './WorkoutScreen'
+import CardioTimer from './CardioTimer'
 import PersonalRecords from './PersonalRecords'
 
 function formatDuration(seconds) {
@@ -62,6 +63,9 @@ export default function SessionPage() {
   const hasActiveSession = activeSession && activeSession.startedAt
 
   if (hasActiveSession) {
+    if (activeSession.sessionType === 'cardio') {
+      return <CardioTimer onComplete={() => setCurrentView('dashboard')} />
+    }
     const ex = useStore.getState().getAllExercises?.()?.find(e => e.id === activeSession.exerciseId)
     const currentExercise = ex || { id: activeSession.exerciseId, name: activeSession.exerciseName, muscleGroup: 'Autre', equipment: 'none' }
     return (

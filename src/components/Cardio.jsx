@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { cardioActivities, calculateCalories } from '../data/cardio'
 import useStore from '../store/useStore'
+import { useSessionCtx } from '../store/sessionContext'
 import { fireStreakToast } from './StreakMotivation'
 
 const OBJECTIVES = [
