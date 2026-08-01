@@ -18,5 +18,7 @@ export function SessionProvider({ children }) {
 }
 
 export function useSession() {
-  return useContext(SessionContext)
+  const context = useContext(SessionContext)
+  if (!context) throw new Error('useSession must be used inside SessionProvider')
+  return context
 }
