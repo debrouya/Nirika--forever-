@@ -10,7 +10,6 @@ import {
 import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
 import WorkoutScreen from './WorkoutScreen'
-import { useSessionCtx } from '../store/sessionContext'
 
 const MUSCLE_GROUPS = [
   { id: 'all', label: 'Tout' },

@@ -154,6 +154,7 @@ export default function App() {
 
   if (!supabaseReady) {
     return (
+      <SessionProvider>
       <Layout>
         {currentView === 'dashboard' && <Dashboard />}
         {currentView === 'profile' && <Profile />}
@@ -175,6 +176,7 @@ export default function App() {
         {currentView === 'form-check' && <FormCheck />}
         <Navigation active={currentView} onChange={(id) => useStore.getState().setCurrentView(id)} />
       </Layout>
+      </SessionProvider>
     )
   }
 
