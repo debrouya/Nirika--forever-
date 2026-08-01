@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import useStore from './store/useStore'
 import { supabase, isSupabaseConfigured } from './lib/supabase'
+import { SessionProvider } from './sessionStore.jsx'
 import { LoginView, SignupView, ForgotPasswordView } from './components/Auth'
 import { signOut, getSession, getProfile } from './services/supabaseService'
 import AdminPanel from './components/AdminPanel'
@@ -154,7 +155,8 @@ export default function App() {
 
   if (!supabaseReady) {
     return (
-      <Layout>
+      <SessionProvider>
+        <Layout>
         {currentView === 'dashboard' && <Dashboard />}
         {currentView === 'profile' && <Profile />}
         {currentView === 'workout-detail' && <WorkoutDetail />}
@@ -175,6 +177,7 @@ export default function App() {
         {currentView === 'form-check' && <FormCheck />}
         <Navigation active={currentView} onChange={(id) => useStore.getState().setCurrentView(id)} />
       </Layout>
+      </SessionProvider>
     )
   }
 
@@ -196,8 +199,9 @@ export default function App() {
   }
 
   return (
-    <Layout>
-      {currentView === 'dashboard' && <Dashboard />}
+    <SessionProvider>
+      <Layout>
+        {currentView === 'dashboard' && <Dashboard />}
       {currentView === 'profile' && <Profile user={user} onLogout={handleLogout} />}
       {currentView === 'workout-detail' && <WorkoutDetail />}
       {currentView === 'calisthenics' && <Calisthenics isPremium={hasAccess} onShowPaywall={() => !isAdmin && setShowPaywall(true)} />}
@@ -223,5 +227,6 @@ export default function App() {
       <Toasts />
       <Wiggley />
     </Layout>
+    </SessionProvider>
   )
 }
