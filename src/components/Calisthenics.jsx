@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
-import ExerciseTracker from './ExerciseTracker'
+import WorkoutScreen from './WorkoutScreen'
 import { useSessionCtx } from '../store/sessionContext'
 
 const MUSCLE_GROUPS = [
@@ -55,11 +55,9 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
   }
 
   if (selectedExercise) {
-    const lastRecord = (exerciseHistory[selectedExercise.id] || []).slice(-1)[0]
     return (
-      <ExerciseTracker
+      <WorkoutScreen
         exercise={selectedExercise}
-        sessionHistory={lastRecord ? [lastRecord] : []}
         onComplete={() => setSelectedExercise(null)}
       />
     )

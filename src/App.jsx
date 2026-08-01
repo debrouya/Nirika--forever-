@@ -29,8 +29,6 @@ import NutritionTracker from './components/NutritionTracker'
 import ProgressPhotos from './components/ProgressPhotos'
 import FormCheck from './components/FormCheck'
 import Toasts from './components/Toasts'
-import Wiggley from './components/Wiggley'
-import SessionBar from './components/SessionBar'
 import Onboarding, { useOnboarding } from './components/Onboarding'
 import { useSubscription } from './hooks/useSubscription'
 
@@ -221,8 +219,6 @@ export default function App() {
       {currentView === 'pricing' && <Pricing subscription={subscription} />}
       {!['dashboard','profile','workout-detail','calisthenics','cardio','ai','stats','fitmatrix','calendar','programme','session','daily-workout','warmup','cooldown','templates','nutrition','photos','form-check','pricing','admin'].includes(currentView) && <Dashboard />}
       <Navigation active={currentView} onChange={(id) => useStore.getState().setCurrentView(id)} isAdmin={isAdmin} userRole={profile?.role} onAdminClick={() => useStore.getState().setCurrentView('admin')} onLogout={handleLogout} onPricingClick={() => useStore.getState().setCurrentView('pricing')} />
-      <SessionBar />
-      <Wiggley />
       {showPaywall && <Paywall onClose={() => setShowPaywall(false)} />}
       {!onboardingDone && <Onboarding onComplete={completeOnboarding} />}
       <Toasts />
