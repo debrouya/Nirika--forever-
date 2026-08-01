@@ -28,7 +28,6 @@ import NutritionTracker from './components/NutritionTracker'
 import ProgressPhotos from './components/ProgressPhotos'
 import FormCheck from './components/FormCheck'
 import Toasts from './components/Toasts'
-import FloatingWorkoutControls from './components/FloatingWorkoutControls'
 import Onboarding, { useOnboarding } from './components/Onboarding'
 import { useSubscription } from './hooks/useSubscription'
 
@@ -221,7 +220,6 @@ export default function App() {
       {showPaywall && <Paywall onClose={() => setShowPaywall(false)} />}
       {!onboardingDone && <Onboarding onComplete={completeOnboarding} />}
       <Toasts />
-      <FloatingWorkoutControls />
     </Layout>
   )
 }
