@@ -17,7 +17,7 @@ import {
 import useStore from '../store/useStore'
 import { useSessionCtx } from '../store/sessionContext'
 import SessionNotes from './SessionNotes'
-import ExerciseTracker from './ExerciseTracker'
+import WorkoutScreen from './WorkoutScreen'
 import PersonalRecords from './PersonalRecords'
 
 function formatDuration(seconds) {
@@ -64,15 +64,11 @@ export default function SessionPage() {
   if (hasActiveSession) {
     const ex = useStore.getState().getAllExercises?.()?.find(e => e.id === activeSession.exerciseId)
     const currentExercise = ex || { id: activeSession.exerciseId, name: activeSession.exerciseName, muscleGroup: 'Autre', equipment: 'none' }
-    const lastRecord = (useStore.getState().exerciseHistory?.[activeSession.exerciseId] || []).slice(-1)[0]
     return (
-      <div className="space-y-3 p-4">
-        <div className="flex items-center gap-3">
-          <button onClick={() => setCurrentView('dashboard')} className="p-1"><ChevronLeft size={20} className="text-muted" /></button>
-          <div className="flex-1"><h1 className="text-white font-bold text-sm">Séance en cours</h1><p className="text-muted text-[10px]">{activeSession.exerciseName} · {activeSession.sets?.length || 0} séries</p></div>
-        </div>
-        <ExerciseTracker key={activeSession.exerciseId + activeSession.startedAt} exercise={currentExercise} sessionHistory={lastRecord ? [lastRecord] : []} onComplete={() => setCurrentView('dashboard')} />
-      </div>
+      <WorkoutScreen
+        exercise={currentExercise}
+        onComplete={() => { endSession(); setCurrentView('dashboard') }}
+      />
     )
   }
   const records = useMemo(() => getPersonalRecords(), [getPersonalRecords])

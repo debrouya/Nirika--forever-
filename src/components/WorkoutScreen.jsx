@@ -22,6 +22,10 @@ export default function WorkoutScreen({ exercise, onComplete }) {
   const intervalRef = useRef(null)
   const wakeLockRef = useRef(null)
   const startRef = useRef(Date.now())
+  const mountedRef = useRef(true)
+
+  // Cleanup on unmount
+  useEffect(() => () => { mountedRef.current = false; clearInterval(intervalRef.current); if (wakeLockRef.current) wakeLockRef.current.release().catch(() => {}) }, [])
 
   // Wake Lock
   useEffect(() => {
@@ -45,9 +49,13 @@ export default function WorkoutScreen({ exercise, onComplete }) {
             setPhase('rest')
             const s = { weight: Number(weight) || 0, reps: Number(reps) || 0, timestamp: Date.now() }
             setSets((prev) => [...prev, s])
-            const st = useStore.getState()
-            if (st.activeSession) st.addSetToSession(s)
-            store.getState().addExerciseRecord(exercise.id, { exerciseName: exercise.name, muscleGroup: exercise.muscleGroup, weight: s.weight, reps: s.reps, sets: 1, duration: totalTime, totalVolume: s.weight * s.reps })
+            if (mountedRef.current) {
+              try {
+                const st = useStore.getState()
+                if (st.activeSession) st.addSetToSession(s)
+                store.getState().addExerciseRecord(exercise.id, { exerciseName: exercise.name, muscleGroup: exercise.muscleGroup, weight: s.weight, reps: s.reps, sets: 1, duration: totalTime, totalVolume: s.weight * s.reps })
+              } catch {}
+            }
             return 0
           }
         }
@@ -63,14 +71,18 @@ export default function WorkoutScreen({ exercise, onComplete }) {
   }, [paused, phase])
 
   const saveWorkout = () => {
-    const duration = Math.round((Date.now() - startRef.current) / 1000)
-    const totalVolume = sets.reduce((s, x) => s + (x.weight * x.reps), 0)
-    store.getState().addWorkout({ exerciseName: exercise.name, muscleGroup: exercise.muscleGroup, duration: Math.floor(duration / 60), durationMinutes: Math.floor(duration / 60), calories: Math.round(duration * 0.15), type: 'exercise', totalVolume, sets })
+    try {
+      const duration = Math.round((Date.now() - startRef.current) / 1000)
+      const totalVolume = sets.reduce((s, x) => s + (x.weight * x.reps), 0)
+      store.getState().addWorkout({ exerciseName: exercise.name, muscleGroup: exercise.muscleGroup, duration: Math.floor(duration / 60), durationMinutes: Math.floor(duration / 60), calories: Math.round(duration * 0.15), type: 'exercise', totalVolume, sets })
+    } catch {}
   }
 
   const saveAsTemplate = () => {
-    const st = useStore.getState()
-    if (st.addWorkoutTemplate) st.addWorkoutTemplate({ name: `${exercise.name} (${targetSets} séries)`, exercises: [{ ...exercise, sets: targetSets, reps: reps || '10', weight: weight || '0' }] })
+    try {
+      const st = useStore.getState()
+      if (st.addWorkoutTemplate) st.addWorkoutTemplate({ name: `${exercise.name} (${targetSets} séries)`, exercises: [{ ...exercise, sets: targetSets, reps: reps || '10', weight: weight || '0' }] })
+    } catch {}
   }
 
   // Summary screen
