@@ -1,112 +1,70 @@
-import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'
+import { createContext, useContext, useState, useCallback } from 'react'
 import useStore from './useStore'
 
+const STORAGE_KEY = 'lv_session'
 const SessionCtx = createContext(null)
-const STORAGE_KEY = 'linerverse_session'
 
-function loadSession() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return null
-    const s = JSON.parse(raw)
-    if (!s || !s.id) return null
-    // Only resume if less than 4 hours old
-    if (Date.now() - s.startedAt > 4 * 3600 * 1000) { localStorage.removeItem(STORAGE_KEY); return null }
-    return { ...s, status: 'paused' }
-  } catch { return null }
-}
-
-function saveSession(data) {
+function persist(data) {
   try {
     if (!data) { localStorage.removeItem(STORAGE_KEY); return }
-    const clean = { id: data.id, startedAt: data.startedAt, exercise: data.exercise, exerciseId: data.exerciseId, sets: data.sets }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(clean))
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ id: data.id, exerciseId: data.exerciseId, exerciseName: data.exerciseName, sets: data.sets, startedAt: data.startedAt, status: data.status, pausedAt: data.pausedAt, totalPausedMs: data.totalPausedMs }))
   } catch {}
 }
 
+function restore() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    const d = JSON.parse(raw)
+    if (!d.id || Date.now() - d.startedAt > 4 * 3600 * 1000) { localStorage.removeItem(STORAGE_KEY); return null }
+    return { ...d, status: 'paused' }
+  } catch { return null }
+}
+
+function elapsed(session) {
+  if (!session) return 0
+  let extra = 0
+  if (session.status === 'paused' && session.pausedAt) extra = Date.now() - session.pausedAt
+  return Math.max(0, Math.floor((Date.now() - session.startedAt - (session.totalPausedMs || 0) - extra) / 1000))
+}
+
 export function SessionProvider({ children }) {
-  const [session, setSession] = useState(() => loadSession())
-  const [elapsed, setElapsed] = useState(0)
-  const startRef = useRef(null)
-  const rafRef = useRef(null)
-
-  // Restore timer if reloading
-  useEffect(() => {
-    if (session && session.startedAt) {
-      startRef.current = session.startedAt
-    }
-  }, [])
-
-  // Timer tick
-  useEffect(() => {
-    if (!session || session.status !== 'running') { setElapsed(0); return }
-    if (!startRef.current) startRef.current = Date.now()
-    const tick = () => {
-      setElapsed(Math.floor((Date.now() - startRef.current) / 1000))
-      rafRef.current = requestAnimationFrame(tick)
-    }
-    rafRef.current = requestAnimationFrame(tick)
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
-  }, [session?.status, !!session])
+  const [session, setSession] = useState(restore)
 
   const startSession = useCallback((id, name) => {
-    const s = { id: Date.now().toString(), startedAt: Date.now(), exercise: name, exerciseId: id, sets: [], status: 'running' }
+    const s = { id: Date.now().toString(), exerciseId: id, exerciseName: name, sets: [], startedAt: Date.now(), status: 'running', pausedAt: null, totalPausedMs: 0 }
     setSession(s)
-    startRef.current = s.startedAt
-    saveSession(s)
-    // Sync to Zustand for compatibility
+    persist(s)
     useStore.getState().startSession(id, name)
   }, [])
 
   const pauseSession = useCallback(() => {
-    setSession((prev) => {
-      if (!prev || prev.status !== 'running') return prev
-      const s = { ...prev, status: 'paused' }
-      saveSession(s)
-      return s
-    })
+    setSession((prev) => { if (!prev || prev.status !== 'running') return prev; const s = { ...prev, status: 'paused', pausedAt: Date.now() }; persist(s); return s })
   }, [])
 
   const resumeSession = useCallback(() => {
-    setSession((prev) => {
-      if (!prev || prev.status !== 'paused') return prev
-      const s = { ...prev, status: 'running' }
-      startRef.current = Date.now() - elapsed * 1000
-      saveSession(s)
-      return s
-    })
-  }, [elapsed])
-
-  const addSet = useCallback((setData) => {
-    setSession((prev) => {
-      if (!prev) return prev
-      const s = { ...prev, sets: [...prev.sets, { ...setData, timestamp: Date.now() }] }
-      saveSession(s)
-      // Sync to Zustand
-      useStore.getState().addSetToSession(setData)
-      return s
-    })
+    setSession((prev) => { if (!prev || prev.status !== 'paused') return prev; const s = { ...prev, status: 'running', totalPausedMs: (prev.totalPausedMs || 0) + (prev.pausedAt ? Date.now() - prev.pausedAt : 0), pausedAt: null }; persist(s); return s })
   }, [])
 
   const endSession = useCallback(() => {
     setSession(null)
-    startRef.current = null
-    setElapsed(0)
-    localStorage.removeItem(STORAGE_KEY)
+    persist(null)
     useStore.getState().endSession()
   }, [])
 
-  const ctx = { session, elapsed, startSession, pauseSession, resumeSession, addSet, endSession }
+  const addSet = useCallback((setData) => {
+    setSession((prev) => { if (!prev) return prev; const s = { ...prev, sets: [...prev.sets, setData] }; persist(s); useStore.getState().addSetToSession(setData); return s })
+  }, [])
+
+  const getElapsed = useCallback(() => elapsed(session), [session])
 
   return (
-    <SessionCtx.Provider value={ctx}>
+    <SessionCtx.Provider value={{ session, startSession, pauseSession, resumeSession, endSession, addSet }}>
       {children}
     </SessionCtx.Provider>
   )
 }
 
 export function useSessionCtx() {
-  const ctx = useContext(SessionCtx)
-  if (!ctx) return { session: null, elapsed: 0, startSession: () => {}, pauseSession: () => {}, resumeSession: () => {}, addSet: () => {}, endSession: () => {} }
-  return ctx
+  return useContext(SessionCtx) || { session: null }
 }
