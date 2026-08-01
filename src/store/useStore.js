@@ -106,18 +106,38 @@ const useStore = create(
             exerciseId,
             exerciseName,
             sets: [],
-            startedAt: new Date().toISOString(),
+            startedAt: Date.now(),
+            paused: false,
+            pausedAt: null,
+            totalPausedMs: 0,
           },
         }),
+      pauseSession: () =>
+        set((state) => {
+          if (!state.activeSession || state.activeSession.paused) return state
+          return { activeSession: { ...state.activeSession, paused: true, pausedAt: Date.now() } }
+        }),
+      resumeSession: () =>
+        set((state) => {
+          if (!state.activeSession || !state.activeSession.paused) return state
+          const pauseDuration = state.activeSession.pausedAt ? Date.now() - state.activeSession.pausedAt : 0
+          return { activeSession: { ...state.activeSession, paused: false, pausedAt: null, totalPausedMs: (state.activeSession.totalPausedMs || 0) + pauseDuration } }
+        }),
+      getElapsed: () => {
+        const s = get().activeSession
+        if (!s) return 0
+        let extra = 0
+        if (s.paused && s.pausedAt) extra = Date.now() - s.pausedAt
+        return Math.floor((Date.now() - s.startedAt - (s.totalPausedMs || 0) - extra) / 1000)
+      },
       endSession: () => {
         const { activeSession, sessionHistory } = get()
         if (activeSession) {
+          const elapsed = Math.floor((Date.now() - activeSession.startedAt - (activeSession.totalPausedMs || 0)) / 1000)
           const completed = {
             ...activeSession,
             endedAt: new Date().toISOString(),
-            duration: Math.round(
-              (Date.now() - new Date(activeSession.startedAt).getTime()) / 1000
-            ),
+            duration: elapsed,
           }
           set({
             activeSession: null,
