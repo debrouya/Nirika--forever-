@@ -20,7 +20,7 @@
 
 - **Admin UUID Supabase** : `2dd4315a-ac99-4660-9e72-5bc3a33e5b5e`
 - **Admin email (hardcodé dans App.jsx)** : `jacques.frederic@icloud.com`
-- **Cloudflare API Token** : `cfat_CgBGaMOxzhbpRpvmgF1Lpsl8kb1hfv3zZzWkwUl8b8e42651`
+- **Cloudflare API Token** : `(voir ~/Desktop/linerverse-cles.md)`
 
 ---
 
@@ -136,7 +136,7 @@
 cd ~/Documents/nirika-forever && npm run build
 
 # Deploy Cloudflare Pages
-CLOUDFLARE_API_TOKEN=cfat_CgBGaMOxzhbpRpvmgF1Lpsl8kb1hfv3zZzWkwUl8b8e42651 npx wrangler pages deploy dist --project-name=nirika-forever
+# Déploiement via Cloudflare CLI (voir clés)
 
 # Preview local
 npm run preview
