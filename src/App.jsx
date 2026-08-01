@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import useStore from './store/useStore'
 import { supabase, isSupabaseConfigured } from './lib/supabase'
-import { SessionProvider } from './sessionStore.jsx'
 import { LoginView, SignupView, ForgotPasswordView } from './components/Auth'
 import { signOut, getSession, getProfile } from './services/supabaseService'
 import AdminPanel from './components/AdminPanel'
@@ -155,8 +154,7 @@ export default function App() {
 
   if (!supabaseReady) {
     return (
-      <SessionProvider>
-        <Layout>
+      <Layout>
         {currentView === 'dashboard' && <Dashboard />}
         {currentView === 'profile' && <Profile />}
         {currentView === 'workout-detail' && <WorkoutDetail />}
@@ -177,7 +175,6 @@ export default function App() {
         {currentView === 'form-check' && <FormCheck />}
         <Navigation active={currentView} onChange={(id) => useStore.getState().setCurrentView(id)} />
       </Layout>
-      </SessionProvider>
     )
   }
 
@@ -199,8 +196,7 @@ export default function App() {
   }
 
   return (
-    <SessionProvider>
-      <Layout>
+    <Layout>
         {currentView === 'dashboard' && <Dashboard />}
       {currentView === 'profile' && <Profile user={user} onLogout={handleLogout} />}
       {currentView === 'workout-detail' && <WorkoutDetail />}
@@ -227,6 +223,5 @@ export default function App() {
       <Toasts />
       <Wiggley />
     </Layout>
-    </SessionProvider>
   )
 }

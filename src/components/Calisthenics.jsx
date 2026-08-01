@@ -8,7 +8,6 @@ import {
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
-import { useSession } from '../sessionStore.jsx'
 
 const MUSCLE_GROUPS = [
   { id: 'all', label: 'Tout' },
@@ -30,8 +29,7 @@ const EQUIPMENT_ICONS = {
 }
 
 export default function Calisthenics({ isPremium, onShowPaywall }) {
-  const { setCurrentView } = useStore()
-  const { setSession } = useSession()
+  const { exerciseHistory, startSession, setCurrentView } = useStore()
   const [activeGroup, setActiveGroup] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const exercises = useExercises()
@@ -48,7 +46,7 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
 
   const handleStartExercise = (ex) => {
     if (!isPremium && filtered.indexOf(ex) >= FREE_LIMIT) { onShowPaywall?.(); return }
-    setSession({ active: true, currentExercise: ex.name, exerciseId: ex.id, time: 0, paused: false, startedAt: Date.now() })
+    startSession(ex.id, ex.name)
     setCurrentView('session')
   }
 

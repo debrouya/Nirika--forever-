@@ -15,7 +15,6 @@ import {
   FileText,
 } from 'lucide-react'
 import useStore from '../store/useStore'
-import { useSession } from '../sessionStore'
 import SessionNotes from './SessionNotes'
 import ExerciseTracker from './ExerciseTracker'
 import PersonalRecords from './PersonalRecords'
@@ -51,28 +50,26 @@ function getTypeLabel(type) {
 }
 
 export default function SessionPage() {
-  const { workoutHistory, workoutTemplates, setCurrentWorkoutTemplate, pushView, setCurrentView, getPersonalRecords } = useStore()
-  const { session, setSession } = useSession()
+  const { activeSession, workoutHistory, workoutTemplates, setCurrentWorkoutTemplate, pushView, setCurrentView, getPersonalRecords } = useStore()
 
   const lastWorkout = useMemo(() => {
     if (workoutHistory.length === 0) return null
     return workoutHistory[workoutHistory.length - 1]
   }, [workoutHistory])
 
-  const hasActiveSession = session.active
+  const hasActiveSession = activeSession && activeSession.startedAt
 
   if (hasActiveSession) {
-    const ex = useStore.getState().getAllExercises?.()?.find(e => e.id === session.exerciseId)
-    const currentExercise = ex || { id: session.exerciseId, name: session.currentExercise, muscleGroup: 'Autre', equipment: 'none' }
-    const lastRecord = (useStore.getState().exerciseHistory?.[session.exerciseId] || []).slice(-1)[0]
-    const endCurrentSession = () => setSession({ active: false, currentExercise: null, time: 0, paused: false })
+    const ex = useStore.getState().getAllExercises?.()?.find(e => e.id === activeSession.exerciseId)
+    const currentExercise = ex || { id: activeSession.exerciseId, name: activeSession.exerciseName, muscleGroup: 'Autre', equipment: 'none' }
+    const lastRecord = (useStore.getState().exerciseHistory?.[activeSession.exerciseId] || []).slice(-1)[0]
     return (
       <div className="space-y-3 p-4">
         <div className="flex items-center gap-3">
-          <button onClick={() => { endCurrentSession(); setCurrentView('dashboard') }} className="p-1"><ChevronLeft size={20} className="text-muted" /></button>
-          <div className="flex-1"><h1 className="text-white font-bold text-sm">Séance en cours</h1><p className="text-muted text-[10px]">{session.currentExercise}</p></div>
+          <button onClick={() => setCurrentView('dashboard')} className="p-1"><ChevronLeft size={20} className="text-muted" /></button>
+          <div className="flex-1"><h1 className="text-white font-bold text-sm">Séance en cours</h1><p className="text-muted text-[10px]">{activeSession.exerciseName} · {activeSession.sets?.length || 0} séries</p></div>
         </div>
-        <ExerciseTracker key={session.exerciseId + String(session.startedAt)} exercise={currentExercise} sessionHistory={lastRecord ? [lastRecord] : []} onComplete={() => { endCurrentSession(); setCurrentView('dashboard') }} />
+        <ExerciseTracker key={activeSession.exerciseId + activeSession.startedAt} exercise={currentExercise} sessionHistory={lastRecord ? [lastRecord] : []} onComplete={() => setCurrentView('dashboard')} />
       </div>
     )
   }
@@ -90,7 +87,7 @@ export default function SessionPage() {
       {/* 1. Séance en cours */}
       {hasActiveSession && (
         <button
-          onClick={() => setCurrentView('session')}
+          onClick={() => setCurrentView('programme')}
           className="w-full bg-dark-card rounded-2xl p-5 border border-lime/30 text-left active:scale-[0.98] transition-all group"
         >
           <div className="flex items-center gap-4">
@@ -99,7 +96,15 @@ export default function SessionPage() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-lime text-xs font-bold uppercase tracking-wide mb-0.5">Séance en cours</p>
-              <p className="text-white font-semibold text-sm truncate">{session.currentExercise || 'Séance active'}</p>
+              <p className="text-white font-semibold text-sm truncate">
+                {activeSession.exerciseName || activeSession.programName || 'Séance active'}
+              </p>
+              <div className="flex items-center gap-2 mt-1">
+                <Clock size={12} className="text-muted" />
+                <span className="text-muted text-xs">
+                  {formatDuration(Math.floor((Date.now() - new Date(activeSession.startedAt).getTime()) / 1000))}
+                </span>
+              </div>
             </div>
             <ChevronRight size={20} className="text-lime shrink-0 group-hover:translate-x-1 transition-transform" />
           </div>
