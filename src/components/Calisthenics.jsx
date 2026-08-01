@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
+import ExerciseTracker from './ExerciseTracker'
 import { useSessionCtx } from '../store/sessionContext'
 
 const MUSCLE_GROUPS = [
@@ -30,10 +31,11 @@ const EQUIPMENT_ICONS = {
 }
 
 export default function Calisthenics({ isPremium, onShowPaywall }) {
-  const { exerciseHistory, setCurrentView } = useStore()
+  const { exerciseHistory } = useStore()
   const { startSession } = useSessionCtx()
   const [activeGroup, setActiveGroup] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedExercise, setSelectedExercise] = useState(null)
   const exercises = useExercises()
 
   const filtered = exercises.filter((e) => {
@@ -49,7 +51,18 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
   const handleStartExercise = (ex) => {
     if (!isPremium && filtered.indexOf(ex) >= FREE_LIMIT) { onShowPaywall?.(); return }
     startSession(ex.id, ex.name)
-    setCurrentView('session')
+    setSelectedExercise(ex)
+  }
+
+  if (selectedExercise) {
+    const lastRecord = (exerciseHistory[selectedExercise.id] || []).slice(-1)[0]
+    return (
+      <ExerciseTracker
+        exercise={selectedExercise}
+        sessionHistory={lastRecord ? [lastRecord] : []}
+        onComplete={() => setSelectedExercise(null)}
+      />
+    )
   }
 
   return (
