@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
+import { useSessionCtx } from '../store/sessionContext'
 
 const MUSCLE_GROUPS = [
   { id: 'all', label: 'Tout' },
@@ -29,7 +30,8 @@ const EQUIPMENT_ICONS = {
 }
 
 export default function Calisthenics({ isPremium, onShowPaywall }) {
-  const { exerciseHistory, startSession, setCurrentView } = useStore()
+  const { exerciseHistory, setCurrentView } = useStore()
+  const { startSession } = useSessionCtx()
   const [activeGroup, setActiveGroup] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const exercises = useExercises()
