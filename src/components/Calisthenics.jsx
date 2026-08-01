@@ -5,6 +5,7 @@ import {
   Dumbbell,
   ChevronRight,
   Search,
+  FileText,
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
@@ -31,7 +32,7 @@ const EQUIPMENT_ICONS = {
 }
 
 export default function Calisthenics({ isPremium, onShowPaywall }) {
-  const { exerciseHistory } = useStore()
+  const { exerciseHistory, setCurrentView } = useStore()
   const { startSession } = useSessionCtx()
   const [activeGroup, setActiveGroup] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
@@ -79,6 +80,13 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
           className="w-full bg-dark-card text-white pl-10 pr-4 py-3 rounded-xl text-sm outline-none border border-dark-border placeholder:text-muted"
         />
       </div>
+
+      {/* Templates quick access */}
+      <button onClick={() => setCurrentView('templates')} className="w-full bg-dark-card rounded-xl p-3 flex items-center gap-3 border border-dark-border hover:border-lime/30 transition-all">
+        <div className="w-10 h-10 rounded-lg bg-lime/10 flex items-center justify-center"><FileText size={18} className="text-lime" /></div>
+        <div className="text-left flex-1"><p className="text-white text-sm font-medium">Templates de séance</p><p className="text-muted text-[10px]">Lance une séance pré-enregistrée</p></div>
+        <ChevronRight size={16} className="text-muted" />
+      </button>
 
       {/* Muscle Group Tabs */}
       <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4">
