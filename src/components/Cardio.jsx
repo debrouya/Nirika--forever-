@@ -215,6 +215,12 @@ export default function Cardio() {
     setView('objective')
   }, [])
 
+  const { startSession } = useSessionCtx()
+  const startCardioSession = (activity) => {
+    startSession(activity.id, activity.name, 'cardio')
+    useStore.getState().setCurrentView('session')
+  }
+
   const handleStart = useCallback(() => {
     setIsRunning(true)
     setZoneTime({ 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 })
@@ -679,12 +685,15 @@ export default function Cardio() {
 
       <div className="grid grid-cols-2 gap-3">
         {cardioActivities.map((activity) => (
-          <button
-            key={activity.id}
-            onClick={() => selectActivity(activity)}
-            className="relative bg-dark-card rounded-2xl overflow-hidden h-32 flex flex-col items-center justify-end hover:bg-dark-border transition-all active:scale-95 border border-dark-border"
-          >
-            <img
+            <button
+              key={activity.id}
+              onClick={() => selectActivity(activity)}
+              className="relative bg-dark-card rounded-2xl overflow-hidden h-32 flex flex-col items-center justify-end hover:bg-dark-border transition-all active:scale-95 border border-dark-border group"
+            >
+              <div onClick={(e) => { e.stopPropagation(); startCardioSession(activity) }} className="absolute top-2 right-2 z-20 w-7 h-7 rounded-full bg-lime/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-dark-bg text-[10px] font-bold">▶</span>
+              </div>
+              <img
               src={activity.image}
               alt={activity.name}
               className="absolute inset-0 w-full h-full object-cover"
