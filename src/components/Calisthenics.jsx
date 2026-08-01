@@ -31,8 +31,7 @@ const EQUIPMENT_ICONS = {
 }
 
 export default function Calisthenics({ isPremium, onShowPaywall }) {
-  const { exerciseHistory, setCurrentView } = useStore()
-  const { startSession } = useSessionCtx()
+  const { exerciseHistory, startSession, setCurrentView } = useStore()
   const [activeGroup, setActiveGroup] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedExercise, setSelectedExercise] = useState(null)

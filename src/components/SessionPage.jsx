@@ -52,8 +52,7 @@ function getTypeLabel(type) {
 }
 
 export default function SessionPage() {
-  const { workoutHistory, workoutTemplates, pushView, setCurrentView, getPersonalRecords, setCurrentWorkoutTemplate } = useStore()
-  const { activeSession, endSession } = useSessionCtx()
+  const { workoutHistory, workoutTemplates, pushView, setCurrentView, getPersonalRecords, setCurrentWorkoutTemplate, activeSession, endSession } = useStore()
 
   const lastWorkout = useMemo(() => {
     if (workoutHistory.length === 0) return null

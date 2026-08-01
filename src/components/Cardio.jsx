@@ -22,7 +22,6 @@ import {
 } from 'lucide-react'
 import { cardioActivities, calculateCalories } from '../data/cardio'
 import useStore from '../store/useStore'
-import { useSessionCtx } from '../store/sessionContext'
 import { fireStreakToast } from './StreakMotivation'
 
 const OBJECTIVES = [
@@ -215,9 +214,8 @@ export default function Cardio() {
     setView('objective')
   }, [])
 
-  const { startSession } = useSessionCtx()
   const startCardioSession = (activity) => {
-    startSession(activity.id, activity.name, 'cardio')
+    useStore.getState().startSession(activity.id, activity.name)
     useStore.getState().setCurrentView('session')
   }
 
