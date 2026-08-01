@@ -5,7 +5,7 @@ import useStore from '../store/useStore'
 const ONBOARDING_KEY = 'nirika_onboarding_done'
 
 const STEPS = [
-  { view: 'dashboard', target: '[data-onboard="hero"]', title: 'Bienvenue sur Linerverse !', desc: 'Ton coach fitness intelligent. Séance du jour, recommandations IA, et suivi complet.', icon: '👋' },
+  { view: 'dashboard', target: '[data-onboard="hero"]', title: 'Bienvenue sur NIRIKA FOR EVER !', desc: 'Ton coach fitness intelligent. Séance du jour, recommandations IA, et suivi complet.', icon: '👋' },
   { view: 'dashboard', target: '[data-onboard="quick-actions"]', title: 'Accès rapide', desc: 'Nutrition, Cardio, Exercices — lance ce dont tu as besoin. Mode Simplifié dispo.', icon: '⚡' },
   { view: 'dashboard', target: '[data-onboard="daily-workout"]', title: 'Séance du Jour', desc: 'Générée pour toi selon tes objectifs et ta récupération.', icon: '🎯' },
   { view: 'dashboard', target: '[data-onboard="recommendations"]', title: 'Recommandations IA', desc: 'Score récupération, alertes plateau, projections 1RM. NIRIKA analyse tout.', icon: '🧠' },
