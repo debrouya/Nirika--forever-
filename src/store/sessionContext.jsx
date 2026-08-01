@@ -31,8 +31,8 @@ function elapsed(session) {
 export function SessionProvider({ children }) {
   const [session, setSession] = useState(restore)
 
-  const startSession = useCallback((id, name) => {
-    const s = { id: Date.now().toString(), exerciseId: id, exerciseName: name, sets: [], startedAt: Date.now(), status: 'running', pausedAt: null, totalPausedMs: 0 }
+  const startSession = useCallback((id, name, type = 'exercise') => {
+    const s = { id: Date.now().toString(), exerciseId: id, exerciseName: name, sets: [], startedAt: Date.now(), status: 'running', pausedAt: null, totalPausedMs: 0, sessionType: type }
     setSession(s)
     persist(s)
     useStore.getState().startSession(id, name)
