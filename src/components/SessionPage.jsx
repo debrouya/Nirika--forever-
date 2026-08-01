@@ -15,6 +15,7 @@ import {
   FileText,
 } from 'lucide-react'
 import useStore from '../store/useStore'
+import { useSessionCtx } from '../store/sessionContext'
 import SessionNotes from './SessionNotes'
 import ExerciseTracker from './ExerciseTracker'
 import PersonalRecords from './PersonalRecords'
@@ -50,7 +51,8 @@ function getTypeLabel(type) {
 }
 
 export default function SessionPage() {
-  const { activeSession, workoutHistory, workoutTemplates, setCurrentWorkoutTemplate, pushView, setCurrentView, getPersonalRecords } = useStore()
+  const { workoutHistory, workoutTemplates, pushView, setCurrentView, getPersonalRecords, setCurrentWorkoutTemplate } = useStore()
+  const { activeSession, endSession } = useSessionCtx()
 
   const lastWorkout = useMemo(() => {
     if (workoutHistory.length === 0) return null
