@@ -80,7 +80,7 @@ export default function WorkoutScreen({exercise,onComplete}){
 
       <div className="flex-1 flex flex-col items-center justify-center gap-2 px-4">
         <h1 className="text-white font-bold text-2xl uppercase tracking-wide text-center">{exercise.name}</h1>
-        <p className="text-white/50 text-sm">{phase==='rest'?'Repos':`Serie ${curSet}/${tgtSets}`}{pr>0?`  PR:${pr}kg`:''}</p>
+        <p className="text-white/50 text-sm">{phase==='rest'?'Repos':`Serie ${curSet}/${tgtSets}`}{pr>0?` - Record: ${pr}kg`:''}</p>
 
         <div className="relative my-2">
           <svg width="280"height="280"className="-rotate-90">
