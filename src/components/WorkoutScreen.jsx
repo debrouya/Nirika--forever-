@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Play, Pause, SkipForward, ArrowLeft, Dumbbell, Save, CheckCircle, Plus, Share2 } from 'lucide-react'
 import useStore from '../store/useStore'
+import html2canvas from 'html2canvas'
 
 function beep(f=800,d=150){try{const a=new AudioContext();const o=a.createOscillator();o.type='square';o.frequency.value=f;o.connect(a.destination);o.start();o.stop(a.currentTime+d/1000)}catch{}}
 function f(s){const m=Math.floor(s/60);return`${m}:${String(s%60).padStart(2,'0')}`}
@@ -46,12 +47,16 @@ export default function WorkoutScreen({exercise,onComplete}){
 
   const end=()=>{clearInterval(iv.current);if(wl.current)wl.current.release().catch(()=>{});onComplete()}
 
-  const share=()=>{const d=Math.round((Date.now()-started.current)/1000);const v=sets.reduce((s,x)=>s+x.w*x.r,0);const text=`${exercise.name} - ${sets.length} series, ${f(d)}, ${v}kg volume sur NIRIKA FOR EVER`;try{navigator.share({title:'Ma seance',text})}catch(e){try{navigator.clipboard.writeText(text);alert('Copie !')}catch{}}}
+  const share=async()=>{
+    const el=document.getElementById('wo-summary');if(!el)return
+    try{const c=await html2canvas(el,{backgroundColor:'#0f1a1e',scale:2});c.toBlob(async(blob)=>{const f=new File([blob],`nirika-${exercise.name}.png`,{type:'image/png'});try{await navigator.share({files:[f],title:'NIRIKA FOR EVER'})}catch{const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=`nirika-${exercise.name}.png`;a.click();URL.revokeObjectURL(u)}})}catch(e){const t=`${exercise.name} - ${sets.length} series, ${f(d)} sur NIRIKA FOR EVER`;try{navigator.clipboard.writeText(t)}catch{}}}
+  const d=phase==='done'?Math.round((Date.now()-started.current)/1000):0
+  const v=phase==='done'?sets.reduce((s,x)=>s+x.w*x.r,0):0
 
   if(phase==='done'){
     const d=Math.round((Date.now()-started.current)/1000);const v=sets.reduce((s,x)=>s+x.w*x.r,0)
     return(
-      <div className="fixed inset-0 z-40 bg-dark-bg flex flex-col items-center justify-center p-6" style={{paddingBottom:'calc(env(safe-area-inset-bottom,20px)+90px)'}}>
+      <div id="wo-summary" className="fixed inset-0 z-40 bg-dark-bg flex flex-col items-center justify-center p-6" style={{paddingBottom:'calc(env(safe-area-inset-bottom,20px)+90px)'}}>
         <CheckCircle size={40}className="text-lime mb-4"/><h1 className="text-white font-bold text-xl text-center mb-6">{exercise.name} - Termine</h1>
         <div className="grid grid-cols-3 gap-3 w-full max-w-xs mb-4">
           <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-lime font-bold text-lg">{sets.length}</p><p className="text-muted text-[10px]">series</p></div>
