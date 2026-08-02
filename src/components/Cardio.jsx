@@ -686,11 +686,8 @@ export default function Cardio() {
             <button
               key={activity.id}
               onClick={() => selectActivity(activity)}
-              className="relative bg-dark-card rounded-2xl overflow-hidden h-32 flex flex-col items-center justify-end hover:bg-dark-border transition-all active:scale-95 border border-dark-border group"
+              className="relative bg-dark-card rounded-2xl overflow-hidden h-32 flex flex-col items-center justify-end hover:bg-dark-border transition-all active:scale-95 border border-dark-border"
             >
-              <div onClick={(e) => { e.stopPropagation(); startCardioSession(activity) }} className="absolute top-2 right-2 z-20 w-7 h-7 rounded-full bg-lime/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <span className="text-dark-bg text-[10px] font-bold">▶</span>
-              </div>
               <img
               src={activity.image}
               alt={activity.name}
