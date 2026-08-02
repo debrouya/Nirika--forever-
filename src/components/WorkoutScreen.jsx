@@ -59,6 +59,7 @@ export default function WorkoutScreen({exercise,onComplete}){
       <div id="wo-summary" className="fixed inset-0 z-40 bg-dark-bg flex flex-col items-center justify-center p-6" style={{paddingBottom:'calc(env(safe-area-inset-bottom,20px)+90px)'}}>
         <div className="flex items-center gap-3 mb-6">
           <img src="/logo.png" alt="NIRIKA" className="w-40 h-40 rounded-3xl mb-2" />
+          <span className="text-white font-black text-xl tracking-tight mb-4">NIRIKA <span className="text-lime">FOR EVER</span></span>
         </div>
         <CheckCircle size={40}className="text-lime mb-4"/><h1 className="text-white font-bold text-xl text-center mb-6">{exercise.name} - Termine</h1>
         <div className="grid grid-cols-3 gap-3 w-full max-w-xs mb-4">
