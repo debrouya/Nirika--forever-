@@ -57,6 +57,10 @@ export default function WorkoutScreen({exercise,onComplete}){
     const d=Math.round((Date.now()-started.current)/1000);const v=sets.reduce((s,x)=>s+x.w*x.r,0)
     return(
       <div id="wo-summary" className="fixed inset-0 z-40 bg-dark-bg flex flex-col items-center justify-center p-6" style={{paddingBottom:'calc(env(safe-area-inset-bottom,20px)+90px)'}}>
+        <div className="flex items-center gap-3 mb-6">
+          <img src="/logo.png" alt="NIRIKA" className="w-10 h-10 rounded-xl" />
+          <span className="text-white font-black text-lg tracking-tight">NIRIKA <span className="text-lime">FOR EVER</span></span>
+        </div>
         <CheckCircle size={40}className="text-lime mb-4"/><h1 className="text-white font-bold text-xl text-center mb-6">{exercise.name} - Termine</h1>
         <div className="grid grid-cols-3 gap-3 w-full max-w-xs mb-4">
           <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-lime font-bold text-lg">{sets.length}</p><p className="text-muted text-[10px]">series</p></div>
