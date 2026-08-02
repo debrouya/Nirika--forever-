@@ -21,59 +21,57 @@ export default function CardioTimer({ onComplete }) {
 
   useEffect(() => {
     if (paused || done) return
-    intervalRef.current = setInterval(() => {
-      setElapsed(t => { const n = t + 1; if (n >= total) { setDone(true); clearInterval(intervalRef.current); return n }; return n })
-    }, 1000)
+    intervalRef.current = setInterval(() => setElapsed(t => { const n = t + 1; if (n >= total) { setDone(true); clearInterval(intervalRef.current); return n }; return n }), 1000)
     return () => clearInterval(intervalRef.current)
   }, [paused, done])
 
-  const remaining = total - elapsed
-  const progress = (elapsed / total) * 100
+  const remaining = total - elapsed; const progress = (elapsed / total) * 100
   const calories = Math.round(elapsed * 0.15)
-  const r = 130; const c = 2 * Math.PI * r
-  const dash = c - (Math.min(100, progress) / 100) * c
+  const r = 130; const c = 2 * Math.PI * r; const dash = c - (Math.min(100, progress) / 100) * c
+
+  const end = () => { clearInterval(intervalRef.current); if (wakeLockRef.current) wakeLockRef.current.release().catch(() => {}); store.getState().endSession(); onComplete() }
 
   if (done) return (
-    <div className="fixed inset-0 z-40 bg-dark-bg flex flex-col items-center justify-center p-6 space-y-5 pb-24">
-      <Flame size={48} className="text-orange-400" />
-      <h1 className="text-white font-bold text-2xl">Cardio terminé !</h1>
-      <div className="grid grid-cols-2 gap-3 w-full max-w-xs">
-        <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-lime font-bold text-xl">{f(elapsed)}</p><p className="text-muted text-[10px]">durée</p></div>
-        <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-orange-400 font-bold text-xl">{calories}</p><p className="text-muted text-[10px]">kcal</p></div>
+    <div className="fixed inset-0 z-40 bg-dark-bg flex flex-col items-center justify-center p-6" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 90px)' }}>
+      <Flame size={40} className="text-orange-400 mb-4" />
+      <h1 className="text-white font-bold text-xl mb-6">Cardio termine</h1>
+      <div className="grid grid-cols-2 gap-3 w-full max-w-xs mb-4">
+        <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-lime font-bold text-lg">{f(elapsed)}</p><p className="text-muted text-[10px]">duree</p></div>
+        <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-orange-400 font-bold text-lg">{calories}</p><p className="text-muted text-[10px]">kcal</p></div>
       </div>
-      <button onClick={() => { store.getState().endSession(); onComplete() }} className="w-full max-w-xs h-12 rounded-xl bg-lime text-dark-bg font-bold">Terminer</button>
+      <button onClick={end} className="w-full max-w-xs h-12 rounded-xl bg-lime text-dark-bg font-bold">Terminer</button>
     </div>
   )
 
   return (
     <div className="fixed inset-0 z-40 bg-dark-bg flex flex-col">
-      <div className="flex items-center justify-between px-4 py-3">
-        <button onClick={() => { clearInterval(intervalRef.current); store.getState().endSession(); onComplete() }} className="p-2 text-white/50 hover:text-white"><ArrowLeft size={22} /></button>
+      <div className="flex items-center justify-between px-4 pt-3 pb-1">
+        <button onClick={end} className="p-2 text-white/50 hover:text-white"><ArrowLeft size={22} /></button>
         <div className="text-center flex-1">
-          <h1 className="text-white font-bold text-xl uppercase">{session?.exerciseName || 'Cardio'}</h1>
-          <p className="text-white/40 text-xs"><Flame size={10} className="inline" />{calories} kcal</p>
+          <h1 className="text-white font-bold text-lg uppercase tracking-wide">{session?.exerciseName || 'Cardio'}</h1>
+          <p className="text-white/50 text-xs">{calories} kcal</p>
         </div>
         <div className="w-10" />
       </div>
-      <div className="flex-1 flex flex-col items-center justify-center gap-4">
+      <div className="flex-1 flex flex-col items-center justify-center gap-3">
         <div className="relative">
-          <svg width="300" height="300" className="-rotate-90">
-            <circle cx="150" cy="150" r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="10" />
-            <circle cx="150" cy="150" r={r} fill="none" stroke="#22c55e" strokeWidth="10" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={dash} style={{ transition: 'stroke-dashoffset 0.5s linear', filter: 'drop-shadow(0 0 8px #22c55e)' }} />
+          <svg width="280" height="280" className="-rotate-90">
+            <circle cx="140" cy="140" r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="10" />
+            <circle cx="140" cy="140" r={r} fill="none" stroke="#22c55e" strokeWidth="10" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={dash} style={{ transition: 'stroke-dashoffset 0.5s linear', filter: 'drop-shadow(0 0 6px #22c55e)' }} />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-7xl font-black font-mono tabular-nums text-green-400">{f(remaining)}</span>
-            <p className="text-white/40 text-xs mt-1">Continue 🔥</p>
+            <span className="text-6xl font-black font-mono tabular-nums text-lime">{f(remaining)}</span>
+            <span className="text-white/30 text-xs mt-1">restant</span>
           </div>
         </div>
-        <div className="w-full max-w-xs"><div className="bg-white/5 rounded-2xl p-3 text-center"><p className="text-white/30 text-[10px] uppercase">Objectif</p><p className="text-white text-sm font-medium">{targetMin} minutes</p></div></div>
+        <div className="w-full max-w-xs px-4"><div className="bg-white/5 rounded-xl p-2 text-center"><p className="text-white/20 text-[10px]">Objectif : {targetMin} minutes</p></div></div>
       </div>
-      <div className="p-4 pb-[calc(env(safe-area-inset-bottom,16px)+16px)] flex gap-3">
-        <button onClick={() => setPaused(p => !p)} className="flex-1 h-14 rounded-2xl bg-white/10 hover:bg-white/20 active:bg-white/30 border border-white/10 text-white font-bold text-lg flex items-center justify-center gap-2 transition-colors">
-          {paused ? <Play size={24} /> : <Pause size={24} />}{paused ? 'Reprendre' : 'Pause'}
+      <div className="px-4 flex gap-3" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 80px)' }}>
+        <button onClick={() => setPaused(p => !p)} className="flex-1 h-12 rounded-2xl bg-white/10 active:bg-white/20 border border-white/10 text-white font-bold flex items-center justify-center gap-2">
+          {paused ? <Play size={20} /> : <Pause size={20} />}{paused ? 'Reprendre' : 'Pause'}
         </button>
-        <button onClick={() => { setDone(true); clearInterval(intervalRef.current) }} className="flex-1 h-14 rounded-2xl bg-lime/20 hover:bg-lime/30 active:bg-lime/40 border border-lime/30 text-lime font-bold text-lg flex items-center justify-center gap-2 transition-colors">
-          <SkipForward size={24} />Terminer
+        <button onClick={() => { setDone(true); clearInterval(intervalRef.current) }} className="flex-1 h-12 rounded-2xl bg-lime/20 active:bg-lime/30 border border-lime/30 text-lime font-bold flex items-center justify-center gap-2">
+          <SkipForward size={20} />Terminer
         </button>
       </div>
     </div>

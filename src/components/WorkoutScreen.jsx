@@ -29,21 +29,11 @@ export default function WorkoutScreen({ exercise, onComplete }) {
     if (paused || phase === 'done') return
     intervalRef.current = setInterval(() => {
       setElapsed(t => {
-        const n = t + 1
-        if (phase === 'effort' || phase === 'last3') {
+        const n = t + 1; if (phase === 'effort' || phase === 'last3') {
           if (n >= effortSec - 3 && n < effortSec) setPhase('last3')
-          if (n >= effortSec) {
-            setPhase('rest')
-            const s = { w: Number(weight) || 0, r: Number(reps) || 0 }
-            setSets(p => [...p, s])
-            try { const st = useStore.getState(); if (st.activeSession) st.addSetToSession(s); store.getState().addExerciseRecord(exercise.id, { exerciseName: exercise.name, muscleGroup: exercise.muscleGroup, weight: s.w, reps: s.r, totalVolume: s.w * s.r }) } catch {}
-            return 0
-          }
+          if (n >= effortSec) { setPhase('rest'); const s = { w: Number(weight) || 0, r: Number(reps) || 0 }; setSets(p => [...p, s]); try { const st = useStore.getState(); if (st.activeSession) st.addSetToSession(s); store.getState().addExerciseRecord(exercise.id, { exerciseName: exercise.name, muscleGroup: exercise.muscleGroup, weight: s.w, reps: s.r, totalVolume: s.w * s.r }) } catch {}; return 0 }
         }
-        if (phase === 'rest' && n >= restSec) {
-          if (currentSet >= targetSets) { setPhase('done'); clearInterval(intervalRef.current); saveW(); return n }
-          setPhase('effort'); setCurrentSet(c => c + 1); return 0
-        }
+        if (phase === 'rest' && n >= restSec) { if (currentSet >= targetSets) { setPhase('done'); clearInterval(intervalRef.current); saveW(); return n }; setPhase('effort'); setCurrentSet(c => c + 1); return 0 }
         if (phase === 'last3' && n >= effortSec - 3) { try { navigator.vibrate?.(100) } catch {}; beep(800, 150) }
         return n
       })
@@ -51,29 +41,26 @@ export default function WorkoutScreen({ exercise, onComplete }) {
     return () => clearInterval(intervalRef.current)
   }, [paused, phase])
 
-  const saveW = () => {
-    const d = Math.round((Date.now() - startRef.current) / 1000)
-    const v = sets.reduce((s, x) => s + x.w * x.r, 0)
-    try { store.getState().addWorkout({ exerciseName: exercise.name, muscleGroup: exercise.muscleGroup, duration: Math.floor(d / 60), durationMinutes: Math.floor(d / 60), calories: Math.round(d * 0.15), totalVolume: v }) } catch {}
-  }
+  const saveW = () => { const d = Math.round((Date.now() - startRef.current) / 1000); const v = sets.reduce((s, x) => s + x.w * x.r, 0); try { store.getState().addWorkout({ exerciseName: exercise.name, muscleGroup: exercise.muscleGroup, duration: Math.floor(d / 60), durationMinutes: Math.floor(d / 60), calories: Math.round(d * 0.15), totalVolume: v }) } catch {} }
+
+  const handleTerminer = () => { clearInterval(intervalRef.current); if (wakeLockRef.current) wakeLockRef.current.release().catch(() => {}); onComplete() }
 
   if (phase === 'done') {
-    const d = Math.round((Date.now() - startRef.current) / 1000)
-    const v = sets.reduce((s, x) => s + x.w * x.r, 0)
+    const d = Math.round((Date.now() - startRef.current) / 1000); const v = sets.reduce((s, x) => s + x.w * x.r, 0)
     return (
-      <div className="fixed inset-0 z-40 bg-dark-bg flex flex-col items-center justify-center p-6 space-y-5 pb-24">
-        <CheckCircle size={48} className="text-lime" />
-        <h1 className="text-white font-bold text-2xl text-center">{exercise.name} — Terminé !</h1>
-        <div className="grid grid-cols-3 gap-3 w-full max-w-xs">
-          <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-lime font-bold text-xl">{sets.length}</p><p className="text-muted text-[10px]">séries</p></div>
-          <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-white font-bold text-xl">{fmt(d)}</p><p className="text-muted text-[10px]">durée</p></div>
-          <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-orange-400 font-bold text-xl">{v}</p><p className="text-muted text-[10px]">volume</p></div>
+      <div className="fixed inset-0 z-40 bg-dark-bg flex flex-col items-center justify-center p-6" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 90px)' }}>
+        <CheckCircle size={40} className="text-lime mb-4" />
+        <h1 className="text-white font-bold text-xl text-center mb-6">{exercise.name} - Termine</h1>
+        <div className="grid grid-cols-3 gap-3 w-full max-w-xs mb-4">
+          <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-lime font-bold text-lg">{sets.length}</p><p className="text-muted text-[10px]">series</p></div>
+          <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-white font-bold text-lg">{fmt(d)}</p><p className="text-muted text-[10px]">duree</p></div>
+          <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-orange-400 font-bold text-lg">{v}</p><p className="text-muted text-[10px]">volume</p></div>
         </div>
-        <div className="flex gap-3 w-full max-w-xs">
-          <button onClick={() => { try { store.getState().addWorkoutTemplate({ name: `${exercise.name} (${targetSets}s)`, exercises: [{ ...exercise, sets: targetSets, reps: reps || '10', weight: weight || '0' }] }); alert('OK') } catch {}; onComplete() }} className="flex-1 h-12 rounded-xl bg-dark-card border border-dark-border text-white font-bold flex items-center justify-center gap-2"><Save size={16} />Template</button>
-          <button onClick={() => { setPhase('effort'); setCurrentSet(1); setSets([]); setElapsed(0); startRef.current = Date.now() }} className="flex-1 h-12 rounded-xl bg-dark-card border border-dark-border text-white font-bold flex items-center justify-center gap-2"><Plus size={16} />Refaire</button>
+        <div className="flex gap-3 w-full max-w-xs mb-3">
+          <button onClick={() => { try { store.getState().addWorkoutTemplate({ name: `${exercise.name} (${targetSets}s)`, exercises: [{ ...exercise, sets: targetSets, reps: reps || '10', weight: weight || '0' }] }) } catch {}; handleTerminer() }} className="flex-1 h-12 rounded-xl bg-dark-card border border-dark-border text-white font-bold text-sm flex items-center justify-center gap-2"><Save size={16} />Template</button>
+          <button onClick={() => { setPhase('effort'); setCurrentSet(1); setSets([]); setElapsed(0); startRef.current = Date.now() }} className="flex-1 h-12 rounded-xl bg-dark-card border border-dark-border text-white font-bold text-sm flex items-center justify-center gap-2"><Plus size={16} />Refaire</button>
         </div>
-        <button onClick={onComplete} className="w-full max-w-xs h-12 rounded-xl bg-lime text-dark-bg font-bold">Terminer</button>
+        <button onClick={handleTerminer} className="w-full max-w-xs h-12 rounded-xl bg-lime text-dark-bg font-bold">Terminer</button>
       </div>
     )
   }
@@ -81,58 +68,55 @@ export default function WorkoutScreen({ exercise, onComplete }) {
   const progress = phase === 'rest' ? (elapsed / restSec) * 100 : (elapsed / effortSec) * 100
   const remaining = phase === 'rest' ? restSec - elapsed : effortSec - elapsed
   const ringColor = phase === 'last3' ? '#f97316' : phase === 'rest' ? '#3b82f6' : '#22c55e'
-  const bg = phase === 'rest' ? 'bg-blue-950/30' : 'bg-dark-bg'
-  const r = 130; const c = 2 * Math.PI * r
-  const dash = c - (Math.min(100, progress) / 100) * c
+  const bg = phase === 'rest' ? '#0a1628' : '#0f1a1e'
+  const r = 130; const c = 2 * Math.PI * r; const dash = c - (Math.min(100, progress) / 100) * c
 
   return (
-    <div className={`fixed inset-0 z-40 flex flex-col ${bg} transition-colors duration-500`}>
-      <div className="flex items-center justify-between px-4 py-3">
-        <button onClick={() => { store.getState().endSession?.(); onComplete() }} className="p-2 text-white/50 hover:text-white"><ArrowLeft size={22} /></button>
+    <div className="fixed inset-0 z-40 flex flex-col" style={{ backgroundColor: bg }}>
+      <div className="flex items-center justify-between px-4 pt-3 pb-1">
+        <button onClick={handleTerminer} className="p-2 text-white/50 hover:text-white"><ArrowLeft size={22} /></button>
         <div className="text-center flex-1">
-          <h1 className="text-white font-bold text-xl uppercase tracking-wider">{exercise.name}</h1>
-          <p className="text-white/60 text-xs">{phase === 'rest' ? 'Repos' : `Série ${currentSet}/${targetSets}`}
-            {pr > 0 && <span className="text-yellow-400 ml-2">🏆{pr}kg</span>}
-          </p>
+          <h1 className="text-white font-bold text-lg uppercase tracking-wide">{exercise.name}</h1>
+          <p className="text-white/50 text-xs">{phase === 'rest' ? 'Repos' : `Serie ${currentSet}/${targetSets}`}{pr > 0 ? `  PR:${pr}kg` : ''}</p>
         </div>
         <div className="w-10" />
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center gap-4">
+      <div className="flex-1 flex flex-col items-center justify-center gap-3">
         <div className="relative">
-          <svg width="300" height="300" className="-rotate-90">
-            <circle cx="150" cy="150" r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="10" />
-            <circle cx="150" cy="150" r={r} fill="none" stroke={ringColor} strokeWidth="10" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={dash} style={{ transition: 'stroke-dashoffset 0.5s linear', filter: `drop-shadow(0 0 8px ${ringColor})` }} />
+          <svg width="280" height="280" className="-rotate-90">
+            <circle cx="140" cy="140" r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="10" />
+            <circle cx="140" cy="140" r={r} fill="none" stroke={ringColor} strokeWidth="10" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={dash} style={{ transition: 'stroke-dashoffset 0.5s linear', filter: `drop-shadow(0 0 6px ${ringColor})` }} />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className={`text-7xl font-black font-mono tabular-nums ${phase === 'last3' ? 'text-orange-500' : phase === 'rest' ? 'text-blue-400' : 'text-green-400'}`}>{fmt(remaining)}</span>
-            <p className="text-white/40 text-xs mt-1">{phase === 'rest' ? 'Repos 😮‍💨' : 'Continue 🔥'}</p>
+            <span className={`text-6xl font-black font-mono tabular-nums ${phase === 'last3' ? 'text-orange-500' : phase === 'rest' ? 'text-blue-400' : 'text-lime'}`}>{fmt(remaining)}</span>
+            <span className="text-white/30 text-xs mt-1">{phase === 'rest' ? 'repos' : 'effort'}</span>
           </div>
         </div>
 
         {phase !== 'rest' && (
-          <div className="flex gap-6 items-center">
+          <div className="flex gap-4 items-center mt-2">
             <div className="flex flex-col items-center">
-              <p className="text-white/40 text-[10px] mb-1">Charge</p>
-              <input type="number" value={weight} onChange={e => setWeight(e.target.value)} placeholder="0" className="w-16 h-12 text-center bg-white/10 border border-white/20 rounded-xl text-white text-xl font-bold placeholder-white/30 focus:outline-none focus:border-lime/50" />
+              <span className="text-white/30 text-[10px] mb-1">Charge</span>
+              <input type="number" value={weight} onChange={e => setWeight(e.target.value)} placeholder="0" className="w-16 h-10 text-center bg-white/10 border border-white/20 rounded-lg text-white text-lg font-bold placeholder-white/30 focus:outline-none focus:border-lime/50" />
             </div>
-            <Dumbbell size={20} className="text-white/20" />
+            <span className="text-white/20">x</span>
             <div className="flex flex-col items-center">
-              <p className="text-white/40 text-[10px] mb-1">Répétitions</p>
-              <input type="number" value={reps} onChange={e => setReps(e.target.value)} placeholder="0" className="w-16 h-12 text-center bg-white/10 border border-white/20 rounded-xl text-white text-xl font-bold placeholder-white/30 focus:outline-none focus:border-lime/50" />
+              <span className="text-white/30 text-[10px] mb-1">Reps</span>
+              <input type="number" value={reps} onChange={e => setReps(e.target.value)} placeholder="0" className="w-16 h-10 text-center bg-white/10 border border-white/20 rounded-lg text-white text-lg font-bold placeholder-white/30 focus:outline-none focus:border-lime/50" />
             </div>
           </div>
         )}
 
-        <div className="w-full max-w-xs"><div className="bg-white/5 rounded-2xl p-3 text-center"><p className="text-white/30 text-[10px] uppercase">Suivant</p><p className="text-white text-sm font-medium">{phase === 'rest' && currentSet <= targetSets ? `Série ${currentSet + 1}/${targetSets}` : 'Prochain exercice'}</p></div></div>
+        <div className="w-full max-w-xs px-4"><div className="bg-white/5 rounded-xl p-2 text-center"><p className="text-white/20 text-[10px]">Suivant : {phase === 'rest' && currentSet <= targetSets ? `Serie ${currentSet + 1}/${targetSets}` : 'Prochain exo'}</p></div></div>
       </div>
 
-      <div className="p-4 pb-[calc(env(safe-area-inset-bottom,16px)+16px)] flex gap-3">
-        <button onClick={() => setPaused(p => !p)} className="flex-1 h-14 rounded-2xl bg-white/10 hover:bg-white/20 active:bg-white/30 border border-white/10 text-white font-bold text-lg flex items-center justify-center gap-2 transition-colors">
-          {paused ? <Play size={24} /> : <Pause size={24} />}{paused ? 'Reprendre' : 'Pause'}
+      <div className="px-4 flex gap-3" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 80px)' }}>
+        <button onClick={() => setPaused(p => !p)} className="flex-1 h-12 rounded-2xl bg-white/10 active:bg-white/20 border border-white/10 text-white font-bold flex items-center justify-center gap-2">
+          {paused ? <Play size={20} /> : <Pause size={20} />}{paused ? 'Reprendre' : 'Pause'}
         </button>
-        <button onClick={() => { if (currentSet >= targetSets) { setPhase('done'); saveW() } else { setPhase('rest'); setCurrentSet(c => c + 1) } }} className="flex-1 h-14 rounded-2xl bg-lime/20 hover:bg-lime/30 active:bg-lime/40 border border-lime/30 text-lime font-bold text-lg flex items-center justify-center gap-2 transition-colors">
-          <SkipForward size={24} />Skip
+        <button onClick={() => { if (currentSet >= targetSets) { setPhase('done'); saveW() } else { setPhase('rest'); setCurrentSet(c => c + 1) } }} className="flex-1 h-12 rounded-2xl bg-lime/20 active:bg-lime/30 border border-lime/30 text-lime font-bold flex items-center justify-center gap-2">
+          <SkipForward size={20} />Suivant
         </button>
       </div>
     </div>
