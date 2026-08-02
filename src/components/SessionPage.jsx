@@ -15,7 +15,6 @@ import {
   FileText,
 } from 'lucide-react'
 import useStore from '../store/useStore'
-import { useSessionCtx } from '../store/sessionContext'
 import SessionNotes from './SessionNotes'
 import WorkoutScreen from './WorkoutScreen'
 import CardioTimer from './CardioTimer'
