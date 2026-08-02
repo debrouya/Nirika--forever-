@@ -100,11 +100,12 @@ const useStore = create(
       activeSession: null,
       savedProgramState: null,
       setSavedProgramState: (state) => set({ savedProgramState: state }),
-      startSession: (exerciseId, exerciseName) =>
+      startSession: (exerciseId, exerciseName, sessionType = 'exercise') =>
         set({
           activeSession: {
             exerciseId,
             exerciseName,
+            sessionType,
             sets: [],
             startedAt: Date.now(),
             paused: false,

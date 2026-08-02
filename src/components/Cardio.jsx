@@ -215,7 +215,7 @@ export default function Cardio() {
   }, [])
 
   const startCardioSession = (activity) => {
-    useStore.getState().startSession(activity.id, activity.name)
+    useStore.getState().startSession(activity.id, activity.name, 'cardio')
     useStore.getState().setCurrentView('session')
   }
 
