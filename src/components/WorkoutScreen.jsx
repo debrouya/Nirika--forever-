@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Play, Pause, SkipForward, ArrowLeft, Dumbbell, Save, CheckCircle, Plus } from 'lucide-react'
+import { Play, Pause, SkipForward, ArrowLeft, Dumbbell, Save, CheckCircle, Plus, Share2 } from 'lucide-react'
 import useStore from '../store/useStore'
 
 function beep(f=800,d=150){try{const a=new AudioContext();const o=a.createOscillator();o.type='square';o.frequency.value=f;o.connect(a.destination);o.start();o.stop(a.currentTime+d/1000)}catch{}}
@@ -46,6 +46,8 @@ export default function WorkoutScreen({exercise,onComplete}){
 
   const end=()=>{clearInterval(iv.current);if(wl.current)wl.current.release().catch(()=>{});onComplete()}
 
+  const share=()=>{const d=Math.round((Date.now()-started.current)/1000);const v=sets.reduce((s,x)=>s+x.w*x.r,0);const text=`${exercise.name} - ${sets.length} series, ${f(d)}, ${v}kg volume sur NIRIKA FOR EVER`;try{navigator.share({title:'Ma seance',text})}catch(e){try{navigator.clipboard.writeText(text);alert('Copie !')}catch{}}}
+
   if(phase==='done'){
     const d=Math.round((Date.now()-started.current)/1000);const v=sets.reduce((s,x)=>s+x.w*x.r,0)
     return(
@@ -57,6 +59,7 @@ export default function WorkoutScreen({exercise,onComplete}){
           <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-orange-400 font-bold text-lg">{v}</p><p className="text-muted text-[10px]">volume</p></div>
         </div>
         <div className="flex gap-3 w-full max-w-xs mb-3">
+          <button onClick={share}className="flex-1 h-12 rounded-xl bg-dark-card border border-dark-border text-white font-bold text-sm flex items-center justify-center gap-2"><Share2 size={16}/>Partager</button>
           <button onClick={()=>{try{S.getState().addWorkoutTemplate({name:`${exercise.name} (${tgtSets}s)`,exercises:[{...exercise,sets:tgtSets,reps:r||'10',weight:w||'0'}]})}catch{};end()}}className="flex-1 h-12 rounded-xl bg-dark-card border border-dark-border text-white font-bold text-sm flex items-center justify-center gap-2"><Save size={16}/>Template</button>
           <button onClick={()=>{setPhase('effort');setCurSet(1);setSets([]);setElapsed(0);started.current=Date.now()}}className="flex-1 h-12 rounded-xl bg-dark-card border border-dark-border text-white font-bold text-sm flex items-center justify-center gap-2"><Plus size={16}/>Refaire</button>
         </div>
