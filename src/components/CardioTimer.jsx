@@ -45,7 +45,7 @@ export default function CardioTimer({ onComplete }) {
 
   return (
     <div className="fixed inset-0 z-40 bg-dark-bg flex flex-col">
-      <div className="flex items-center justify-between px-4 pt-3 pb-1">
+      <div className="flex items-center justify-between px-4" style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 12px)' }}>
         <button onClick={end} className="p-2 text-white/50 hover:text-white"><ArrowLeft size={22} /></button>
         <div className="text-center flex-1">
           <h1 className="text-white font-bold text-lg uppercase tracking-wide">{session?.exerciseName || 'Cardio'}</h1>

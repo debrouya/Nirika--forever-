@@ -73,7 +73,7 @@ export default function WorkoutScreen({ exercise, onComplete }) {
 
   return (
     <div className="fixed inset-0 z-40 flex flex-col" style={{ backgroundColor: bg }}>
-      <div className="flex items-center justify-between px-4 pt-3 pb-1">
+      <div className="flex items-center justify-between px-4" style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 12px)' }}>
         <button onClick={handleTerminer} className="p-2 text-white/50 hover:text-white"><ArrowLeft size={22} /></button>
         <div className="text-center flex-1">
           <h1 className="text-white font-bold text-lg uppercase tracking-wide">{exercise.name}</h1>
