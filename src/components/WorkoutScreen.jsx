@@ -109,7 +109,7 @@ export default function WorkoutScreen({exercise,onComplete}){
         <div className="w-full max-w-xs"><div className="bg-white/5 rounded-xl p-2 text-center"><p className="text-white/20 text-[10px]">Suivant: {phase==='rest'&&curSet<=tgtSets?`Serie ${curSet+1}/${tgtSets}`:'Prochain exo'}</p></div></div>
       </div>
 
-      <div className="px-4 flex gap-3"style={{paddingBottom:'calc(env(safe-area-inset-bottom,20px)+80px)'}}>
+      <div className="px-4 flex gap-3 mb-16" style={{paddingBottom:'calc(env(safe-area-inset-bottom, 20px))'}}>
         <button onClick={()=>setPaused(p=>!p)}className="flex-1 h-12 rounded-2xl bg-white/10 active:bg-white/20 border border-white/10 text-white font-bold flex items-center justify-center gap-2">{paused?<Play size={20}/>:<Pause size={20}/>}{paused?'Reprendre':'Pause'}</button>
         <button onClick={()=>{if(curSet>=tgtSets){setPhase('done');save()}else{setPhase('rest');setCurSet(c=>c+1)}}}className="flex-1 h-12 rounded-2xl bg-lime/20 active:bg-lime/30 border border-lime/30 text-lime font-bold flex items-center justify-center gap-2"><SkipForward size={20}/>Suivant</button>
       </div>
