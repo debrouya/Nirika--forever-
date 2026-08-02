@@ -14,7 +14,8 @@ export default function WorkoutScreen({ exercise, onComplete }) {
   const [currentSet, setCurrentSet] = useState(1)
   const [weight, setWeight] = useState('')
   const [reps, setReps] = useState('')
-  const targetSets = 3; const effortSec = 45; const restSec = 30
+  const [effortSec, setEffortSec] = useState(45)
+  const targetSets = 3; const restSec = Math.round(effortSec / 2)
   const intervalRef = useRef(null); const wakeLockRef = useRef(null)
   const startRef = useRef(Date.now()); const mountedRef = useRef(true)
 
@@ -78,6 +79,11 @@ export default function WorkoutScreen({ exercise, onComplete }) {
         <div className="text-center flex-1">
           <h1 className="text-white font-bold text-lg uppercase tracking-wide">{exercise.name}</h1>
           <p className="text-white/50 text-xs">{phase === 'rest' ? 'Repos' : `Serie ${currentSet}/${targetSets}`}{pr > 0 ? `  PR:${pr}kg` : ''}</p>
+          <div className="flex items-center justify-center gap-1 mt-1">
+            {[30, 45, 60].map(d => (
+              <button key={d} onClick={() => { setEffortSec(d); setElapsed(0); startRef.current = Date.now() }} className={`px-2 py-0.5 rounded text-[10px] font-medium ${effortSec === d ? 'bg-lime/20 text-lime' : 'text-white/30 hover:text-white/60'}`}>{d}s</button>
+            ))}
+          </div>
         </div>
         <div className="w-10" />
       </div>
