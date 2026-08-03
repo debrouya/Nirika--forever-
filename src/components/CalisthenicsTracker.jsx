@@ -16,6 +16,7 @@ import {
 import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
 import WorkoutScreen from './WorkoutScreen'
+import CalisthenicsBilan from './CalisthenicsBilan'
 
 const PHASES = [
   { id: 1, name: 'Adaptation', color: 'text-green-400', bg: 'bg-green-400', emoji: '🟢', days: 'Jour 1-10', timing: '30s / 15s' },
