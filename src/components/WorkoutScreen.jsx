@@ -100,7 +100,7 @@ export default function WorkoutScreen({exercise,onComplete}){
         <div className="w-10"/>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center gap-2 px-4">
+      <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center gap-2 px-4">
         <h1 className="text-white font-bold text-2xl uppercase tracking-wide text-center">{exercise.name}</h1>
         <p className="text-white/50 text-sm">{phase==='rest'?'Repos':`Serie ${curSet}/${tgtSets}`}{newPR?<span className="text-yellow-400 animate-pulse font-bold ml-2">NOUVEAU RECORD !</span>:pr>0?` - Record: ${pr}kg`:''}</p>
 
