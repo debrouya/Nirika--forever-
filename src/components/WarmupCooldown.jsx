@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Play, Timer, ChevronLeft } from 'lucide-react'
 import { warmupExercises, cooldownExercises } from '../data/warmup'
 import useStore from '../store/useStore'
@@ -10,7 +10,10 @@ export default function WarmupCooldown({ type = 'warmup', onDone }) {
   const [current, setCurrent] = useState(0)
   const [activeTimer, setActiveTimer] = useState(null)
   const [allDone, setAllDone] = useState(false)
+  const intervalRef = useRef(null)
   const items = type === 'warmup' ? warmupExercises : cooldownExercises
+
+  useEffect(() => () => { if (intervalRef.current) clearInterval(intervalRef.current) }, [])
 
   const formatTime = (s) => {
     const m = Math.floor(s / 60)
@@ -19,18 +22,19 @@ export default function WarmupCooldown({ type = 'warmup', onDone }) {
   }
 
   const startTimer = (duration) => {
+    if (intervalRef.current) clearInterval(intervalRef.current)
     let remaining = duration
     setActiveTimer(remaining)
-    const interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       remaining--
       if (remaining <= 0) {
-        clearInterval(interval)
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
         setActiveTimer(null)
       } else {
         setActiveTimer(remaining)
       }
     }, 1000)
-    return () => clearInterval(interval)
   }
 
   return (
@@ -68,6 +72,7 @@ export default function WarmupCooldown({ type = 'warmup', onDone }) {
           </p>
           <button
             onClick={() => {
+              if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null }
               setActiveTimer(null)
               if (current >= items.length - 1) {
                 addWarmupSession(type)

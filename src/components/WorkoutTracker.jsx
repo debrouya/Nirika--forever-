@@ -12,6 +12,7 @@ import {
   Flame,
 } from 'lucide-react'
 import useStore from '../store/useStore'
+import { beep } from '../utils/audio'
 import useExercises from '../hooks/useExercises'
 import { fireStreakToast } from './StreakMotivation'
 import GlassCard from './GlassCard'

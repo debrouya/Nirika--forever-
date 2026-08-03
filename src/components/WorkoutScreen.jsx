@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { Play, Pause, SkipForward, ArrowLeft, Dumbbell, Save, CheckCircle, Plus, Share2 } from 'lucide-react'
 import useStore from '../store/useStore'
 import html2canvas from 'html2canvas'
+import { beep } from '../utils/audio'
 
-function beep(f=800,d=150){try{const a=new AudioContext();const o=a.createOscillator();o.type='square';o.frequency.value=f;o.connect(a.destination);o.start();o.stop(a.currentTime+d/1000)}catch{}}
 function f(s){const m=Math.floor(s/60);return`${m}:${String(s%60).padStart(2,'0')}`}
 
 export default function WorkoutScreen({exercise,onComplete}){
