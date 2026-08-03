@@ -6,10 +6,12 @@ import {
   ChevronRight,
   Search,
   FileText,
+  Video,
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
 import WorkoutScreen from './WorkoutScreen'
+import ExerciseTutorial from './ExerciseTutorial'
 
 const MUSCLE_GROUPS = [
   { id: 'all', label: 'Tout' },
@@ -35,6 +37,7 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
   const [activeGroup, setActiveGroup] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedExercise, setSelectedExercise] = useState(null)
+  const [tutorialExercise, setTutorialExercise] = useState(null)
   const exercises = useExercises()
 
   const filtered = exercises.filter((e) => {
@@ -151,8 +154,15 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
                 </div>
 
                 {/* Play */}
-                <div className="w-10 h-10 rounded-full bg-lime/20 flex items-center justify-center flex-shrink-0">
-                  <Play size={16} className="text-lime ml-0.5" fill="currentColor" />
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-lime/20 flex items-center justify-center flex-shrink-0">
+                    <Play size={16} className="text-lime ml-0.5" fill="currentColor" />
+                  </div>
+                  {exercise.youtubeId && (
+                    <div onClick={(e) => { e.stopPropagation(); setTutorialExercise(exercise) }} className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                      <Video size={16} className="text-blue-400" />
+                    </div>
+                  )}
                 </div>
               </div>
             </button>
@@ -170,6 +180,9 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
           <span className="text-muted text-xs">+{lockedCount} exercices verrouillés</span>
           <span className="text-lime text-[10px] font-medium">Débloquer avec Premium</span>
         </button>
+      )}
+      {tutorialExercise && (
+        <ExerciseTutorial exercise={tutorialExercise} onClose={() => setTutorialExercise(null)} />
       )}
     </div>
   )
