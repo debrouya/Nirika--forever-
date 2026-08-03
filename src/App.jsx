@@ -9,6 +9,7 @@ import AdminPanel from './components/AdminPanel'
 import Layout from './components/Layout'
 import Navigation from './components/Navigation'
 import Dashboard from './components/Dashboard'
+import FloatingCoachButton from './components/FloatingCoachButton'
 import Profile from './components/Profile'
 import Calisthenics from './components/Calisthenics'
 import CustomExercisePanel from './components/CustomExercisePanel'
@@ -188,7 +189,7 @@ export default function App() {
     if (!supabaseReady) {
     return (
       <Layout>
-        {currentView === 'dashboard' && <Dashboard />}
+        {currentView === 'dashboard' && <><Dashboard /><FloatingCoachButton /></>}
         {currentView === 'profile' && <Profile />}
         {currentView === 'workout-detail' && <WorkoutDetail />}
         {currentView === 'calisthenics' && <Calisthenics isPremium={true} />}
@@ -230,7 +231,7 @@ export default function App() {
 
   return (
     <Layout>
-        {currentView === 'dashboard' && <Dashboard />}
+        {currentView === 'dashboard' && <><Dashboard /><FloatingCoachButton /></>}
       {currentView === 'profile' && <Profile user={user} onLogout={handleLogout} />}
       {currentView === 'workout-detail' && <WorkoutDetail />}
       {currentView === 'calisthenics' && <Calisthenics isPremium={hasAccess} onShowPaywall={() => !isAdmin && setShowPaywall(true)} />}

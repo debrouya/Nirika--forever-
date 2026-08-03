@@ -158,3 +158,21 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
     border: 1px solid #3A3A3A;
   }
 }
+
+/* --- FloatingCoachButton --- */
+@keyframes coach-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-coach-float {
+  animation: coach-float 3s ease-in-out infinite;
+}
+
+/* --- Coach page slide-up --- */
+@keyframes slide-up {
+  from { transform: translateY(100%); opacity: 0.5; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-up {
+  animation: slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
