@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import useStore from './store/useStore'
 import { supabase, isSupabaseConfigured } from './lib/supabase'
+import { track } from './services/analytics'
 import { LoginView, SignupView, ForgotPasswordView } from './components/Auth'
 import { signOut, getSession, getProfile } from './services/supabaseService'
 import AdminPanel from './components/AdminPanel'
@@ -31,6 +32,8 @@ import Toasts from './components/Toasts'
 import Onboarding, { useOnboarding } from './components/Onboarding'
 import { useSubscription } from './hooks/useSubscription'
 import { cleanupStaleSessions } from './hooks/useBackgroundHandler'
+
+if (typeof window !== 'undefined') window.__njk_sb = supabase
 
 const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || 'jacques.frederic@icloud.com').split(',').map(e => e.trim())
 

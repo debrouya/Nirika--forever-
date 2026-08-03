@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import exercises from '../data/exercises.js'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
+import { track } from '../services/analytics'
 
 const useStore = create(
   persist(
@@ -100,7 +101,8 @@ const useStore = create(
       activeSession: null,
       savedProgramState: null,
       setSavedProgramState: (state) => set({ savedProgramState: state }),
-      startSession: (exerciseId, exerciseName, sessionType = 'exercise') =>
+      startSession: (exerciseId, exerciseName, sessionType = 'exercise') => {
+        track('seance_lancee', { exerciseId, exerciseName, sessionType })
         set({
           activeSession: {
             exerciseId,
@@ -112,7 +114,8 @@ const useStore = create(
             pausedAt: null,
             totalPausedMs: 0,
           },
-        }),
+        })
+      },
       pauseSession: () =>
         set((state) => {
           if (!state.activeSession || state.activeSession.paused) return state
@@ -135,6 +138,7 @@ const useStore = create(
         const { activeSession, sessionHistory } = get()
         if (activeSession) {
           const elapsed = Math.floor((Date.now() - activeSession.startedAt - (activeSession.totalPausedMs || 0)) / 1000)
+          track('seance_terminee', { exerciseId: activeSession.exerciseId, exerciseName: activeSession.exerciseName, duration: elapsed })
           const completed = {
             ...activeSession,
             endedAt: new Date().toISOString(),

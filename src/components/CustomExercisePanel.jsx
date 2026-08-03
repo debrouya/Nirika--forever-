@@ -168,7 +168,7 @@ export default function CustomExercisePanel({ onClose }) {
               exercise={editingId ? customExercises.find((e) => e.id === editingId) : null}
               onSave={(data) => {
                 if (editingId) updateCustomExercise(editingId, data)
-                else addCustomExercise(data)
+                else { addCustomExercise(data); try { import('../services/analytics').then(m => m.track('exercice_cree', { name: data.name })) } catch {} }
                 setShowForm(false)
                 setEditingId(null)
               }}
