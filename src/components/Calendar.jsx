@@ -106,9 +106,8 @@ export default function Calendar() {
   }, [sessionsByDay, selectedDay])
 
   const recentSessions = useMemo(() => {
-    return allSessions
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, 10)
+    const len = allSessions.length
+    return allSessions.slice(Math.max(0, len - 10))
   }, [allSessions])
 
   const goToPrevMonth = () => setCurrentDate(new Date(year, month - 1, 1))

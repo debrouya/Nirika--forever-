@@ -195,8 +195,7 @@ function WeightFullView({ sorted, stats, onClose, onAdd }) {
             <p className="text-muted text-xs text-center py-4">Aucune mesure</p>
           ) : (
             <div className="space-y-1.5 max-h-60 overflow-y-auto no-scrollbar">
-              {sorted.map((entry) => {
-                const idx = sorted.indexOf(entry)
+              {sorted.map((entry, idx) => {
                 const prev = sorted[idx + 1]
                 const diff = prev ? entry.weight - prev.weight : 0
                 return (
