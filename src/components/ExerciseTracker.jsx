@@ -17,6 +17,7 @@ import {
   Zap,
 } from 'lucide-react'
 import useStore from '../store/useStore'
+import { feedback } from '../services/feedback'
 
 const COACHING_TIPS = [
   'Ralentis la descente — 2 sec en excentrique',
@@ -128,6 +129,7 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
   const addSet = () => {
     const reps = parseInt(repsInput, 10)
     if (!reps || reps <= 0) return
+    feedback()
     setSets((prev) => [
       ...prev,
       {

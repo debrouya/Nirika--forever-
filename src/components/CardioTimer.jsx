@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Play, Pause, SkipForward, ArrowLeft, Flame } from 'lucide-react'
 import useStore from '../store/useStore'
 import { useBackgroundHandler } from '../hooks/useBackgroundHandler'
+import { feedback } from '../services/feedback'
 
 function f(s) { const m = Math.floor(s / 60); return `${m}:${String(s % 60).padStart(2, '0')}` }
 
@@ -25,7 +26,7 @@ export default function CardioTimer({ onComplete }) {
 
   useEffect(() => {
     if (paused || done) return
-    intervalRef.current = setInterval(() => setElapsed(t => { const n = t + 1; if (n >= total) { setDone(true); clearInterval(intervalRef.current); return n }; return n }), 1000)
+    intervalRef.current = setInterval(() => setElapsed(t => { const n = t + 1; if (n >= total) { feedback(); setDone(true); clearInterval(intervalRef.current); return n }; return n }), 1000)
     return () => clearInterval(intervalRef.current)
   }, [paused, done])
 

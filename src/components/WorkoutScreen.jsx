@@ -3,6 +3,7 @@ import { Play, Pause, SkipForward, ArrowLeft, Dumbbell, Save, CheckCircle, Plus,
 import useStore from '../store/useStore'
 import html2canvas from 'html2canvas'
 import { beep } from '../utils/audio'
+import { feedback } from '../services/feedback'
 import { useBackgroundHandler } from '../hooks/useBackgroundHandler'
 
 function f(s){const m=Math.floor(s/60);return`${m}:${String(s%60).padStart(2,'0')}`}
@@ -39,9 +40,9 @@ export default function WorkoutScreen({exercise,onComplete}){
       const n=t+1
       if(phase==='effort'||phase==='last3'){
         if(n>=dur-3&&n<dur)setPhase('last3')
-        if(n>=dur){setPhase('rest');const s={w:Number(w)||0,r:Number(r)||0};setSets(p=>[...p,s]);if(s.w>pr)setNewPR(true);try{const st=useStore.getState();if(st.activeSession)st.addSetToSession(s);S.getState().addExerciseRecord(exercise.id,{exerciseName:exercise.name,muscleGroup:exercise.muscleGroup,weight:s.w,reps:s.r,totalVolume:s.w*s.r})}catch{};return 0}
+        if(n>=dur){feedback();setPhase('rest');const s={w:Number(w)||0,r:Number(r)||0};setSets(p=>[...p,s]);if(s.w>pr)setNewPR(true);try{const st=useStore.getState();if(st.activeSession)st.addSetToSession(s);S.getState().addExerciseRecord(exercise.id,{exerciseName:exercise.name,muscleGroup:exercise.muscleGroup,weight:s.w,reps:s.r,totalVolume:s.w*s.r})}catch{};return 0}
       }
-      if(phase==='rest'&&n>=restSec){if(curSet>=tgtSets){setPhase('done');clearInterval(iv.current);save();return n};setPhase('effort');setCurSet(c=>c+1);return 0}
+      if(phase==='rest'&&n>=restSec){feedback();if(curSet>=tgtSets){setPhase('done');clearInterval(iv.current);save();return n};setPhase('effort');setCurSet(c=>c+1);return 0}
       if(phase==='last3'&&n>=dur-3){try{navigator.vibrate?.(100)}catch{};beep(800,150)}
       return n
     }),1000)
@@ -132,7 +133,7 @@ export default function WorkoutScreen({exercise,onComplete}){
 
       <div className="px-4 flex gap-3 mb-16" style={{paddingBottom:'calc(env(safe-area-inset-bottom, 20px))'}}>
         <button onClick={()=>setPaused(p=>!p)}className="flex-1 h-12 rounded-2xl bg-white/10 active:bg-white/20 border border-white/10 text-white font-bold flex items-center justify-center gap-2">{paused?<Play size={20}/>:<Pause size={20}/>}{paused?'Reprendre':'Pause'}</button>
-        <button onClick={()=>{if(curSet>=tgtSets){setPhase('done');save()}else{setPhase('rest');setCurSet(c=>c+1)}}}className="flex-1 h-12 rounded-2xl bg-lime/20 active:bg-lime/30 border border-lime/30 text-lime font-bold flex items-center justify-center gap-2"><SkipForward size={20}/>Suivant</button>
+        <button onClick={()=>{feedback();if(curSet>=tgtSets){setPhase('done');save()}else{setPhase('rest');setCurSet(c=>c+1)}}}className="flex-1 h-12 rounded-2xl bg-lime/20 active:bg-lime/30 border border-lime/30 text-lime font-bold flex items-center justify-center gap-2"><SkipForward size={20}/>Suivant</button>
       </div>
       {confirmQuit && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-6">
