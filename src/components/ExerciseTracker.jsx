@@ -63,6 +63,12 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
   const timerRef = useRef(null)
   const tipIntervalRef = useRef(null)
   const restTimerRef = useRef(null)
+  const wakeLockRef = useRef(null)
+
+  useEffect(() => {
+    if ('wakeLock' in navigator) navigator.wakeLock.request('screen').then(w => { wakeLockRef.current = w }).catch(() => {})
+    return () => { if (wakeLockRef.current) wakeLockRef.current.release().catch(() => {}) }
+  }, [])
 
   const getRestDuration = useCallback(() => {
     if (exercise.muscleGroup === 'Cardio') return 30

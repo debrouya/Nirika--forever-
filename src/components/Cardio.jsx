@@ -154,6 +154,12 @@ export default function Cardio() {
   const [timeInCurrentZone, setTimeInCurrentZone] = useState(0)
   const timerRef = useRef(null)
   const coachingRef = useRef(null)
+  const wakeLockRef = useRef(null)
+
+  useEffect(() => {
+    if (isRunning && 'wakeLock' in navigator) navigator.wakeLock.request('screen').then(w => { wakeLockRef.current = w }).catch(() => {})
+    return () => { if (wakeLockRef.current && !isRunning) wakeLockRef.current.release().catch(() => {}) }
+  }, [isRunning])
 
   const weight = profile?.weight || 70
 
