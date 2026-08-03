@@ -13,8 +13,8 @@ export default function WorkoutScreen({exercise,onComplete}){
   const [paused,setPaused]=useState(false)
   const [sets,setSets]=useState([])
   const [curSet,setCurSet]=useState(1)
-  const [w,setW]=useState('')
-  const [r,setR]=useState('')
+  const [w,setW]=useState(String(defW||''))
+  const [r,setR]=useState(String(defR||''))
   const [dur,setDur]=useState(45)
   const tgtSets=3;const restSec=Math.round(dur/2)
   const iv=useRef(null);const wl=useRef(null)
@@ -26,7 +26,10 @@ export default function WorkoutScreen({exercise,onComplete}){
   },[])
 
   const h=S.getState().exerciseHistory
+  const last=((h?.[exercise.id]||[]).slice(-1)[0])
   const pr=(h?.[exercise.id]||[]).reduce((m,x)=>Math.max(m,x.weight||0),0)
+  const defW=last?.weight||''
+  const defR=last?.reps||''
 
   useEffect(()=>{
     if(paused||phase==='done')return
@@ -61,7 +64,11 @@ export default function WorkoutScreen({exercise,onComplete}){
           <img src="/logo.png" alt="NIRIKA" className="w-40 h-40 rounded-3xl mb-2" />
           <span className="text-white font-black text-xl tracking-tight mb-4">NIRIKA <span className="text-lime">FOR EVER</span></span>
         </div>
-        <CheckCircle size={40}className="text-lime mb-4"/><h1 className="text-white font-bold text-xl text-center mb-6">{exercise.name} - Termine</h1>
+        <CheckCircle size={40}className="text-lime mb-4"/>
+        <p className="text-lime text-sm mb-2">Seance terminee !</p>
+        <p className="text-white/50 text-xs mb-4">{sets.length} series · {f(d)} · {Math.round(d*0.15)} kcal · {v}kg volume</p>
+        <h1 className="text-white font-bold text-xl text-center mb-2">{exercise.name}</h1>
+        <p className="text-white/30 text-xs mb-4">- Termine -</p>
         <div className="grid grid-cols-3 gap-3 w-full max-w-xs mb-4">
           <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-lime font-bold text-lg">{sets.length}</p><p className="text-muted text-[10px]">series</p></div>
           <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-white font-bold text-lg">{f(d)}</p><p className="text-muted text-[10px]">duree</p></div>

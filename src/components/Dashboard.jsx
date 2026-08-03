@@ -10,6 +10,7 @@ import {
   Layout,
   LayoutDashboard,
   Play,
+  FileText,
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import { programs } from '../data/programs'
@@ -124,6 +125,13 @@ export default function Dashboard() {
           </button>
         )}
       </div>
+
+      {/* Templates quick */}
+      <button onClick={() => setCurrentView('templates')} className="w-full bg-dark-card rounded-xl p-3 flex items-center gap-3 border border-dark-border hover:border-lime/30 transition-all mb-4">
+        <div className="w-10 h-10 rounded-lg bg-lime/10 flex items-center justify-center"><FileText size={18} className="text-lime" /></div>
+        <div className="text-left flex-1"><p className="text-white text-sm font-medium">Templates</p><p className="text-muted text-[10px]">Lance une seance pre-enregistree</p></div>
+        <ChevronRight size={16} className="text-muted" />
+      </button>
 
       {/* Streak */}
       <StreakMotivation />
