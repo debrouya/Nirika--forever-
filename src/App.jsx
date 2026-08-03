@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import useStore from './store/useStore'
 import { supabase, isSupabaseConfigured } from './lib/supabase'
 import { track } from './services/analytics'
+import { flush } from './services/offlineQueue'
 import { LoginView, SignupView, ForgotPasswordView } from './components/Auth'
 import { signOut, getSession, getProfile } from './services/supabaseService'
 import AdminPanel from './components/AdminPanel'
@@ -71,6 +72,13 @@ export default function App() {
     }
     return () => window.removeEventListener('popstate', handlePop)
   }, [currentView])
+
+  useEffect(() => {
+    const handleOnline = () => flush(supabase)
+    window.addEventListener('online', handleOnline)
+    if (navigator.onLine) flush(supabase)
+    return () => window.removeEventListener('online', handleOnline)
+  }, [])
 
   useEffect(() => {
     cleanupStaleSessions()

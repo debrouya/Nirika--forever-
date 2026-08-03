@@ -3,6 +3,17 @@ import { persist } from 'zustand/middleware'
 import exercises from '../data/exercises.js'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 import { track } from '../services/analytics'
+import { enqueue } from '../services/offlineQueue'
+
+function safeSave(table, payload) {
+  if (!isSupabaseConfigured()) return
+  supabase.auth.getUser().then(({ data: { user } }) => {
+    if (!user) return
+    supabase.from(table).insert({ ...payload, user_id: user.id }).then(({ error }) => {
+      if (error) enqueue(table, { ...payload, user_id: user.id })
+    }).catch(() => enqueue(table, { ...payload, user_id: user.id }))
+  }).catch(() => {})
+}
 
 const useStore = create(
   persist(
@@ -41,18 +52,7 @@ const useStore = create(
       workoutHistory: [],
       addWorkout: (workout) => {
         const completed = { ...workout, id: Date.now(), completedAt: new Date().toISOString() }
-        if (isSupabaseConfigured()) {
-          supabase.auth.getUser().then(({ data: { user } }) => {
-            if (user) {
-              supabase.from('sessions').insert({
-                user_id: user.id,
-                type: 'workout',
-                data: completed,
-                completed_at: completed.completedAt,
-              }).then(() => {}).catch(() => {})
-            }
-          }).catch(() => {})
-        }
+        safeSave('sessions', { type: 'workout', data: completed, completed_at: completed.completedAt })
         set((state) => ({
           workoutHistory: [...state.workoutHistory, completed],
         }))
@@ -172,18 +172,7 @@ const useStore = create(
       sessionHistory: [],
       addSessionToHistory: (session) => {
         const completed = { ...session, id: Date.now(), date: new Date().toISOString() }
-        if (isSupabaseConfigured()) {
-          supabase.auth.getUser().then(({ data: { user } }) => {
-            if (user) {
-              supabase.from('sessions').insert({
-                user_id: user.id,
-                type: 'exercise',
-                data: completed,
-                completed_at: completed.date,
-              }).then(() => {}).catch(() => {})
-            }
-          }).catch(() => {})
-        }
+        safeSave('sessions', { type: 'exercise', data: completed, completed_at: completed.date })
         set((state) => ({
           sessionHistory: [...state.sessionHistory, completed],
         }))
@@ -202,19 +191,7 @@ const useStore = create(
       exerciseHistory: {},
       addExerciseRecord: (exerciseId, record) => {
         const completed = { ...record, id: Date.now(), date: new Date().toISOString() }
-        if (isSupabaseConfigured()) {
-          supabase.auth.getUser().then(({ data: { user } }) => {
-            if (user) {
-              supabase.from('sessions').insert({
-                user_id: user.id,
-                type: 'exercise_record',
-                exercise_id: exerciseId,
-                data: completed,
-                completed_at: completed.date,
-              }).then(() => {}).catch(() => {})
-            }
-          }).catch(() => {})
-        }
+        safeSave('sessions', { type: 'exercise_record', exercise_id: exerciseId, data: completed, completed_at: completed.date })
         set((state) => {
           const existing = state.exerciseHistory[exerciseId] || []
           return {
