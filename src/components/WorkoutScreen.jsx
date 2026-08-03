@@ -16,6 +16,7 @@ export default function WorkoutScreen({exercise,onComplete}){
   const [w,setW]=useState(()=>{const h=S.getState().exerciseHistory;const l=((h?.[exercise.id]||[]).slice(-1)[0]);return String((l?.weight)||'')})
   const [r,setR]=useState(()=>{const h=S.getState().exerciseHistory;const l=((h?.[exercise.id]||[]).slice(-1)[0]);return String((l?.reps)||'')})
   const [dur,setDur]=useState(45)
+  const [newPR,setNewPR]=useState(false)
   const tgtSets=3;const restSec=Math.round(dur/2)
   const iv=useRef(null);const wl=useRef(null)
   const started=useRef(Date.now());const mtd=useRef(true)
@@ -34,7 +35,7 @@ export default function WorkoutScreen({exercise,onComplete}){
       const n=t+1
       if(phase==='effort'||phase==='last3'){
         if(n>=dur-3&&n<dur)setPhase('last3')
-        if(n>=dur){setPhase('rest');const s={w:Number(w)||0,r:Number(r)||0};setSets(p=>[...p,s]);try{const st=useStore.getState();if(st.activeSession)st.addSetToSession(s);S.getState().addExerciseRecord(exercise.id,{exerciseName:exercise.name,muscleGroup:exercise.muscleGroup,weight:s.w,reps:s.r,totalVolume:s.w*s.r})}catch{};return 0}
+        if(n>=dur){setPhase('rest');const s={w:Number(w)||0,r:Number(r)||0};setSets(p=>[...p,s]);if(s.w>pr)setNewPR(true);try{const st=useStore.getState();if(st.activeSession)st.addSetToSession(s);S.getState().addExerciseRecord(exercise.id,{exerciseName:exercise.name,muscleGroup:exercise.muscleGroup,weight:s.w,reps:s.r,totalVolume:s.w*s.r})}catch{};return 0}
       }
       if(phase==='rest'&&n>=restSec){if(curSet>=tgtSets){setPhase('done');clearInterval(iv.current);save();return n};setPhase('effort');setCurSet(c=>c+1);return 0}
       if(phase==='last3'&&n>=dur-3){try{navigator.vibrate?.(100)}catch{};beep(800,150)}
@@ -58,7 +59,7 @@ export default function WorkoutScreen({exercise,onComplete}){
     return(
       <div id="wo-summary" className="fixed inset-0 z-40 bg-dark-bg flex flex-col items-center justify-center p-6" style={{paddingBottom:'calc(env(safe-area-inset-bottom,20px)+90px)'}}>
         <div className="flex items-center gap-3 mb-6">
-          <img src="/logo.png" alt="NIRIKA" className="w-40 h-40 rounded-3xl mb-2" />
+           <img src="/logo.png" alt="NIRIKA" className="w-28 h-28 rounded-2xl mb-2" />
           <span className="text-white font-black text-xl tracking-tight mb-4">NIRIKA <span className="text-lime">FOR EVER</span></span>
         </div>
         <CheckCircle size={40}className="text-lime mb-4"/>
@@ -96,7 +97,7 @@ export default function WorkoutScreen({exercise,onComplete}){
 
       <div className="flex-1 flex flex-col items-center justify-center gap-2 px-4">
         <h1 className="text-white font-bold text-2xl uppercase tracking-wide text-center">{exercise.name}</h1>
-        <p className="text-white/50 text-sm">{phase==='rest'?'Repos':`Serie ${curSet}/${tgtSets}`}{pr>0?` - Record: ${pr}kg`:''}</p>
+        <p className="text-white/50 text-sm">{phase==='rest'?'Repos':`Serie ${curSet}/${tgtSets}`}{newPR?<span className="text-yellow-400 animate-pulse font-bold ml-2">NOUVEAU RECORD !</span>:pr>0?` - Record: ${pr}kg`:''}</p>
 
         <div className="relative my-2">
           <svg width="280"height="280"className="-rotate-90">
