@@ -114,6 +114,8 @@ export default function CalisthenicsTracker({ onStartExercise }) {
     return { completed, totalDays, percent, streak, weekDays }
   }, [calisthenie30])
 
+  if (selectedExercise) return <WorkoutScreen exercise={selectedExercise} onComplete={() => setSelectedExercise(null)} />
+
   if (!calisthenie30.startDate) {
     return (
       <div className="bg-dark-card rounded-2xl overflow-hidden border border-dark-border">
@@ -362,7 +364,7 @@ export default function CalisthenicsTracker({ onStartExercise }) {
             {selectedDay <= 10 && PHASE_1_EXERCISES.map((ex) => (
               <button
                 key={ex.id}
-                onClick={() => { useStore.getState().startSession(ex.id, ex.name); useStore.getState().setCurrentView('calisthenics') }}
+                onClick={() => { useStore.getState().startSession(ex.id, ex.name); setSelectedExercise(exerciseMap[ex.id]) }}
                 className="w-full flex items-center gap-2 text-xs text-white/70 hover:bg-dark-bg rounded-lg px-2 py-1.5 transition-all group"
               >
                 <span className="text-lime">🟢</span>
@@ -373,7 +375,7 @@ export default function CalisthenicsTracker({ onStartExercise }) {
             {selectedDay >= 11 && selectedDay <= 20 && PHASE_2_EXERCISES.map((ex) => (
               <button
                 key={ex.id}
-                onClick={() => { useStore.getState().startSession(ex.id, ex.name); useStore.getState().setCurrentView('calisthenics') }}
+                onClick={() => { useStore.getState().startSession(ex.id, ex.name); setSelectedExercise(exerciseMap[ex.id]) }}
                 className="w-full flex items-center gap-2 text-xs text-white/70 hover:bg-dark-bg rounded-lg px-2 py-1.5 transition-all group"
               >
                 <span className="text-yellow-400">🟡</span>
