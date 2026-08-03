@@ -151,6 +151,9 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
                       {lastRecord.totalVolume ? ` · ${lastRecord.totalVolume}kg` : ''}
                     </p>
                   )}
+                  {exercise.description && (
+                    <p className="text-white/30 text-[10px] mt-0.5 line-clamp-1">{exercise.description}</p>
+                  )}
                 </div>
 
                 {/* Play */}
