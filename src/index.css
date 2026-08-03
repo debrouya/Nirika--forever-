@@ -20,9 +20,15 @@ body {
 input, textarea, select {
   color: #FFFFFF !important;
   -webkit-text-fill-color: #FFFFFF !important;
+  font-size: 16px !important;
 }
 input::placeholder, textarea::placeholder {
   -webkit-text-fill-color: #8A8A8A !important;
+}
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px rgba(132,204,22,0.4);
+  transition: box-shadow 0.2s ease;
 }
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
