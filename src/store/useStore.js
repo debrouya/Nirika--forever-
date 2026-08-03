@@ -717,6 +717,9 @@ const useStore = create(
     {
       name: 'nf-storage',
       version: 1,
+      onRehydrateStorage: () => (state, error) => {
+        if (error) { console.warn('Storage corrupted, resetting.'); localStorage.removeItem('nf-storage') }
+      },
       partialize: (state) => {
         const { activeSession, ...rest } = state
         return rest

@@ -63,14 +63,15 @@ export default function App() {
       return
     }
 
-    getSession().then(({ data: { session } }) => {
+    getSession().then((res) => {
+      const session = res?.data?.session
       if (session?.user) {
         setUser(session.user)
         loadProfile(session.user.id)
       } else {
         setAuthLoading(false)
       }
-    })
+    }).catch(() => setAuthLoading(false))
 
     const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {

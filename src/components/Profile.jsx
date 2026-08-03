@@ -96,12 +96,11 @@ export default function Profile({ user, onLogout }) {
   })
 
   useEffect(() => {
-    const saved = localStorage.getItem('nirika-profile')
-    if (saved) {
-      setProfile(JSON.parse(saved))
-    } else if (storeProfile) {
-      setProfile((prev) => ({ ...prev, ...storeProfile }))
-    }
+    try {
+      const saved = localStorage.getItem('nirika-profile')
+      if (saved) { setProfile(JSON.parse(saved)); return }
+    } catch {}
+    if (storeProfile) setProfile((prev) => ({ ...prev, ...storeProfile }))
   }, [])
 
   const update = (key, value) => {

@@ -300,7 +300,8 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
   }
 
   if (!isActive) {
-    const settings = JSON.parse(localStorage.getItem('nirika_admin_settings') || '{}')
+    let settings = {}
+  try { settings = JSON.parse(localStorage.getItem('nirika_admin_settings') || '{}') } catch {}
     const isQuickMode = settings.quickMode
 
     if (isQuickMode) {

@@ -34,7 +34,8 @@ export default function GoogleFit() {
   const [disabled, setDisabled] = useState(false)
 
   useEffect(() => {
-    const settings = JSON.parse(localStorage.getItem('nirika_admin_settings') || '{}')
+    let settings = {}
+    try { settings = JSON.parse(localStorage.getItem('nirika_admin_settings') || '{}') } catch {}
     if (settings.googleFitEnabled === false) { setDisabled(true); return }
   }, [])
 
