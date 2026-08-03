@@ -10,6 +10,7 @@ export default function CardioTimer({ onComplete }) {
   const [elapsed, setElapsed] = useState(0)
   const [paused, setPaused] = useState(false)
   const [done, setDone] = useState(false)
+  const [confirmQuit, setConfirmQuit] = useState(false)
   const intervalRef = useRef(null)
   const wakeLockRef = useRef(null)
   const targetMin = 20; const total = targetMin * 60
@@ -46,7 +47,7 @@ export default function CardioTimer({ onComplete }) {
   return (
     <div className="fixed inset-0 z-40 bg-dark-bg flex flex-col">
       <div className="flex items-center justify-between px-4" style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 12px)' }}>
-        <button onClick={end} className="p-2 text-white/50 hover:text-white"><ArrowLeft size={22} /></button>
+        <button onClick={() => setConfirmQuit(true)} className="p-2 text-white/50 hover:text-white"><ArrowLeft size={22} /></button>
         <div className="text-center flex-1">
           <h1 className="text-white font-bold text-lg uppercase tracking-wide">{session?.exerciseName || 'Cardio'}</h1>
           <p className="text-white/50 text-xs">{calories} kcal</p>
@@ -74,6 +75,18 @@ export default function CardioTimer({ onComplete }) {
           <SkipForward size={20} />Terminer
         </button>
       </div>
+      {confirmQuit && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-6">
+          <div className="bg-dark-card rounded-2xl p-6 w-full max-w-xs text-center space-y-4">
+            <p className="text-white font-bold text-lg">Quitter la seance ?</p>
+            <p className="text-white/50 text-sm">Ta progression sera sauvegardee.</p>
+            <div className="flex gap-3">
+              <button onClick={() => setConfirmQuit(false)} className="flex-1 h-12 rounded-xl bg-dark-bg border border-dark-border text-white font-bold">Annuler</button>
+              <button onClick={end} className="flex-1 h-12 rounded-xl bg-lime text-dark-bg font-bold">Quitter</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

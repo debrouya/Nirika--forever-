@@ -17,6 +17,7 @@ export default function WorkoutScreen({exercise,onComplete}){
   const [r,setR]=useState(()=>{const h=S.getState().exerciseHistory;const l=((h?.[exercise.id]||[]).slice(-1)[0]);return String((l?.reps)||'')})
   const [dur,setDur]=useState(45)
   const [newPR,setNewPR]=useState(false)
+  const [confirmQuit,setConfirmQuit]=useState(false)
   const tgtSets=3;const restSec=Math.round(dur/2)
   const iv=useRef(null);const wl=useRef(null)
   const started=useRef(Date.now());const mtd=useRef(true)
@@ -91,7 +92,7 @@ export default function WorkoutScreen({exercise,onComplete}){
   return(
     <div className="fixed inset-0 z-40 flex flex-col" style={{backgroundColor:bg}}>
       <div className="flex items-center px-4" style={{paddingTop:'calc(env(safe-area-inset-top,0px)+12px)'}}>
-        <button onClick={end}className="p-2 text-white/50 hover:text-white"><ArrowLeft size={22}/></button>
+        <button onClick={() => setConfirmQuit(true)} className="p-2 text-white/50 hover:text-white"><ArrowLeft size={22}/></button>
         <div className="w-10"/>
       </div>
 
@@ -130,6 +131,18 @@ export default function WorkoutScreen({exercise,onComplete}){
         <button onClick={()=>setPaused(p=>!p)}className="flex-1 h-12 rounded-2xl bg-white/10 active:bg-white/20 border border-white/10 text-white font-bold flex items-center justify-center gap-2">{paused?<Play size={20}/>:<Pause size={20}/>}{paused?'Reprendre':'Pause'}</button>
         <button onClick={()=>{if(curSet>=tgtSets){setPhase('done');save()}else{setPhase('rest');setCurSet(c=>c+1)}}}className="flex-1 h-12 rounded-2xl bg-lime/20 active:bg-lime/30 border border-lime/30 text-lime font-bold flex items-center justify-center gap-2"><SkipForward size={20}/>Suivant</button>
       </div>
+      {confirmQuit && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-6">
+          <div className="bg-dark-card rounded-2xl p-6 w-full max-w-xs text-center space-y-4">
+            <p className="text-white font-bold text-lg">Quitter la seance ?</p>
+            <p className="text-white/50 text-sm">Ta progression sera sauvegardee.</p>
+            <div className="flex gap-3">
+              <button onClick={() => setConfirmQuit(false)} className="flex-1 h-12 rounded-xl bg-dark-bg border border-dark-border text-white font-bold">Annuler</button>
+              <button onClick={end} className="flex-1 h-12 rounded-xl bg-lime text-dark-bg font-bold">Quitter</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
