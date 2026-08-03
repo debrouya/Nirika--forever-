@@ -37,6 +37,7 @@ const QUICK_ACTIONS = [
 export default function Dashboard() {
   const { profile, setCurrentView, workoutHistory, sessionHistory, exerciseHistory } = useStore()
   const activeSession = useStore((s) => s.activeSession)
+  const profileName = profile?.name || profile?.full_name
   const [searchQuery, setSearchQuery] = useState('')
   const [simpleMode, setSimpleMode] = useState(() => {
     try { return localStorage.getItem('nirika_dashboard_mode') === 'simple' } catch { return false }
@@ -125,6 +126,14 @@ export default function Dashboard() {
           </button>
         )}
       </div>
+
+      {/* Profile prompt */}
+      {!profileName && (
+        <button onClick={() => setCurrentView('profile')} className="w-full bg-yellow-400/10 border border-yellow-400/20 rounded-2xl p-3 flex items-center gap-3 hover:bg-yellow-400/20 transition-all">
+          <span className="text-lg">👋</span>
+          <div className="text-left flex-1"><p className="text-yellow-400 text-sm font-medium">Configure ton profil</p><p className="text-yellow-400/60 text-[10px]">Pour des programmes et recommandations personnalises</p></div>
+        </button>
+      )}
 
       {/* Templates quick */}
       <button onClick={() => setCurrentView('templates')} className="w-full bg-dark-card rounded-xl p-3 flex items-center gap-3 border border-dark-border hover:border-lime/30 transition-all mb-4">
