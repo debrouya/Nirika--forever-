@@ -17,6 +17,7 @@ import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
 import WorkoutScreen from './WorkoutScreen'
 import CalisthenicsBilan from './CalisthenicsBilan'
+import ExerciseTutorial from './ExerciseTutorial'
 
 const PHASES = [
   { id: 1, name: 'Adaptation', color: 'text-green-400', bg: 'bg-green-400', emoji: '🟢', days: 'Jour 1-10', timing: '30s / 15s' },
@@ -139,6 +140,9 @@ export default function CalisthenicsTracker({ onStartExercise }) {
         </div>
         <button onClick={() => { useStore.getState().startSession(ex.id, ex.name); setLaunchExercise(ex); setSelectedExercise(null) }} className="w-full py-3 rounded-xl bg-lime text-dark-bg font-bold text-sm">
           Demarrer l'exercice
+        </button>
+        <button onClick={() => { const realEx = exerciseMap[ex.id]; if (realEx) setTutorialExercise(realEx) }} className="w-full py-3 rounded-xl bg-dark-card border border-dark-border text-white font-bold text-sm">
+          Voir le tutoriel video
         </button>
       </div>
     )
@@ -398,6 +402,7 @@ export default function CalisthenicsTracker({ onStartExercise }) {
                 <span className="text-lime">🟢</span>
                 <span className="flex-1 text-left">{ex.name} · {ex.sets&&`${ex.sets}s`}{ex.reps&&` × ${ex.reps}`}{ex.duration&&` ${ex.duration}`}</span>
                 <Play size={12} className="text-muted group-hover:text-lime transition-colors" />
+                <Video size={12} className="text-muted hover:text-blue-400 transition-colors ml-1" onClick={(e)=>{e.stopPropagation();const r=exerciseMap[ex.id];if(r)setTutorialExercise(r)}}/>
               </button>
             ))}
             {selectedDay >= 11 && selectedDay <= 20 && PHASE_2_EXERCISES.map((ex) => (
