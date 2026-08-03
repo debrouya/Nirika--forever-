@@ -299,7 +299,7 @@ export default function ExerciseTutorial({ exercise, onClose }) {
 
           {/* Start Workout */}
           <button
-            onClick={() => { useStore.getState().startSession(exercise.id, exercise.name); onClose() }}
+            onClick={() => { useStore.getState().startSession(exercise.id, exercise.name); onClose(); useStore.getState().setCurrentView('calisthenics') }}
             className="w-full py-3 rounded-xl bg-lime text-dark-bg font-bold text-sm flex items-center justify-center gap-2"
           >
             <Play size={16} fill="currentColor" /> Demarrer l'exercice
