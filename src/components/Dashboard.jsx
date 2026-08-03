@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   Play,
   FileText,
+  User,
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import { programs } from '../data/programs'
@@ -79,7 +80,8 @@ export default function Dashboard() {
           <p className="text-muted text-xs font-medium uppercase tracking-wider mb-1">
             {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
           </p>
-          <h1 className="text-white font-bold text-2xl mb-1">
+          <h1 className="text-white font-bold text-2xl mb-1 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-lime/20 flex items-center justify-center border border-lime/30"><User size={20} className="text-lime" /></div>
             Bonjour{firstName ? ` ${firstName}` : ''}
           </h1>
           <p className="text-lime text-sm font-semibold">Prêt pour ta séance ?</p>
