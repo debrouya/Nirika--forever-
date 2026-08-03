@@ -10,6 +10,7 @@ import {
   AlertTriangle,
   CheckCircle2,
 } from 'lucide-react'
+import useStore from '../store/useStore'
 
 const EXERCISE_TIPS = {
   jumping_jacks: [
@@ -295,6 +296,14 @@ export default function ExerciseTutorial({ exercise, onClose }) {
               </div>
             </div>
           </div>
+
+          {/* Start Workout */}
+          <button
+            onClick={() => { useStore.getState().startSession(exercise.id, exercise.name); onClose() }}
+            className="w-full py-3 rounded-xl bg-lime text-dark-bg font-bold text-sm flex items-center justify-center gap-2"
+          >
+            <Play size={16} fill="currentColor" /> Demarrer l'exercice
+          </button>
         </div>
       </div>
     </div>
