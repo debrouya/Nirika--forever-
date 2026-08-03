@@ -41,6 +41,7 @@ function checkAdmin(user) {
 
 export default function App() {
   const { currentView } = useStore()
+  const popView = useStore((s) => s.popView)
   const [authView, setAuthView] = useState('login')
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
@@ -57,6 +58,16 @@ export default function App() {
   const hasFeature = (key) => isAdmin || isPremium || userPerms[key] === true
 
   const handleSplashComplete = useCallback(() => setSplashDone(true), [])
+
+  // Browser back button handling
+  useEffect(() => {
+    const handlePop = () => popView()
+    window.addEventListener('popstate', handlePop)
+    if (currentView && currentView !== 'dashboard') {
+      window.history.pushState({ view: currentView }, '')
+    }
+    return () => window.removeEventListener('popstate', handlePop)
+  }, [currentView])
 
   useEffect(() => {
     cleanupStaleSessions()
