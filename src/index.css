@@ -12,7 +12,7 @@ body {
   overscroll-behavior: none;
   background: #141414;
   color: #FFFFFF;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 input, textarea, select {

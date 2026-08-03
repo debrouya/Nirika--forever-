@@ -151,7 +151,7 @@ export default function App() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-dark-bg">
+      <div className="min-h-[100dvh] flex items-center justify-center bg-dark-bg">
         <div className="text-center animate-fade-in">
           <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-black/20 p-2.5">
             <img src="/logo.png" alt="Nirika" className="w-full h-full" />

@@ -185,7 +185,7 @@ export default function ExerciseTutorial({ exercise, onClose }) {
         <div className="w-10" />
       </div>
 
-      <div className="overflow-y-auto h-[calc(100vh-65px)] pb-8">
+      <div className="overflow-y-auto h-[calc(100dvh-65px)] pb-8">
         {/* Video */}
         <div className="relative w-full aspect-video bg-black">
           {searching ? (

@@ -170,7 +170,7 @@ export default function AdminPanel({ user, profile, onLogout }) {
   const [activeTab, setActiveTab] = useState('dashboard')
 
   return (
-    <div className="min-h-screen bg-dark-bg">
+    <div className="min-h-[100dvh] bg-dark-bg">
       <div className="max-w-lg mx-auto">
         {/* Header */}
         <div className="sticky top-0 z-40 bg-dark-bg border-b border-dark-border safe-top">

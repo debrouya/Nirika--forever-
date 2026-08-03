@@ -43,7 +43,7 @@ export function LoginView({ onSwitch, onForgot }) {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4">
+    <div className="flex items-center justify-center min-h-[100dvh] px-4">
       <GlassCard className="w-full max-w-sm p-6 space-y-5">
         <div className="text-center">
           <h2 className="text-xl font-bold text-white">Connexion</h2>
@@ -133,7 +133,7 @@ export function SignupView({ onSwitch }) {
 
   if (success) {
     return (
-      <div className="flex items-center justify-center min-h-screen px-4">
+      <div className="flex items-center justify-center min-h-[100dvh] px-4">
         <GlassCard className="w-full max-w-sm p-6 text-center space-y-4">
           <CheckCircle2 size={48} className="mx-auto text-lime" />
           <h2 className="text-xl font-bold text-white">Vérifie ta boîte mail</h2>
@@ -152,7 +152,7 @@ export function SignupView({ onSwitch }) {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4">
+    <div className="flex items-center justify-center min-h-[100dvh] px-4">
       <GlassCard className="w-full max-w-sm p-6 space-y-5">
         <div className="text-center">
           <h2 className="text-xl font-bold text-white">Créer un compte</h2>
@@ -236,7 +236,7 @@ export function ForgotPasswordView({ onBack }) {
 
   if (success) {
     return (
-      <div className="flex items-center justify-center min-h-screen px-4">
+      <div className="flex items-center justify-center min-h-[100dvh] px-4">
         <GlassCard className="w-full max-w-sm p-6 text-center space-y-4">
           <CheckCircle2 size={48} className="mx-auto text-lime" />
           <h2 className="text-xl font-bold text-white">Email envoyé</h2>
@@ -255,7 +255,7 @@ export function ForgotPasswordView({ onBack }) {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4">
+    <div className="flex items-center justify-center min-h-[100dvh] px-4">
       <GlassCard className="w-full max-w-sm p-6 space-y-5">
         <div>
           <button onClick={onBack} className="text-white/40 hover:text-white/70 transition-colors mb-3 flex items-center gap-1 text-sm">

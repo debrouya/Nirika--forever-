@@ -882,7 +882,7 @@ export default function AICoach({ isPremium = false, onShowPaywall }) {
       'Que manger avant l\'entraînement ?',
     ]
     return (
-      <div className="flex flex-col h-[calc(100vh-8rem)] p-4">
+      <div className="flex flex-col h-[calc(100dvh-8rem)] p-4">
         <div className="flex items-center justify-between mb-4">
           <button onClick={handleBack} className="flex items-center gap-1 text-muted hover:text-white text-sm transition-colors">
             <ChevronLeft size={16} /> Retour

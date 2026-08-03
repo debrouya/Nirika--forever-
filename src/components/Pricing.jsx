@@ -41,7 +41,7 @@ export default function Pricing({ subscription }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0F1A1E] to-[#1A2B34] px-4 py-8">
+    <div className="min-h-[100dvh] bg-gradient-to-b from-[#0F1A1E] to-[#1A2B34] px-4 py-8">
       <div className="max-w-md mx-auto">
         <button
           onClick={() => setCurrentView('dashboard')}

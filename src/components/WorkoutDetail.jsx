@@ -38,7 +38,7 @@ export default function WorkoutDetail({ workout }) {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg">
+    <div className="min-h-[100dvh] bg-dark-bg">
       {/* Header Image */}
       <div className="relative h-64">
         <img
