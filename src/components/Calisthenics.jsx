@@ -152,7 +152,7 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
                     </p>
                   )}
                   {exercise.description && (
-                    <p className="text-white/30 text-[10px] mt-0.5 line-clamp-1">{exercise.description}</p>
+                    <p className="text-white/50 text-[11px] mt-0.5 line-clamp-1">{exercise.description}</p>
                   )}
                 </div>
 
