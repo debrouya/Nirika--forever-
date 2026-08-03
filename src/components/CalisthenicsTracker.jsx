@@ -138,7 +138,7 @@ export default function CalisthenicsTracker({ onStartExercise }) {
           <p className="text-white/80 text-sm">{ex.desc}</p>
           {ex.tips && <p className="text-lime/80 text-xs mt-2">Conseil : {ex.tips}</p>}
         </div>
-        <button onClick={() => { useStore.getState().startSession(ex.id, ex.name); setLaunchExercise(ex); setSelectedExercise(null) }} className="w-full py-3 rounded-xl bg-lime text-dark-bg font-bold text-sm">
+        <button onClick={() => { useStore.getState().startSession(ex.id, ex.name); setSelectedExercise(null); setTimeout(() => setLaunchExercise(ex), 50) }} className="w-full py-3 rounded-xl bg-lime text-dark-bg font-bold text-sm">
           Demarrer l'exercice
         </button>
         <button onClick={() => { const realEx = exerciseMap[ex.id]; if (realEx) setTutorialExercise(realEx) }} className="w-full py-3 rounded-xl bg-dark-card border border-dark-border text-white font-bold text-sm">
