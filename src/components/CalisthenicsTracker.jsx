@@ -42,30 +42,30 @@ const DAILY_MOTIVATION = [
 ]
 
 const PHASE_1_EXERCISES = [
-  { id: 'jumping_jacks', name: 'Écarté-Jambes Sauté', timing: '30s/15s' },
-  { id: 'high_knees', name: 'Génoux Hauts', timing: '30s/15s' },
-  { id: 'burpees', name: 'Burpees', timing: '30s/15s' },
-  { id: 'planche', name: 'Planche de Gainage', timing: '30s/15s' },
-  { id: 'mountain_climber', name: 'Grimpeur', timing: '30s/15s' },
-  { id: 'crunch', name: 'Crunchs', timing: '30s/15s' },
+  { id: 'jump_squat', name: 'Squat sauté', sets: 3, reps: '10', rest: '30s', desc: 'Descends en position de squat, explose vers le haut en sautant.', tips: 'Garde le dos droit, réception souple.' },
+  { id: 'push_up', name: 'Pompes classiques', sets: 3, reps: '10', rest: '30s', desc: 'Mains largeur épaules, corps droit, descends jusqu\'à 90°.' },
+  { id: 'mountain_climber', name: 'Mountain climbers', sets: 3, duration: '30s', rest: '20s', desc: 'Position de pompe, ramène un genou vers la poitrine en alternance rapide.' },
+  { id: 'crunch', name: 'Crunchs', sets: 3, reps: '15', rest: '30s', desc: 'Allongé, genoux fléchis, soulève les épaules du sol en contractant les abdos.' },
+  { id: 'jumping_jacks', name: 'Jumping jacks', sets: 3, duration: '30s', rest: '20s', desc: 'Debout, saute en écartant jambes et bras simultanément.' },
+  { id: 'planche', name: 'Planche', sets: 3, duration: '20s', rest: '30s', desc: 'Position de pompe basse, corps droit, contracte les abdos.' },
 ]
 
 const PHASE_2_EXERCISES = [
-  { id: 'high_knees', name: 'Génoux Hauts', timing: '40s/20s' },
-  { id: 'jump_squat', name: 'Squat + Saut', timing: '40s/20s' },
-  { id: 'push_up', name: 'Pompes', timing: '40s/20s' },
-  { id: 'gainage_dynamique', name: 'Gainage Dynamique', timing: '40s/20s' },
-  { id: 'burpees_simples', name: 'Burpees Simples', timing: '40s/20s' },
-  { id: 'releve_jambes', name: 'Relevés de Jambes', timing: '40s/20s' },
+  { id: 'jump_squat', name: 'Squat sauté', sets: 3, reps: '15', rest: '25s', desc: 'Plus de puissance. Descends bas, explose haut.', tips: 'Garde les talons au sol en position basse.' },
+  { id: 'push_up', name: 'Pompes déclinées', sets: 3, reps: '12', rest: '25s', desc: 'Pieds surélevés. Plus intense que les pompes classiques.', tips: 'Garde les coudes près du corps.' },
+  { id: 'mountain_climber', name: 'Mountain climbers', sets: 3, duration: '40s', rest: '20s', desc: 'Plus rapide, plus longtemps. Un genou vers le coude opposé.', tips: 'Garde les hanches basses.' },
+  { id: 'gainage_dynamique', name: 'Planche dynamique', sets: 3, duration: '30s', rest: '25s', desc: 'En planche, touche l\'épaule opposée en alternance.', tips: 'Ne balance pas les hanches.' },
+  { id: 'burpees', name: 'Burpees', sets: 3, reps: '10', rest: '30s', desc: 'Squat → pompe → squat sauté → saut vertical.', tips: 'Garde le rythme, ne t\'arrête pas.' },
+  { id: 'releve_jambes', name: 'Relevés de jambes', sets: 3, reps: '12', rest: '25s', desc: 'Allongé, jambes tendues, monte les jambes à 90° et redescends lentement.', tips: 'Ne balance pas, contrôle le mouvement.' },
 ]
 
 const PHASE_3_EXERCISES = [
-  { id: 'burpees', name: 'Burpees Complets', timing: '45s/15s' },
-  { id: 'jump_squat', name: 'Squats Sautés', timing: '45s/15s' },
-  { id: 'pompees_decline', name: 'Pompes Déclinées', timing: '45s/15s' },
-  { id: 'mountain_climber', name: 'Grimpeur', timing: '45s/15s' },
-  { id: 'gainage_dynamique', name: 'Planche + Genoux Poitrine', timing: '45s/15s' },
-  { id: 'russian_twist', name: 'Torsion Russe', timing: '45s/15s' },
+  { id: 'burpees', name: 'Burpees complets', sets: 3, reps: '15', rest: '25s', desc: 'Burpee complet avec pompe et saut vertical max.', tips: 'Donne tout. C\'est la dernière phase.' },
+  { id: 'jump_squat', name: 'Squats sautés', sets: 4, reps: '15', rest: '25s', desc: 'Squat profond, explosion maximale, réception contrôlée.' },
+  { id: 'pompees_decline', name: 'Pompes déclinées', sets: 3, reps: '15', rest: '25s', desc: 'Pieds très surélevés, descente lente, montée explosive.', tips: 'Garde les abdos contractés.' },
+  { id: 'mountain_climber', name: 'Mountain climbers', sets: 3, duration: '45s', rest: '15s', desc: 'Vitesse max. Un genou vers le coude, sans pause.' },
+  { id: 'gainage_dynamique', name: 'Planche dynamique', sets: 3, duration: '45s', rest: '15s', desc: 'Touche épaule + extension jambe en alternance.' },
+  { id: 'russian_twist', name: 'Russian twist', sets: 3, reps: '20', rest: '20s', desc: 'Assis, jambes levées, rotation du buste droite-gauche.', tips: 'Garde le dos droit, contracte les abdos.' },
 ]
 
 function getDayPhase(day) {
@@ -87,6 +87,7 @@ export default function CalisthenicsTracker({ onStartExercise }) {
   const [tutorialExercise, setTutorialExercise] = useState(null)
   const [showBilan, setShowBilan] = useState(false)
   const [selectedExercise, setSelectedExercise] = useState(null)
+  const [launchExercise, setLaunchExercise] = useState(null)
 
   const stats = useMemo(() => {
     const completed = Object.keys(calisthenie30.completedDays || {}).length
@@ -114,7 +115,34 @@ export default function CalisthenicsTracker({ onStartExercise }) {
     return { completed, totalDays, percent, streak, weekDays }
   }, [calisthenie30])
 
-  if (selectedExercise) return <WorkoutScreen exercise={selectedExercise} onComplete={() => setSelectedExercise(null)} />
+  if (launchExercise) {
+    const ex = exerciseMap[launchExercise.id]
+    const realEx = ex || { id: launchExercise.id, name: launchExercise.name, muscleGroup: 'Autre', equipment: 'none' }
+    return <WorkoutScreen exercise={realEx} onComplete={() => setLaunchExercise(null)} />
+  }
+
+  if (selectedExercise) {
+    const ex = selectedExercise
+    return (
+      <div className="bg-dark-card rounded-2xl p-4 border border-dark-border space-y-4">
+        <div className="flex items-center justify-between">
+          <button onClick={() => setSelectedExercise(null)} className="text-white/50 text-sm">← Retour</button>
+          <span className="text-white/30 text-xs">Programme 30 jours</span>
+        </div>
+        <div>
+          <h2 className="text-white font-bold text-xl">{ex.name}</h2>
+          <p className="text-muted text-sm mt-1">{ex.sets} séries{ex.reps && ` × ${ex.reps}`}{ex.duration && ` (${ex.duration})`} · Repos {ex.rest}</p>
+        </div>
+        <div className="bg-dark-bg rounded-xl p-3">
+          <p className="text-white/80 text-sm">{ex.desc}</p>
+          {ex.tips && <p className="text-lime/80 text-xs mt-2">Conseil : {ex.tips}</p>}
+        </div>
+        <button onClick={() => { useStore.getState().startSession(ex.id, ex.name); setLaunchExercise(ex); setSelectedExercise(null) }} className="w-full py-3 rounded-xl bg-lime text-dark-bg font-bold text-sm">
+          Demarrer l'exercice
+        </button>
+      </div>
+    )
+  }
 
   if (!calisthenie30.startDate) {
     return (
@@ -364,34 +392,34 @@ export default function CalisthenicsTracker({ onStartExercise }) {
             {selectedDay <= 10 && PHASE_1_EXERCISES.map((ex) => (
               <button
                 key={ex.id}
-                onClick={() => { useStore.getState().startSession(ex.id, ex.name); setSelectedExercise(exerciseMap[ex.id]) }}
+                onClick={() => setSelectedExercise(ex)}
                 className="w-full flex items-center gap-2 text-xs text-white/70 hover:bg-dark-bg rounded-lg px-2 py-1.5 transition-all group"
               >
                 <span className="text-lime">🟢</span>
-                <span className="flex-1 text-left">{ex.name} · {ex.timing}</span>
+                <span className="flex-1 text-left">{ex.name} · {ex.sets&&`${ex.sets}s`}{ex.reps&&` × ${ex.reps}`}{ex.duration&&` ${ex.duration}`}</span>
                 <Play size={12} className="text-muted group-hover:text-lime transition-colors" />
               </button>
             ))}
             {selectedDay >= 11 && selectedDay <= 20 && PHASE_2_EXERCISES.map((ex) => (
               <button
                 key={ex.id}
-                onClick={() => { useStore.getState().startSession(ex.id, ex.name); setSelectedExercise(exerciseMap[ex.id]) }}
+                onClick={() => setSelectedExercise(ex)}
                 className="w-full flex items-center gap-2 text-xs text-white/70 hover:bg-dark-bg rounded-lg px-2 py-1.5 transition-all group"
               >
                 <span className="text-yellow-400">🟡</span>
-                <span className="flex-1 text-left">{ex.name} · {ex.timing}</span>
+                <span className="flex-1 text-left">{ex.name} · {ex.sets&&`${ex.sets}s`}{ex.reps&&` × ${ex.reps}`}{ex.duration&&` ${ex.duration}`}</span>
                 <Play size={12} className="text-muted group-hover:text-lime transition-colors" />
               </button>
             ))}
             {selectedDay >= 21 && PHASE_3_EXERCISES.map((ex) => (
               <button
                 key={ex.id}
-                onClick={() => setTutorialExercise(exerciseMap[ex.id])}
+                onClick={() => setSelectedExercise(ex)}
                 className="w-full flex items-center gap-2 text-xs text-white/70 hover:bg-dark-bg rounded-lg px-2 py-1.5 transition-all group"
               >
                 <span className="text-red-400">🔴</span>
-                <span className="flex-1 text-left">{ex.name} · {ex.timing}</span>
-                <Video size={12} className="text-muted group-hover:text-lime transition-colors" />
+                <span className="flex-1 text-left">{ex.name} · {ex.sets&&`${ex.sets}s`}{ex.reps&&` × ${ex.reps}`}{ex.duration&&` ${ex.duration}`}</span>
+                <Play size={12} className="text-muted group-hover:text-lime transition-colors" />
               </button>
             ))}
           </div>
