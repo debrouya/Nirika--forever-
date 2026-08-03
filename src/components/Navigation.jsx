@@ -7,8 +7,6 @@ import {
   Menu,
   X,
   CalendarRange,
-  Dumbbell,
-  HeartPulse,
   MessageSquareMore,
   Shield,
   LogOut,

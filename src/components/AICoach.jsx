@@ -26,6 +26,7 @@ import {
 import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
 import { askCoach } from '../services/supabaseService'
+import useNotifications from '../store/useNotifications'
 import { generateWeekPlan, findAlternativeExercises } from '../services/aiCoaching'
 
 const INJURY_EXCLUSION_MAP = {
@@ -377,6 +378,7 @@ function SliderInput({ label, value, onChange, min = 0, max = 10, step = 1 }) {
 }
 
 export default function AICoach({ isPremium = false, onShowPaywall }) {
+  const addToast = useNotifications((s) => s.addToast)
   const { profile: storeProfile, workoutHistory, sessionHistory } = useStore()
   const exercises = useExercises()
   const [view, setView] = useState('main')
@@ -1016,8 +1018,8 @@ export default function AICoach({ isPremium = false, onShowPaywall }) {
             </div>
           ))}
           <div className="flex gap-2">
-            <button onClick={() => { const today = new Date(); const sessions = generatedSplit.map((d, i) => { const date = new Date(today); date.setDate(date.getDate() + i); return { date: date.toISOString().slice(0, 10), day: d.name, exercises: d.exercises, name: d.name, source: 'ai' } }); useStore.getState().addPlannedWeek(sessions); setGeneratedSplit(null); alert('Ajouté au calendrier !') }} className="flex-1 py-2.5 rounded-xl bg-lime text-dark-bg font-bold text-xs">Valider → Calendrier</button>
-            <button onClick={() => { useStore.getState().addWorkoutTemplate({ name: 'Programme IA', exercises: generatedSplit.flatMap(d => d.exercises) }); setGeneratedSplit(null); alert('Template enregistré !') }} className="flex-1 py-2.5 rounded-xl bg-dark-bg border border-dark-border text-white font-bold text-xs">Template</button>
+            <button onClick={() => { const today = new Date(); const sessions = generatedSplit.map((d, i) => { const date = new Date(today); date.setDate(date.getDate() + i); return { date: date.toISOString().slice(0, 10), day: d.name, exercises: d.exercises, name: d.name, source: 'ai' } }); useStore.getState().addPlannedWeek(sessions); setGeneratedSplit(null); addToast('Valide au calendrier', 'success') }} className="flex-1 py-2.5 rounded-xl bg-lime text-dark-bg font-bold text-xs">Valider → Calendrier</button>
+            <button onClick={() => { useStore.getState().addWorkoutTemplate({ name: 'Programme IA', exercises: generatedSplit.flatMap(d => d.exercises) }); setGeneratedSplit(null); addToast('Template enregistre', 'success') }} className="flex-1 py-2.5 rounded-xl bg-dark-bg border border-dark-border text-white font-bold text-xs">Template</button>
           </div>
         </div>
       )}

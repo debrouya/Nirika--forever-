@@ -32,7 +32,7 @@ import Onboarding, { useOnboarding } from './components/Onboarding'
 import { useSubscription } from './hooks/useSubscription'
 import { cleanupStaleSessions } from './hooks/useBackgroundHandler'
 
-const ADMIN_EMAILS = ['jacques.frederic@icloud.com']
+const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || 'jacques.frederic@icloud.com').split(',').map(e => e.trim())
 
 function checkAdmin(user) {
   if (!user?.email) return false
