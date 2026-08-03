@@ -13,8 +13,8 @@ export default function WorkoutScreen({exercise,onComplete}){
   const [paused,setPaused]=useState(false)
   const [sets,setSets]=useState([])
   const [curSet,setCurSet]=useState(1)
-  const [w,setW]=useState(String(defW||''))
-  const [r,setR]=useState(String(defR||''))
+  const [w,setW]=useState(()=>{const h=S.getState().exerciseHistory;const l=((h?.[exercise.id]||[]).slice(-1)[0]);return String((l?.weight)||'')})
+  const [r,setR]=useState(()=>{const h=S.getState().exerciseHistory;const l=((h?.[exercise.id]||[]).slice(-1)[0]);return String((l?.reps)||'')})
   const [dur,setDur]=useState(45)
   const tgtSets=3;const restSec=Math.round(dur/2)
   const iv=useRef(null);const wl=useRef(null)
@@ -26,10 +26,7 @@ export default function WorkoutScreen({exercise,onComplete}){
   },[])
 
   const h=S.getState().exerciseHistory
-  const last=((h?.[exercise.id]||[]).slice(-1)[0])
   const pr=(h?.[exercise.id]||[]).reduce((m,x)=>Math.max(m,x.weight||0),0)
-  const defW=last?.weight||''
-  const defR=last?.reps||''
 
   useEffect(()=>{
     if(paused||phase==='done')return
