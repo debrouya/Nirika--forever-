@@ -394,38 +394,46 @@ export default function CalisthenicsTracker({ onStartExercise }) {
 
           <div className="space-y-1.5">
             {selectedDay <= 10 && PHASE_1_EXERCISES.map((ex) => (
-              <button
-                key={ex.id}
-                onClick={() => setSelectedExercise(ex)}
-                className="w-full flex items-center gap-2 text-xs text-white/70 hover:bg-dark-bg rounded-lg px-2 py-1.5 transition-all group"
-              >
-                <span className="text-lime">🟢</span>
-                <span className="flex-1 text-left">{ex.name} · {ex.sets&&`${ex.sets}s`}{ex.reps&&` × ${ex.reps}`}{ex.duration&&` ${ex.duration}`}</span>
-                <Play size={12} className="text-muted group-hover:text-lime transition-colors" />
-                <Video size={12} className="text-muted hover:text-blue-400 transition-colors ml-1" onClick={(e)=>{e.stopPropagation();const r=exerciseMap[ex.id];if(r)setTutorialExercise(r)}}/>
-              </button>
+              <div key={ex.id} className="flex items-center gap-1">
+                <button
+                  onClick={() => setSelectedExercise(ex)}
+                  className="flex-1 flex items-center gap-2 text-xs text-white/70 hover:bg-dark-bg rounded-lg px-2 py-1.5 transition-all group"
+                >
+                  <span className="text-lime">🟢</span>
+                  <span className="flex-1 text-left">{ex.name} · {ex.sets&&`${ex.sets}s`}{ex.reps&&` × ${ex.reps}`}{ex.duration&&` ${ex.duration}`}</span>
+                  <Play size={12} className="text-muted group-hover:text-lime transition-colors" />
+                </button>
+                <button
+                  onClick={() => { const r = exerciseMap[ex.id]; if (r) setTutorialExercise(r) }}
+                  className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-500/10 transition-colors"
+                >
+                  <Video size={14} className="text-blue-400" />
+                </button>
+              </div>
             ))}
             {selectedDay >= 11 && selectedDay <= 20 && PHASE_2_EXERCISES.map((ex) => (
-              <button
-                key={ex.id}
-                onClick={() => setSelectedExercise(ex)}
-                className="w-full flex items-center gap-2 text-xs text-white/70 hover:bg-dark-bg rounded-lg px-2 py-1.5 transition-all group"
-              >
-                <span className="text-yellow-400">🟡</span>
-                <span className="flex-1 text-left">{ex.name} · {ex.sets&&`${ex.sets}s`}{ex.reps&&` × ${ex.reps}`}{ex.duration&&` ${ex.duration}`}</span>
-                <Play size={12} className="text-muted group-hover:text-lime transition-colors" />
-              </button>
+              <div key={ex.id} className="flex items-center gap-1">
+                <button onClick={() => setSelectedExercise(ex)} className="flex-1 flex items-center gap-2 text-xs text-white/70 hover:bg-dark-bg rounded-lg px-2 py-1.5 transition-all group">
+                  <span className="text-yellow-400">🟡</span>
+                  <span className="flex-1 text-left">{ex.name} · {ex.sets&&`${ex.sets}s`}{ex.reps&&` × ${ex.reps}`}{ex.duration&&` ${ex.duration}`}</span>
+                  <Play size={12} className="text-muted group-hover:text-lime transition-colors" />
+                </button>
+                <button onClick={() => { const r = exerciseMap[ex.id]; if (r) setTutorialExercise(r) }} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-500/10 transition-colors">
+                  <Video size={14} className="text-blue-400" />
+                </button>
+              </div>
             ))}
             {selectedDay >= 21 && PHASE_3_EXERCISES.map((ex) => (
-              <button
-                key={ex.id}
-                onClick={() => setSelectedExercise(ex)}
-                className="w-full flex items-center gap-2 text-xs text-white/70 hover:bg-dark-bg rounded-lg px-2 py-1.5 transition-all group"
-              >
-                <span className="text-red-400">🔴</span>
-                <span className="flex-1 text-left">{ex.name} · {ex.sets&&`${ex.sets}s`}{ex.reps&&` × ${ex.reps}`}{ex.duration&&` ${ex.duration}`}</span>
-                <Play size={12} className="text-muted group-hover:text-lime transition-colors" />
-              </button>
+              <div key={ex.id} className="flex items-center gap-1">
+                <button onClick={() => setSelectedExercise(ex)} className="flex-1 flex items-center gap-2 text-xs text-white/70 hover:bg-dark-bg rounded-lg px-2 py-1.5 transition-all group">
+                  <span className="text-red-400">🔴</span>
+                  <span className="flex-1 text-left">{ex.name} · {ex.sets&&`${ex.sets}s`}{ex.reps&&` × ${ex.reps}`}{ex.duration&&` ${ex.duration}`}</span>
+                  <Play size={12} className="text-muted group-hover:text-lime transition-colors" />
+                </button>
+                <button onClick={() => { const r = exerciseMap[ex.id]; if (r) setTutorialExercise(r) }} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-500/10 transition-colors">
+                  <Video size={14} className="text-blue-400" />
+                </button>
+              </div>
             ))}
           </div>
 
