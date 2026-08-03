@@ -121,9 +121,9 @@ export default function WorkoutScreen({exercise,onComplete}){
 
         {phase!=='rest'&&(
           <div className="flex gap-4 items-center mt-1">
-            <div className="flex flex-col items-center"><span className="text-white/30 text-[10px] mb-1">Charge</span><input type="number"value={w}onChange={e=>setW(e.target.value)}placeholder="0"className="w-16 h-10 text-center bg-white/10 border border-white/20 rounded-lg text-white text-lg font-bold placeholder-white/30 focus:outline-none focus:border-lime/50"/></div>
+            <div className="flex flex-col items-center"><span className="text-white/30 text-[10px] mb-1">Charge</span><input type="number"min="0"max="999"value={w}onChange={e=>setW(e.target.value)}placeholder="0"className="w-16 h-10 text-center bg-white/10 border border-white/20 rounded-lg text-white text-lg font-bold placeholder-white/30 focus:outline-none focus:border-lime/50"/></div>
             <span className="text-white/20">x</span>
-            <div className="flex flex-col items-center"><span className="text-white/30 text-[10px] mb-1">Reps</span><input type="number"value={r}onChange={e=>setR(e.target.value)}placeholder="0"className="w-16 h-10 text-center bg-white/10 border border-white/20 rounded-lg text-white text-lg font-bold placeholder-white/30 focus:outline-none focus:border-lime/50"/></div>
+            <div className="flex flex-col items-center"><span className="text-white/30 text-[10px] mb-1">Reps</span><input type="number"min="0"max="999"value={r}onChange={e=>setR(e.target.value)}placeholder="0"className="w-16 h-10 text-center bg-white/10 border border-white/20 rounded-lg text-white text-lg font-bold placeholder-white/30 focus:outline-none focus:border-lime/50"/></div>
           </div>
         )}
 

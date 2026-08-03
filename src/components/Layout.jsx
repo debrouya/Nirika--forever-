@@ -15,7 +15,7 @@ export default function Layout({ children }) {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto pb-24 relative z-10">{children}</main>
+      <main className="flex-1 overflow-y-auto pb-[calc(6rem+env(safe-area-inset-bottom,0px))] relative z-10">{children}</main>
     </div>
   )
 }
