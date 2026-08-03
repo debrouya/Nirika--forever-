@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Play, Pause, SkipForward, ArrowLeft, Flame } from 'lucide-react'
 import useStore from '../store/useStore'
+import { useBackgroundHandler } from '../hooks/useBackgroundHandler'
 
 function f(s) { const m = Math.floor(s / 60); return `${m}:${String(s % 60).padStart(2, '0')}` }
 
@@ -14,6 +15,8 @@ export default function CardioTimer({ onComplete }) {
   const intervalRef = useRef(null)
   const wakeLockRef = useRef(null)
   const targetMin = 20; const total = targetMin * 60
+
+  useBackgroundHandler(() => setPaused(true), () => setPaused(false))
 
   useEffect(() => {
     if ('wakeLock' in navigator) navigator.wakeLock.request('screen').then(w => { wakeLockRef.current = w }).catch(() => {})

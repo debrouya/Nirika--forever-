@@ -3,6 +3,7 @@ import { Play, Pause, SkipForward, ArrowLeft, Dumbbell, Save, CheckCircle, Plus,
 import useStore from '../store/useStore'
 import html2canvas from 'html2canvas'
 import { beep } from '../utils/audio'
+import { useBackgroundHandler } from '../hooks/useBackgroundHandler'
 
 function f(s){const m=Math.floor(s/60);return`${m}:${String(s%60).padStart(2,'0')}`}
 
@@ -21,6 +22,8 @@ export default function WorkoutScreen({exercise,onComplete}){
   const tgtSets=3;const restSec=Math.round(dur/2)
   const iv=useRef(null);const wl=useRef(null)
   const started=useRef(Date.now());const mtd=useRef(true)
+
+  useBackgroundHandler(() => setPaused(true), () => setPaused(false))
 
   useEffect(()=>{
     if('wakeLock'in navigator)navigator.wakeLock.request('screen').then(x=>{wl.current=x}).catch(()=>{})

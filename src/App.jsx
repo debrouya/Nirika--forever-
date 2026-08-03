@@ -30,6 +30,7 @@ import FormCheck from './components/FormCheck'
 import Toasts from './components/Toasts'
 import Onboarding, { useOnboarding } from './components/Onboarding'
 import { useSubscription } from './hooks/useSubscription'
+import { cleanupStaleSessions } from './hooks/useBackgroundHandler'
 
 const ADMIN_EMAILS = ['jacques.frederic@icloud.com']
 
@@ -56,6 +57,16 @@ export default function App() {
   const hasFeature = (key) => isAdmin || isPremium || userPerms[key] === true
 
   const handleSplashComplete = useCallback(() => setSplashDone(true), [])
+
+  useEffect(() => {
+    cleanupStaleSessions()
+    const save = () => {
+      const s = useStore.getState().activeSession
+      if (s) try { sessionStorage.setItem('lv_snap', JSON.stringify({ exerciseId: s.exerciseId, exerciseName: s.exerciseName, startedAt: s.startedAt, sets: s.sets, totalPausedMs: s.totalPausedMs })) } catch {}
+    }
+    window.addEventListener('beforeunload', save)
+    return () => window.removeEventListener('beforeunload', save)
+  }, [])
 
   useEffect(() => {
     if (!supabaseReady) {
