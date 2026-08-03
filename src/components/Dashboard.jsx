@@ -9,12 +9,12 @@ import {
   TrendingUp,
   Layout,
   LayoutDashboard,
+  Play,
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import { programs } from '../data/programs'
 import Recommendations from './Recommendations'
 import StreakMotivation from './StreakMotivation'
-import CalisthenicsTracker from './CalisthenicsTracker'
 import DailyWorkout from './DailyWorkout'
 
 const PROFILE_KEY = 'nirika_coach_profile'
@@ -34,7 +34,8 @@ const QUICK_ACTIONS = [
 ]
 
 export default function Dashboard() {
-  const { profile, setCurrentView, workoutHistory, sessionHistory, exerciseHistory, calisthenie30 } = useStore()
+  const { profile, setCurrentView, workoutHistory, sessionHistory, exerciseHistory } = useStore()
+  const activeSession = useStore((s) => s.activeSession)
   const [searchQuery, setSearchQuery] = useState('')
   const [simpleMode, setSimpleMode] = useState(() => {
     try { return localStorage.getItem('nirika_dashboard_mode') === 'simple' } catch { return false }
@@ -109,6 +110,21 @@ export default function Dashboard() {
         })}
       </div>
 
+      {/* CTA: Reprendre ou Démarrer */}
+      <div className="animate-fade-in" style={{ opacity: 0, animationFillMode: 'forwards' }}>
+        {activeSession ? (
+          <button onClick={() => setCurrentView('session')} className="w-full bg-lime rounded-2xl p-4 flex items-center gap-3 hover:brightness-110 transition-all active:scale-[0.98]">
+            <div className="w-12 h-12 rounded-xl bg-dark-bg/30 flex items-center justify-center"><Play size={24} className="text-dark-bg" fill="currentColor" /></div>
+            <div className="text-left flex-1"><p className="text-dark-bg font-bold text-sm">Reprendre ma seance</p><p className="text-dark-bg/60 text-xs">{activeSession.exerciseName}</p></div>
+          </button>
+        ) : (
+          <button onClick={() => setCurrentView('calisthenics')} className="w-full bg-lime rounded-2xl p-4 flex items-center gap-3 hover:brightness-110 transition-all active:scale-[0.98]">
+            <div className="w-12 h-12 rounded-xl bg-dark-bg/30 flex items-center justify-center"><Play size={24} className="text-dark-bg" fill="currentColor" /></div>
+            <div className="text-left flex-1"><p className="text-dark-bg font-bold text-sm">Demarrer une seance</p><p className="text-dark-bg/60 text-xs">Choisis ton exercice</p></div>
+          </button>
+        )}
+      </div>
+
       {/* Streak */}
       <StreakMotivation />
 
@@ -117,17 +133,8 @@ export default function Dashboard() {
         <DailyWorkout />
       </div>
 
-      {/* Calisthenics 30 Days - if started */}
-      {calisthenie30.startDate && (
-        <div onClick={() => setCurrentView('programme')} className="cursor-pointer">
-          <CalisthenicsTracker />
-        </div>
-      )}
-
       {/* Smart Recommendations */}
-      <div data-onboard="recommendations">
-        <Recommendations />
-      </div>
+      <Recommendations />
 
       {/* Search Bar */}
       <div className="animate-fade-in delay-200" style={{ opacity: 0, animationFillMode: 'forwards' }}>
