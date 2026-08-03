@@ -172,7 +172,7 @@ export default function ExerciseTutorial({ exercise, onClose }) {
   }, [])
 
   return (
-    <div className="fixed inset-0 z-50 bg-dark-bg animate-fade-in">
+    <div className="fixed inset-0 z-[999] bg-dark-bg animate-fade-in" style={{ overscrollBehavior: 'contain', touchAction: 'none' }}>
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-dark-border">
         <button
