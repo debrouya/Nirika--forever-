@@ -15,8 +15,7 @@ import {
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
-import ExerciseTutorial from './ExerciseTutorial'
-import CalisthenicsBilan from './CalisthenicsBilan'
+import WorkoutScreen from './WorkoutScreen'
 
 const PHASES = [
   { id: 1, name: 'Adaptation', color: 'text-green-400', bg: 'bg-green-400', emoji: '🟢', days: 'Jour 1-10', timing: '30s / 15s' },
@@ -86,6 +85,7 @@ export default function CalisthenicsTracker({ onStartExercise }) {
   const [selectedDay, setSelectedDay] = useState(null)
   const [tutorialExercise, setTutorialExercise] = useState(null)
   const [showBilan, setShowBilan] = useState(false)
+  const [selectedExercise, setSelectedExercise] = useState(null)
 
   const stats = useMemo(() => {
     const completed = Object.keys(calisthenie30.completedDays || {}).length
@@ -361,23 +361,23 @@ export default function CalisthenicsTracker({ onStartExercise }) {
             {selectedDay <= 10 && PHASE_1_EXERCISES.map((ex) => (
               <button
                 key={ex.id}
-                onClick={() => setTutorialExercise(exerciseMap[ex.id])}
+                onClick={() => { useStore.getState().startSession(ex.id, ex.name); useStore.getState().setCurrentView('calisthenics') }}
                 className="w-full flex items-center gap-2 text-xs text-white/70 hover:bg-dark-bg rounded-lg px-2 py-1.5 transition-all group"
               >
                 <span className="text-lime">🟢</span>
                 <span className="flex-1 text-left">{ex.name} · {ex.timing}</span>
-                <Video size={12} className="text-muted group-hover:text-lime transition-colors" />
+                <Play size={12} className="text-muted group-hover:text-lime transition-colors" />
               </button>
             ))}
             {selectedDay >= 11 && selectedDay <= 20 && PHASE_2_EXERCISES.map((ex) => (
               <button
                 key={ex.id}
-                onClick={() => setTutorialExercise(exerciseMap[ex.id])}
+                onClick={() => { useStore.getState().startSession(ex.id, ex.name); useStore.getState().setCurrentView('calisthenics') }}
                 className="w-full flex items-center gap-2 text-xs text-white/70 hover:bg-dark-bg rounded-lg px-2 py-1.5 transition-all group"
               >
                 <span className="text-yellow-400">🟡</span>
                 <span className="flex-1 text-left">{ex.name} · {ex.timing}</span>
-                <Video size={12} className="text-muted group-hover:text-lime transition-colors" />
+                <Play size={12} className="text-muted group-hover:text-lime transition-colors" />
               </button>
             ))}
             {selectedDay >= 21 && PHASE_3_EXERCISES.map((ex) => (
