@@ -117,12 +117,12 @@ export default function Dashboard() {
       {/* CTA: Reprendre ou Démarrer */}
       <div className="animate-fade-in" style={{ opacity: 0, animationFillMode: 'forwards' }}>
         {activeSession ? (
-          <button onClick={() => setCurrentView('session')} className="w-full bg-lime rounded-2xl p-4 flex items-center gap-3 hover:brightness-110 transition-all active:scale-[0.98] future-glow">
+          <button onClick={() => setCurrentView('session')} className="w-full future-cta p-4 flex items-center gap-3 hover:brightness-110 transition-all active:scale-[0.98]">
             <div className="w-12 h-12 rounded-xl bg-dark-bg/30 flex items-center justify-center"><Play size={24} className="text-dark-bg" fill="currentColor" /></div>
             <div className="text-left flex-1"><p className="text-dark-bg font-bold text-sm">Reprendre ma seance</p><p className="text-dark-bg/60 text-xs">{activeSession.exerciseName}</p></div>
           </button>
         ) : (
-          <button onClick={() => setCurrentView('calisthenics')} className="w-full bg-lime rounded-2xl p-4 flex items-center gap-3 hover:brightness-110 transition-all active:scale-[0.98] future-glow">
+          <button onClick={() => setCurrentView('calisthenics')} className="w-full future-cta p-4 flex items-center gap-3 hover:brightness-110 transition-all active:scale-[0.98]">
             <div className="w-12 h-12 rounded-xl bg-dark-bg/30 flex items-center justify-center"><Play size={24} className="text-dark-bg" fill="currentColor" /></div>
             <div className="text-left flex-1"><p className="text-dark-bg font-bold text-sm">Demarrer une seance</p><p className="text-dark-bg/60 text-xs">Choisis ton exercice</p></div>
           </button>
