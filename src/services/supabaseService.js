@@ -333,6 +333,7 @@ export async function createCheckoutSession(priceId) {
     body: JSON.stringify({ priceId }),
   })
 
+  if (!response.ok) throw new Error(`Stripe checkout failed: ${response.status}`)
   return await response.json()
 }
 
@@ -352,7 +353,7 @@ export async function openCustomerPortal() {
       apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
     },
   })
-
+  if (!response.ok) throw new Error(`Stripe portal failed: ${response.status}`)
   return await response.json()
 }
 
@@ -376,6 +377,7 @@ export async function adminUpdateSecret(name, value) {
       },
       body: JSON.stringify({ name, value }),
     })
+    if (!response.ok) throw new Error(`Admin secret failed: ${response.status}`)
     return await response.json()
   } catch {
     return { error: 'Erreur de connexion' }
@@ -401,6 +403,7 @@ export async function analyzeExercise(name, description, muscleGroup) {
     },
     body: JSON.stringify({ message: { name, description, muscleGroup }, type: 'analyze' }),
   })
+  if (!response.ok) throw new Error(`AI coach analyze failed: ${response.status}`)
 
   return await response.json()
 }
@@ -422,6 +425,7 @@ export async function askCoach(message, profile, history = []) {
     },
     body: JSON.stringify({ message, profile, history }),
   })
+  if (!response.ok) throw new Error(`AI coach ask failed: ${response.status}`)
 
   return await response.json()
 }

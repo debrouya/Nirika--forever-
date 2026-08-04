@@ -1,3 +1,5 @@
+import { supabase, isSupabaseConfigured } from '../lib/supabase'
+
 const SUPPRESSED = ''
 
 function canTrack() {
@@ -17,8 +19,7 @@ export function track(event, data = {}) {
   if (!canTrack()) return
   try {
     const payload = { event, data: sanitize(data), ts: Date.now(), ua: navigator.userAgent.slice(0, 100) || SUPPRESSED }
-    const supabase = window.__njk_sb
-    if (supabase) {
+    if (isSupabaseConfigured()) {
       supabase.from('analytics_events').insert(payload).then(() => {}).catch(() => {})
     }
   } catch {}

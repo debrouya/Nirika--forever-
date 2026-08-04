@@ -434,18 +434,18 @@ export default function AICoach({ isPremium = false, onShowPaywall }) {
     setChatInput('')
 
     const userMessage = { role: 'user', content: msg }
-    setChatMessages((prev) => [...prev, userMessage])
+    setChatMessages((prev) => [...prev, userMessage].slice(-50))
     setChatLoading(true)
 
     try {
       const result = await askCoach(msg, coachProfile, chatMessages)
       if (result.reply) {
-        setChatMessages((prev) => [...prev, { role: 'assistant', content: result.reply }])
+        setChatMessages((prev) => [...prev, { role: 'assistant', content: result.reply }].slice(-50))
       } else if (result.error) {
-        setChatMessages((prev) => [...prev, { role: 'assistant', content: `❌ ${result.error}` }])
+        setChatMessages((prev) => [...prev, { role: 'assistant', content: `❌ ${result.error}` }].slice(-50))
       }
     } catch {
-      setChatMessages((prev) => [...prev, { role: 'assistant', content: '❌ Erreur de connexion' }])
+      setChatMessages((prev) => [...prev, { role: 'assistant', content: '❌ Erreur de connexion' }].slice(-50))
     }
     setChatLoading(false)
   }, [chatInput, chatLoading, coachProfile, chatMessages])

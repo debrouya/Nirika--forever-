@@ -18,7 +18,7 @@ function saveWeight(exerciseId, weight) {
   try {
     const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
     data[exerciseId] = weight
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)) } catch {}
   } catch {
     // silent
   }
