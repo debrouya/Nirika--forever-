@@ -38,7 +38,7 @@ import { cleanupStaleSessions } from './hooks/useBackgroundHandler'
 
 if (typeof window !== 'undefined') window.__njk_sb = supabase
 
-const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || 'jacques.frederic@icloud.com').split(',').map(e => e.trim())
+const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || '').split(',').map(e => e.trim()).filter(Boolean)
 
 function checkAdmin(user) {
   if (!user?.email) return false
@@ -108,6 +108,8 @@ export default function App() {
       }
     }).catch(() => setAuthLoading(false))
 
+    const timeout = setTimeout(() => setAuthLoading(false), 8000)
+
     const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
         setUser(session.user)
@@ -118,7 +120,7 @@ export default function App() {
       }
     })
 
-    return () => authSub?.unsubscribe?.()
+    return () => { authSub?.unsubscribe?.(); clearTimeout(timeout) }
   }, [supabaseReady])
 
   const loadProfile = async (userId) => {
