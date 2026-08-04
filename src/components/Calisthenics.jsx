@@ -60,7 +60,7 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
     return (
       <WorkoutScreen
         exercise={selectedExercise}
-        onComplete={() => setSelectedExercise(null)}
+        onComplete={() => { useStore.getState().endSession(); setSelectedExercise(null) }}
       />
     )
   }

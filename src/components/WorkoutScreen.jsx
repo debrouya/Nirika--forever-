@@ -28,7 +28,7 @@ export default function WorkoutScreen({exercise,onComplete}){
 
   useEffect(()=>{
     if('wakeLock'in navigator)navigator.wakeLock.request('screen').then(x=>{wl.current=x}).catch(()=>{})
-    return()=>{mtd.current=false;clearInterval(iv.current);if(wl.current)wl.current.release().catch(()=>{});S.getState().endSession()}
+    return()=>{mtd.current=false;clearInterval(iv.current);if(wl.current)wl.current.release().catch(()=>{})}
   },[])
 
   const h=S.getState().exerciseHistory

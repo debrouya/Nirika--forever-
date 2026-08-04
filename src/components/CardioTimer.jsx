@@ -21,7 +21,7 @@ export default function CardioTimer({ onComplete }) {
 
   useEffect(() => {
     if ('wakeLock' in navigator) navigator.wakeLock.request('screen').then(w => { wakeLockRef.current = w }).catch(() => {})
-    return () => { clearInterval(intervalRef.current); if (wakeLockRef.current) wakeLockRef.current.release().catch(() => {}); store.getState().endSession() }
+    return () => { clearInterval(intervalRef.current); if (wakeLockRef.current) wakeLockRef.current.release().catch(() => {}) }
   }, [])
 
   useEffect(() => {

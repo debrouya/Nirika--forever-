@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import useStore from '../store/useStore'
 import {
   Home,
   Play,
@@ -68,17 +67,11 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
 
   const handleMainTab = (id) => {
     setMenuOpen(false)
-    if (active !== id && active === 'session' && useStore.getState().activeSession) {
-      useStore.getState().endSession()
-    }
     onChange(id)
   }
 
   const handleMenuAction = (id) => {
     setMenuOpen(false)
-    if (active !== id && active === 'session' && useStore.getState().activeSession) {
-      useStore.getState().endSession()
-    }
     onChange(id)
   }
 
