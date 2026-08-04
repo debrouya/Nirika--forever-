@@ -1,0 +1,92 @@
+:root {
+  --future-green-r: 0;
+  --future-green-g: 255;
+  --future-green-b: 120;
+  --green-intensity: 0.15;
+  --glass-opacity: 0.12;
+  --glass-border-opacity: 0.25;
+  --blur-strength: 18px;
+  --background-dark: #050807;
+  --text-primary: rgba(255,255,255,0.95);
+  --text-secondary: rgba(255,255,255,0.65);
+  --future-green: rgba(var(--future-green-r), var(--future-green-g), var(--future-green-b), var(--green-intensity));
+  --future-green-border: rgba(var(--future-green-r), var(--future-green-g), var(--future-green-b), var(--glass-border-opacity));
+  --future-glass-bg: rgba(var(--future-green-r), var(--future-green-g), var(--future-green-b), var(--glass-opacity));
+  --future-glow: rgba(var(--future-green-r), var(--future-green-g), var(--future-green-b), 0.15);
+}
+
+.bg-theme {
+  background: radial-gradient(circle at top, rgba(0,255,120,0.18), transparent 40%), linear-gradient(135deg, #020403, #08140d);
+}
+
+.future-bg {
+  background: var(--background-dark);
+}
+
+.future-glass {
+  background: var(--future-glass-bg);
+  backdrop-filter: blur(var(--blur-strength));
+  -webkit-backdrop-filter: blur(var(--blur-strength));
+  border: 1px solid var(--future-green-border);
+  border-radius: 24px;
+  box-shadow: 0 0 30px var(--future-glow);
+  animation: glassAppear 0.5s ease;
+}
+
+.future-button {
+  background: rgba(0,255,120,0.18);
+  border: 1px solid rgba(0,255,120,0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 0 20px rgba(0,255,120,0.25);
+  transition: all 0.3s ease;
+}
+.future-button:active {
+  transform: scale(0.96);
+  box-shadow: 0 0 35px rgba(0,255,120,0.45);
+}
+
+.future-text {
+  color: var(--text-primary);
+}
+.future-text-muted {
+  color: var(--text-secondary);
+}
+
+.future-glow {
+  box-shadow: 0 0 40px rgba(0,255,120,0.12), 0 0 80px rgba(0,255,120,0.06);
+}
+
+.future-pulse {
+  animation: futurePulse 3s ease-in-out infinite;
+}
+
+@keyframes glassAppear {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes futurePulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,255,120,0.1); }
+  50% { box-shadow: 0 0 40px rgba(0,255,120,0.25); }
+}
+
+/* Intensity presets */
+.future-theme-low {
+  --green-intensity: 0.08;
+  --glass-opacity: 0.06;
+  --glass-border-opacity: 0.12;
+  --blur-strength: 12px;
+}
+.future-theme-med {
+  --green-intensity: 0.15;
+  --glass-opacity: 0.12;
+  --glass-border-opacity: 0.25;
+  --blur-strength: 18px;
+}
+.future-theme-high {
+  --green-intensity: 0.25;
+  --glass-opacity: 0.18;
+  --glass-border-opacity: 0.35;
+  --blur-strength: 24px;
+}
