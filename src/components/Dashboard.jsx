@@ -74,7 +74,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-6 p-4">
       {/* Hero Greeting */}
-      <div data-onboard="hero" className="relative rounded-2xl overflow-hidden p-5 bg-gradient-to-br from-dark-card via-dark-bg to-dark-card border border-dark-border">
+      <div data-onboard="hero" className="relative rounded-2xl overflow-hidden p-5 bg-gradient-to-br from-dark-card via-dark-bg to-dark-card border border-dark-border future-glass future-glow">
         <div className="absolute top-0 right-0 w-32 h-32 bg-lime/5 rounded-full blur-[60px] animate-hero-bg" />
         <div className="relative z-10">
           <p className="text-muted text-xs font-medium uppercase tracking-wider mb-1">
@@ -117,12 +117,12 @@ export default function Dashboard() {
       {/* CTA: Reprendre ou Démarrer */}
       <div className="animate-fade-in" style={{ opacity: 0, animationFillMode: 'forwards' }}>
         {activeSession ? (
-          <button onClick={() => setCurrentView('session')} className="w-full bg-lime rounded-2xl p-4 flex items-center gap-3 hover:brightness-110 transition-all active:scale-[0.98]">
+          <button onClick={() => setCurrentView('session')} className="w-full bg-lime rounded-2xl p-4 flex items-center gap-3 hover:brightness-110 transition-all active:scale-[0.98] future-glow">
             <div className="w-12 h-12 rounded-xl bg-dark-bg/30 flex items-center justify-center"><Play size={24} className="text-dark-bg" fill="currentColor" /></div>
             <div className="text-left flex-1"><p className="text-dark-bg font-bold text-sm">Reprendre ma seance</p><p className="text-dark-bg/60 text-xs">{activeSession.exerciseName}</p></div>
           </button>
         ) : (
-          <button onClick={() => setCurrentView('calisthenics')} className="w-full bg-lime rounded-2xl p-4 flex items-center gap-3 hover:brightness-110 transition-all active:scale-[0.98]">
+          <button onClick={() => setCurrentView('calisthenics')} className="w-full bg-lime rounded-2xl p-4 flex items-center gap-3 hover:brightness-110 transition-all active:scale-[0.98] future-glow">
             <div className="w-12 h-12 rounded-xl bg-dark-bg/30 flex items-center justify-center"><Play size={24} className="text-dark-bg" fill="currentColor" /></div>
             <div className="text-left flex-1"><p className="text-dark-bg font-bold text-sm">Demarrer une seance</p><p className="text-dark-bg/60 text-xs">Choisis ton exercice</p></div>
           </button>
@@ -131,14 +131,14 @@ export default function Dashboard() {
 
       {/* Profile prompt */}
       {!profileName && (
-        <button onClick={() => setCurrentView('profile')} className="w-full bg-yellow-400/10 border border-yellow-400/20 rounded-2xl p-3 flex items-center gap-3 hover:bg-yellow-400/20 transition-all">
+        <button onClick={() => setCurrentView('profile')} className="w-full bg-yellow-400/10 border border-yellow-400/20 rounded-2xl p-3 flex items-center gap-3 hover:bg-yellow-400/20 transition-all future-glass">
           <span className="text-lg">👋</span>
           <div className="text-left flex-1"><p className="text-yellow-400 text-sm font-medium">Configure ton profil</p><p className="text-yellow-400/60 text-[10px]">Pour des programmes et recommandations personnalises</p></div>
         </button>
       )}
 
       {/* Templates quick */}
-      <button onClick={() => setCurrentView('templates')} className="w-full bg-dark-card rounded-xl p-3 flex items-center gap-3 border border-dark-border hover:border-lime/30 transition-all mb-4">
+      <button onClick={() => setCurrentView('templates')} className="w-full bg-dark-card rounded-xl p-3 flex items-center gap-3 border border-dark-border hover:border-lime/30 transition-all mb-4 future-glass">
         <div className="w-10 h-10 rounded-lg bg-lime/10 flex items-center justify-center"><FileText size={18} className="text-lime" /></div>
         <div className="text-left flex-1"><p className="text-white text-sm font-medium">Templates</p><p className="text-muted text-[10px]">Lance une seance pre-enregistree</p></div>
         <ChevronRight size={16} className="text-muted" />
@@ -164,7 +164,7 @@ export default function Dashboard() {
             placeholder="Rechercher un programme..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-dark-card text-white pl-10 pr-4 py-3 rounded-xl text-sm outline-none border border-dark-border placeholder:text-muted focus:border-lime/30 transition-colors"
+            className="w-full bg-dark-card text-white pl-10 pr-4 py-3 rounded-xl text-sm outline-none border border-dark-border placeholder:text-muted focus:border-lime/30 transition-colors future-glass"
           />
         </div>
       </div>
@@ -216,7 +216,7 @@ export default function Dashboard() {
                 setSearchQuery(tag)
                 setCurrentView('programme')
               }}
-              className="px-4 py-2 rounded-full bg-dark-card border border-dark-border text-white text-sm font-medium whitespace-nowrap hover:border-lime/50 hover:bg-lime/5 transition-all active:scale-95"
+              className="px-4 py-2 rounded-full bg-dark-card border border-dark-border text-white text-sm font-medium whitespace-nowrap hover:border-lime/50 hover:bg-lime/5 transition-all active:scale-95 future-glass"
             >
               {tag}
             </button>
