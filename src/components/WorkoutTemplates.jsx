@@ -5,7 +5,7 @@ import exercises from '../data/exercises'
 import FeatureGuide from './FeatureGuide'
 
 export default function WorkoutTemplates() {
-  const { workoutTemplates, addWorkoutTemplate, updateWorkoutTemplate, deleteWorkoutTemplate, pushView, setCurrentView, setCurrentWorkoutTemplate } = useStore()
+  const { workoutTemplates, addWorkoutTemplate, updateWorkoutTemplate, deleteWorkoutTemplate, pushView, setCurrentView, setCurrentWorkoutTemplate, setPendingDailyWorkout } = useStore()
   const [editing, setEditing] = useState(null)
   const [search, setSearch] = useState('')
   const [tab, setTab] = useState('list')
@@ -56,7 +56,7 @@ export default function WorkoutTemplates() {
   }
 
   const startSession = (template) => {
-    setCurrentWorkoutTemplate(template)
+    setPendingDailyWorkout(template)
     pushView('daily-workout')
   }
 
