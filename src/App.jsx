@@ -231,7 +231,7 @@ export default function App() {
 
   return (
     <Layout>
-        {currentView === 'dashboard' && <><Dashboard /><FloatingCoachButton /></>}
+        {currentView === 'dashboard' && (console.log('[App] rendering Dashboard branch'), <><Dashboard /><FloatingCoachButton /></>)}
       {currentView === 'profile' && <Profile user={user} onLogout={handleLogout} />}
       {currentView === 'workout-detail' && <WorkoutDetail />}
       {currentView === 'calisthenics' && <Calisthenics isPremium={hasAccess} onShowPaywall={() => !isAdmin && setShowPaywall(true)} />}

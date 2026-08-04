@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import {
   Search,
   ChevronRight,
@@ -36,7 +36,9 @@ const QUICK_ACTIONS = [
 ]
 
 export default function Dashboard() {
+  console.log('[Dashboard] render')
   const { profile, setCurrentView, workoutHistory, sessionHistory, exerciseHistory } = useStore()
+  useEffect(() => { console.log('[Dashboard] mount'); return () => console.log('[Dashboard] unmount') }, [])
   const activeSession = useStore((s) => s.activeSession)
   const profileName = profile?.name || profile?.full_name
   const [searchQuery, setSearchQuery] = useState('')

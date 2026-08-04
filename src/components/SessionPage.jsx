@@ -69,7 +69,7 @@ export default function SessionPage() {
     return (
       <WorkoutScreen
         exercise={currentExercise}
-        onComplete={() => { endSession(); setCurrentView('dashboard') }}
+        onComplete={() => { console.log('[SessionPage] onComplete -> endSession + dashboard'); endSession(); setCurrentView('dashboard') }}
       />
     )
   }

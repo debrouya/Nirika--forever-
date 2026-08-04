@@ -1,6 +1,6 @@
 export default function Layout({ children }) {
   return (
-    <div className="h-[100dvh] flex flex-col bg-dark-bg max-w-lg mx-auto overflow-hidden">
+    <div className="h-[100dvh] flex flex-col bg-dark-bg max-w-lg mx-auto overflow-hidden" ref={(el) => { if (el && !el.dataset.logged) { el.dataset.logged = '1'; console.log('[Layout] mount') }}}>
       <header className="flex-shrink-0 z-40 bg-dark-bg/90 backdrop-blur-xl safe-top border-b border-dark-border/50">
         <div className="flex items-center gap-3 py-3 px-4">
           <div className="w-12 h-12 rounded-xl bg-dark-card flex items-center justify-center p-0.5 border border-dark-border animate-glow-pulse">
