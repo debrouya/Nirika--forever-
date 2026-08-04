@@ -10,6 +10,7 @@ import Layout from './components/Layout'
 import Navigation from './components/Navigation'
 import Dashboard from './components/Dashboard'
 import FloatingCoachButton from './components/FloatingCoachButton'
+import ErrorBoundary from './components/ErrorBoundary'
 import Profile from './components/Profile'
 import Calisthenics from './components/Calisthenics'
 import CustomExercisePanel from './components/CustomExercisePanel'
@@ -231,6 +232,7 @@ export default function App() {
 
   return (
     <Layout>
+      <ErrorBoundary>
         {currentView === 'dashboard' && <><Dashboard /><FloatingCoachButton /></>}
       {currentView === 'profile' && <Profile user={user} onLogout={handleLogout} />}
       {currentView === 'workout-detail' && <WorkoutDetail />}
@@ -252,6 +254,7 @@ export default function App() {
       {currentView === 'pricing' && <Pricing subscription={subscription} />}
       {!['dashboard','profile','workout-detail','calisthenics','cardio','ai','stats','fitmatrix','calendar','programme','session','daily-workout','warmup','cooldown','templates','nutrition','photos','form-check','pricing','admin'].includes(currentView) && <Dashboard />}
       <Navigation active={currentView} onChange={(id) => useStore.getState().setCurrentView(id)} isAdmin={isAdmin} userRole={profile?.role} onAdminClick={() => useStore.getState().setCurrentView('admin')} onLogout={handleLogout} onPricingClick={() => useStore.getState().setCurrentView('pricing')} />
+      </ErrorBoundary>
       {showPaywall && <Paywall onClose={() => setShowPaywall(false)} />}
       {!onboardingDone && <Onboarding onComplete={completeOnboarding} />}
       <Toasts />
