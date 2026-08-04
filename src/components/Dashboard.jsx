@@ -72,7 +72,7 @@ export default function Dashboard() {
   }, [searchQuery])
 
   return (
-    <div className="space-y-8 p-5">
+    <div className="space-y-10 p-6">
       {/* Hero Greeting */}
       <div data-onboard="hero" className="relative rounded-2xl overflow-hidden p-5 bg-gradient-to-br from-dark-card via-dark-bg to-dark-card border border-dark-border future-glass future-glow">
         <div className="absolute top-0 right-0 w-32 h-32 bg-lime/5 rounded-full blur-[60px] animate-hero-bg" />

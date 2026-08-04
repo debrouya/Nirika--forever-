@@ -1,18 +1,11 @@
 :root {
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-surface: rgba(255, 255, 255, 0.72);
   --text-primary: #1C1C1E;
   --text-secondary: #8E8E93;
-  --text-muted: #AEAEB2;
-  --text-on-dark: #ffffff;
-  --bg-main: #F5F5F7;
-  --bg-card: rgba(255, 255, 255, 0.35);
-  --bg-button: #E8E8ED;
-  --bg-dark: #1C1C1E;
-  --border-subtle: rgba(0, 0, 0, 0.04);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.03);
-  --shadow-md: 0 2px 12px rgba(0,0,0,0.05);
-  --shadow-lg: 0 4px 20px rgba(0,0,0,0.06);
-  --blur-strength: 30px;
-  --radius: 20px;
+  --bg-main: #FAFAFA;
+  --blur-card: 40px;
+  --blur-surface: 20px;
   --font-premium: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
 }
 
@@ -26,14 +19,23 @@ html, body, #root {
 }
 
 .future-glass {
-  background: var(--bg-card);
-  backdrop-filter: blur(var(--blur-strength));
-  -webkit-backdrop-filter: blur(var(--blur-strength));
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur-card));
+  -webkit-backdrop-filter: blur(var(--blur-card));
+  border: none;
+  border-radius: 22px;
+  box-shadow: none;
   color: var(--text-primary);
-  animation: glassAppear 0.6s ease;
+  animation: glassAppear 1s ease;
+}
+
+.future-glass-surface {
+  background: var(--glass-bg-surface);
+  backdrop-filter: blur(var(--blur-surface));
+  -webkit-backdrop-filter: blur(var(--blur-surface));
+  border: none;
+  border-radius: 16px;
+  box-shadow: none;
 }
 
 .future-glass h1, .future-glass h2, .future-glass h3,
@@ -49,40 +51,32 @@ html, body, #root {
   color: var(--text-secondary) !important;
 }
 
-.future-glass .text-lime {
+.future-glass .text-lime,
+.future-glass .text-lime\/60 {
   color: var(--text-secondary) !important;
 }
 
 .future-cta {
-  background: var(--bg-dark);
-  color: var(--text-on-dark);
+  background: rgba(28, 28, 30, 0.08);
+  color: var(--text-primary);
   border: none;
   border-radius: 18px;
-  box-shadow: var(--shadow-lg);
-  transition: all 0.35s ease;
+  box-shadow: none;
+  transition: all 0.5s ease;
 }
 .future-cta:active {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  transform: scale(0.985);
+  background: rgba(28, 28, 30, 0.14);
 }
 
 .future-text {
   color: var(--text-primary);
 }
+
 .future-text-secondary {
   color: var(--text-secondary);
 }
 
-.future-pulse {
-  animation: futurePulse 5s ease-in-out infinite;
-}
-
 @keyframes glassAppear {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes futurePulse {
-  0%, 100% { box-shadow: var(--shadow-sm); }
-  50% { box-shadow: var(--shadow-lg); }
 }
