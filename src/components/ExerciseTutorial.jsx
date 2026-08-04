@@ -168,7 +168,8 @@ export default function ExerciseTutorial({ exercise, onClose }) {
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
+    console.log('[Tutorial] overflow hidden set')
+    return () => { console.log('[Tutorial] cleanup - restoring overflow'); document.body.style.overflow = '' }
   }, [])
 
   return (

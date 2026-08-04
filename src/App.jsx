@@ -231,7 +231,7 @@ export default function App() {
 
   return (
     <Layout>
-        {currentView === 'dashboard' && (console.log('[App] rendering Dashboard branch'), <><Dashboard /><FloatingCoachButton /></>)}
+        {currentView === 'dashboard' && (console.log('[App] rendering Dashboard branch'), <><div style={{position:'fixed',top:0,left:0,zIndex:9999,background:'red',color:'white',padding:8,fontSize:14}}>DASHBOARD MOUNTED</div><Dashboard /><FloatingCoachButton /></>)}
       {currentView === 'profile' && <Profile user={user} onLogout={handleLogout} />}
       {currentView === 'workout-detail' && <WorkoutDetail />}
       {currentView === 'calisthenics' && <Calisthenics isPremium={hasAccess} onShowPaywall={() => !isAdmin && setShowPaywall(true)} />}
