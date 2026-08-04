@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-html { touch-action: manipulation; }
+html { touch-action: manipulation; overflow: hidden; height: 100dvh; }
 
 * {
   -webkit-tap-highlight-color: transparent;
@@ -14,7 +14,9 @@ body {
   overscroll-behavior: none;
   background: #141414;
   color: #FFFFFF;
-  min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 input, textarea, select {
