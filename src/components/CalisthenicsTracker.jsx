@@ -119,7 +119,7 @@ export default function CalisthenicsTracker({ onStartExercise }) {
   if (launchExercise) {
     const ex = exerciseMap[launchExercise.id]
     const realEx = ex || { id: launchExercise.id, name: launchExercise.name, muscleGroup: 'Autre', equipment: 'none' }
-    return <WorkoutScreen exercise={realEx} onComplete={() => setLaunchExercise(null)} />
+    return <WorkoutScreen exercise={realEx} onComplete={() => { useStore.getState().endSession(); setLaunchExercise(null) }} />
   }
 
   if (selectedExercise) {
