@@ -72,7 +72,7 @@ export default function Dashboard() {
   }, [searchQuery])
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-8 p-5">
       {/* Hero Greeting */}
       <div data-onboard="hero" className="relative rounded-2xl overflow-hidden p-5 bg-gradient-to-br from-dark-card via-dark-bg to-dark-card border border-dark-border future-glass future-glow">
         <div className="absolute top-0 right-0 w-32 h-32 bg-lime/5 rounded-full blur-[60px] animate-hero-bg" />
@@ -90,7 +90,7 @@ export default function Dashboard() {
 
       {/* Mode Toggle */}
       <div className="flex justify-end -mt-2 mb-2">
-        <button onClick={() => { const next = !simpleMode; setSimpleMode(next); try { localStorage.setItem('nirika_dashboard_mode', next ? 'simple' : 'full') } catch {} }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-dark-card border border-dark-border text-muted hover:text-white transition-colors text-[10px]">
+        <button onClick={() => { const next = !simpleMode; setSimpleMode(next); try { localStorage.setItem('nirika_dashboard_mode', next ? 'simple' : 'full') } catch {} }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-dark-card border border-dark-border text-muted hover:text-white transition-colors text-[10px] future-glass">
           {simpleMode ? <LayoutDashboard size={12} /> : <Layout size={12} />}
           {simpleMode ? 'Complet' : 'Simplifié'}
         </button>

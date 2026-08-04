@@ -8,20 +8,18 @@ export default function FloatingCoachButton() {
     <button
       onClick={() => setCurrentView('ai')}
       className="fixed right-4 bottom-28 z-40 w-16 h-16 rounded-full 
-        bg-gradient-to-br from-lime via-lime/90 to-emerald-400 
-        shadow-[0_8px_32px_rgba(132,204,22,0.35)] 
-        active:shadow-[0_4px_16px_rgba(132,204,22,0.25)] active:scale-95
+        bg-[#1C1C1E]/90 backdrop-blur-xl
+        shadow-[0_4px_20px_rgba(0,0,0,0.08)] 
+        active:shadow-[0_2px_8px_rgba(0,0,0,0.06)] active:scale-95
         flex items-center justify-center
         transition-all duration-300 ease-out
         animate-coach-float
-        group"
-      style={{
-        boxShadow: '0 8px 32px rgba(132,204,22,0.35), 0 2px 8px rgba(0,0,0,0.3)',
-      }}
+        group
+        border border-white/5"
       aria-label="Nirika Coach"
     >
-      <Sparkles size={24} className="text-dark-bg" />
-      <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-dark-card text-lime text-[10px] font-bold px-2.5 py-1 rounded-full border border-lime/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+      <Sparkles size={24} className="text-white/90" />
+      <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#1C1C1E] backdrop-blur-md text-white/80 text-[10px] font-medium px-2.5 py-1 rounded-full border border-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
         Nirika Coach
       </span>
     </button>
