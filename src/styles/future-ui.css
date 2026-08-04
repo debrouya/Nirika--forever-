@@ -1,11 +1,13 @@
 :root {
-  --glass-bg: rgba(255, 255, 255, 0.55);
-  --glass-bg-surface: rgba(255, 255, 255, 0.72);
+  --bg-main: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0,0,0,0.015) 0%, transparent 60%), linear-gradient(180deg, #F2F2F5 0%, #FAFAFA 100%);
+  --glass-bg: rgba(255, 255, 255, 0.22);
+  --glass-blur: 60px;
+  --glass-border: 1px solid rgba(255, 255, 255, 0.3);
+  --glass-shadow: 0 0.5px 1px rgba(0,0,0,0.03);
+  --cta-bg: rgba(255, 255, 255, 0.3);
+  --cta-active: rgba(0, 0, 0, 0.04);
   --text-primary: #1C1C1E;
   --text-secondary: #8E8E93;
-  --bg-main: #FAFAFA;
-  --blur-card: 40px;
-  --blur-surface: 20px;
   --font-premium: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
 }
 
@@ -20,22 +22,13 @@ html, body, #root {
 
 .future-glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(var(--blur-card));
-  -webkit-backdrop-filter: blur(var(--blur-card));
-  border: none;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
   border-radius: 22px;
-  box-shadow: none;
+  box-shadow: var(--glass-shadow);
   color: var(--text-primary);
-  animation: glassAppear 1s ease;
-}
-
-.future-glass-surface {
-  background: var(--glass-bg-surface);
-  backdrop-filter: blur(var(--blur-surface));
-  -webkit-backdrop-filter: blur(var(--blur-surface));
-  border: none;
-  border-radius: 16px;
-  box-shadow: none;
+  animation: glassAppear 1.2s ease;
 }
 
 .future-glass h1, .future-glass h2, .future-glass h3,
@@ -57,23 +50,17 @@ html, body, #root {
 }
 
 .future-cta {
-  background: rgba(28, 28, 30, 0.08);
+  background: var(--cta-bg);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   color: var(--text-primary);
-  border: none;
+  border: var(--glass-border);
   border-radius: 18px;
-  box-shadow: none;
-  transition: all 0.5s ease;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.6s ease;
 }
 .future-cta:active {
-  background: rgba(28, 28, 30, 0.14);
-}
-
-.future-text {
-  color: var(--text-primary);
-}
-
-.future-text-secondary {
-  color: var(--text-secondary);
+  background: var(--cta-active);
 }
 
 @keyframes glassAppear {
