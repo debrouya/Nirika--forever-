@@ -230,7 +230,9 @@ const useStore = create(
         // 1. Missing muscle groups this week
         const now = new Date()
         const weekAgo = new Date(now - 7 * 86400000)
-        const thisWeekSessions = allSessions.filter((s) => new Date(s.completedAt || s.date) >= weekAgo)
+        const thisWeekSessions = allSessions.filter((s) => {
+          try { const d = new Date(s.completedAt || s.date || s.endedAt || s.startedAt); return !isNaN(d) && d >= weekAgo } catch { return false }
+        })
         const muscleGroupsWorked = new Set(thisWeekSessions.map((s) => s.muscleGroup || s.exerciseName).filter(Boolean))
         const allMuscles = ['Pectoraux', 'Dos', 'Epaules', 'Jambes', 'Abdominaux', 'Bras']
         const missing = allMuscles.filter((m) => !muscleGroupsWorked.has(m))
@@ -247,8 +249,13 @@ const useStore = create(
 
         // 2. Consistency check
         const completedDates = new Set(
-          allSessions.map((s) => new Date(s.completedAt || s.date).toISOString().slice(0, 10))
+          allSessions.map((s) => {
+            const d = s.completedAt || s.date || s.endedAt || s.startedAt
+            if (!d) return null
+            try { return new Date(d).toISOString().slice(0, 10) } catch { return null }
+          }).filter(Boolean)
         )
+        if (completedDates.size === 0) return recommendations
         const daysSinceFirstSession = Math.max(1, Math.floor((now - new Date(Math.min(...[...completedDates].map(d => new Date(d).getTime())))) / 86400000))
         const frequency = completedDates.size / Math.max(1, daysSinceFirstSession) * 7
         const targetFreq = profile.frequency || 3
