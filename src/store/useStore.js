@@ -20,7 +20,7 @@ const useStore = create(
     (set, get) => ({
       currentView: 'dashboard',
       viewHistory: [],
-      setCurrentView: (view) => set({ currentView: view, viewHistory: [] }),
+      setCurrentView: (view) => { set({ currentView: view, viewHistory: [] }); requestAnimationFrame(() => { document.body.style.transform = 'translateZ(0)'; requestAnimationFrame(() => { document.body.style.transform = '' }) }) },
       pushView: (view) => set((state) => ({ currentView: view, viewHistory: [...state.viewHistory, state.currentView] })),
       popView: () => set((state) => {
         if (state.viewHistory.length === 0) return { currentView: 'dashboard' }
