@@ -130,7 +130,8 @@ export default function ExerciseTutorial({ exercise, onClose }) {
   useEffect(() => {
     if (!exercise.youtubeId) {
       const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY
-      const settings = JSON.parse(localStorage.getItem('nirika_admin_settings') || '{}')
+      let settings = {}
+      try { settings = JSON.parse(localStorage.getItem('nirika_admin_settings') || '{}') } catch {}
       if (!apiKey || settings.youtubeEnabled === false) { setSearching(false); return }
 
       const cacheKey = `yt_cache_${exercise.name}`

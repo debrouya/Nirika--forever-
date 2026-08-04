@@ -1214,7 +1214,7 @@ function SettingsTab() {
   }
 
   const handleSave = () => {
-    localStorage.setItem('nirika_admin_settings', JSON.stringify(settings))
+    try { localStorage.setItem('nirika_admin_settings', JSON.stringify(settings)) } catch {}
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
@@ -1412,7 +1412,7 @@ function MotivationTab() {
 
   const savePhrases = (updated) => {
     setPhrases(updated)
-    localStorage.setItem(MOTIVATION_KEY, JSON.stringify(updated))
+    try { localStorage.setItem(MOTIVATION_KEY, JSON.stringify(updated)) } catch {}
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
     window.dispatchEvent(new StorageEvent('storage', { key: MOTIVATION_KEY }))

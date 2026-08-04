@@ -158,7 +158,7 @@ export default function Cardio() {
 
   useEffect(() => {
     if (isRunning && 'wakeLock' in navigator) navigator.wakeLock.request('screen').then(w => { wakeLockRef.current = w }).catch(() => {})
-    return () => { if (wakeLockRef.current && !isRunning) wakeLockRef.current.release().catch(() => {}) }
+    return () => { if (wakeLockRef.current) wakeLockRef.current.release().catch(() => {}) }
   }, [isRunning])
 
   const weight = profile?.weight || 70

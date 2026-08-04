@@ -106,7 +106,7 @@ function loadProfile() {
 }
 
 function saveProfile(profile) {
-  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile))
+  try { localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)) } catch {}
 }
 
 function computeBMI(weight, heightCm) {
@@ -161,7 +161,7 @@ function computeFitnessScore(profile, workoutHistory, sessionHistory) {
   else if (profile.level === 'avance') score += 15
   else if (profile.level === 'expert') score += 20
   const recentSessions = [...(workoutHistory || []), ...(sessionHistory || [])].slice(-20)
-  const uniqueDays = new Set(recentSessions.map((s) => new Date(s.completedAt || s.date || s.startedAt).toISOString().slice(0, 10)))
+  const uniqueDays = new Set(recentSessions.map((s) => { try { return new Date(s.completedAt || s.date || s.startedAt).toISOString().slice(0, 10) } catch { return null } }).filter(Boolean))
   score += Math.min(15, uniqueDays.size * 2)
   if (profile.frequency >= 4) score += 10
   else if (profile.frequency >= 3) score += 5

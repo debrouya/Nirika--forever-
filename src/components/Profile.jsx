@@ -126,7 +126,7 @@ export default function Profile({ user, onLogout }) {
   }
 
   const handleSave = () => {
-    localStorage.setItem('nirika-profile', JSON.stringify(profile))
+    try { localStorage.setItem('nirika-profile', JSON.stringify(profile)) } catch {}
     if (saveToStore) {
       saveToStore({
         ...profile,
@@ -319,7 +319,7 @@ export default function Profile({ user, onLogout }) {
                     checked={reminderEnabled}
                     onChange={(e) => {
                       setReminderEnabled(e.target.checked)
-                      localStorage.setItem('nirika-reminder-enabled', e.target.checked)
+                      try { localStorage.setItem('nirika-reminder-enabled', e.target.checked) } catch {}
                     }}
                     className="sr-only peer"
                   />
@@ -333,7 +333,7 @@ export default function Profile({ user, onLogout }) {
                   value={reminderTime}
                   onChange={(e) => {
                     setReminderTime(e.target.value)
-                    localStorage.setItem('nirika-reminder-time', e.target.value)
+                    try { localStorage.setItem('nirika-reminder-time', e.target.value) } catch {}
                   }}
                   className="bg-white/5 border border-white/10 rounded-xl py-2 px-3 text-white text-sm focus:outline-none focus:border-[#10B981]/50"
                 />
