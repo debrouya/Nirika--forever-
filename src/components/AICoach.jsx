@@ -503,10 +503,10 @@ export default function AICoach({ isPremium = false, onShowPaywall }) {
     setView('chat')
     askCoach(prompt, coachProfile, [])
       .then(result => {
-        if (result.reply) setChatMessages(prev => [...prev, { role: 'assistant', content: result.reply }])
-        else if (result.error) setChatMessages(prev => [...prev, { role: 'assistant', content: `❌ ${result.error}` }])
+        if (result.reply) setChatMessages(prev => [...prev, { role: 'assistant', content: result.reply }].slice(-50))
+        else if (result.error) setChatMessages(prev => [...prev, { role: 'assistant', content: `❌ ${result.error}` }].slice(-50))
       })
-      .catch(() => setChatMessages(prev => [...prev, { role: 'assistant', content: '❌ Erreur de connexion' }]))
+      .catch(() => setChatMessages(prev => [...prev, { role: 'assistant', content: '❌ Erreur de connexion' }].slice(-50)))
       .finally(() => setChatLoading(false))
   }, [coachProfile])
 

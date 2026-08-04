@@ -360,7 +360,7 @@ export default function Profile({ user, onLogout }) {
         </button>
 
         <button
-          onClick={() => { localStorage.removeItem('nirika_onboarding_done'); window.location.reload() }}
+          onClick={() => { try { localStorage.removeItem('nirika_onboarding_done') } catch {}; window.location.reload() }}
           className="w-full bg-white/5 hover:bg-white/10 border border-dark-border text-white/60 font-medium rounded-xl py-3 text-sm transition-all flex items-center justify-center gap-2"
         >
           Revoir le tutoriel

@@ -36,8 +36,6 @@ import Onboarding, { useOnboarding } from './components/Onboarding'
 import { useSubscription } from './hooks/useSubscription'
 import { cleanupStaleSessions } from './hooks/useBackgroundHandler'
 
-if (typeof window !== 'undefined') window.__njk_sb = supabase
-
 const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || '').split(',').map(e => e.trim()).filter(Boolean)
 
 function checkAdmin(user) {
