@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import {
   Search,
   ChevronRight,
@@ -36,9 +36,7 @@ const QUICK_ACTIONS = [
 ]
 
 export default function Dashboard() {
-  console.log('[Dashboard] render')
   const { profile, setCurrentView, workoutHistory, sessionHistory, exerciseHistory } = useStore()
-  useEffect(() => { console.log('[Dashboard] mount'); return () => console.log('[Dashboard] unmount') }, [])
   const activeSession = useStore((s) => s.activeSession)
   const profileName = profile?.name || profile?.full_name
   const [searchQuery, setSearchQuery] = useState('')
@@ -74,7 +72,7 @@ export default function Dashboard() {
   }, [searchQuery])
 
   return (
-    <div className="space-y-6 p-4" style={{background:'yellow'}}>
+    <div className="space-y-6 p-4">
       {/* Hero Greeting */}
       <div data-onboard="hero" className="relative rounded-2xl overflow-hidden p-5 bg-gradient-to-br from-dark-card via-dark-bg to-dark-card border border-dark-border">
         <div className="absolute top-0 right-0 w-32 h-32 bg-lime/5 rounded-full blur-[60px] animate-hero-bg" />

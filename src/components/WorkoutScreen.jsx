@@ -51,7 +51,7 @@ export default function WorkoutScreen({exercise,onComplete}){
 
   const save=()=>{const d=Math.round((Date.now()-started.current)/1000);const v=sets.reduce((s,x)=>s+x.w*x.r,0);try{S.getState().addWorkout({exerciseName:exercise.name,muscleGroup:exercise.muscleGroup,duration:Math.floor(d/60),durationMinutes:Math.floor(d/60),calories:Math.round(d*0.15),totalVolume:v})}catch{}}
 
-  const end=()=>{console.log('[WorkoutScreen] end() -> onComplete, currentView=', useStore.getState().currentView);setConfirmQuit(false);clearInterval(iv.current);if(wl.current)wl.current.release().catch(()=>{});onComplete()}
+  const end=()=>{setConfirmQuit(false);clearInterval(iv.current);if(wl.current)wl.current.release().catch(()=>{});onComplete()}
 
   const share=async()=>{
     const el=document.getElementById('wo-summary');if(!el)return
