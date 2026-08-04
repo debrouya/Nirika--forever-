@@ -34,7 +34,7 @@ export default function CardioTimer({ onComplete }) {
   const calories = Math.round(elapsed * 0.15)
   const r = 130; const c = 2 * Math.PI * r; const dash = c - (Math.min(100, progress) / 100) * c
 
-  const end = () => { setConfirmQuit(false); clearInterval(intervalRef.current); if (wakeLockRef.current) wakeLockRef.current.release().catch(() => {}); setTimeout(() => { store.getState().endSession(); onComplete() }, 50) }
+  const end = () => { setConfirmQuit(false); clearInterval(intervalRef.current); if (wakeLockRef.current) wakeLockRef.current.release().catch(() => {}); setTimeout(() => onComplete(), 50) }
 
   if (done) return (
     <div className="fixed inset-0 z-40 bg-dark-bg flex flex-col items-center justify-center p-6" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 90px)' }}>

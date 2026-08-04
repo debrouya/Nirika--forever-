@@ -62,7 +62,7 @@ export default function SessionPage() {
 
   if (hasActiveSession) {
     if (activeSession.sessionType === 'cardio') {
-      return <CardioTimer onComplete={() => setCurrentView('dashboard')} />
+      return <CardioTimer onComplete={() => { endSession(); setCurrentView('dashboard') }} />
     }
     const ex = useStore.getState().getAllExercises?.()?.find(e => e.id === activeSession.exerciseId)
     const currentExercise = ex || { id: activeSession.exerciseId, name: activeSession.exerciseName, muscleGroup: 'Autre', equipment: 'none' }
