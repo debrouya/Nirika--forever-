@@ -24,6 +24,7 @@ import {
   Camera,
 } from 'lucide-react'
 import useStore from '../store/useStore'
+import GlassBackground from '../design-system/components/GlassBackground'
 import useExercises from '../hooks/useExercises'
 import { askCoach } from '../services/supabaseService'
 import useNotifications from '../store/useNotifications'
