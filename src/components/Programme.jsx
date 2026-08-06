@@ -512,6 +512,7 @@ export default function Programme({ user, isPremium }) {
 
   // LIST VIEW
   return (
+    <GlassBackground>
     <div data-onboard="programmes" className="space-y-5 p-4">
       <h1 className="text-white font-bold text-2xl">Programmes</h1>
 
@@ -631,5 +632,6 @@ export default function Programme({ user, isPremium }) {
         })}
       </div>
     </div>
+    </GlassBackground>
   )
 }

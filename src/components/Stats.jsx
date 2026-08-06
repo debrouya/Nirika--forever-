@@ -245,6 +245,7 @@ export default function Stats() {
   }, [totalSessions, totalCalories, avgDuration, streak, weekSessions, targetSessionsPerWeek, sessionTrend, calorieTrend, adherence, profile])
 
   return (
+    <GlassBackground>
     <div data-onboard="stats" className="space-y-5 p-4">
       {/* Title */}
       <h1 className="text-white font-bold text-2xl">Performances</h1>
@@ -422,5 +423,6 @@ export default function Stats() {
         </p>
       </div>
     </div>
+    </GlassBackground>
   )
 }

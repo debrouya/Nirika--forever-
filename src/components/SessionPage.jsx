@@ -78,6 +78,7 @@ export default function SessionPage() {
   const hasRecords = Object.keys(records).length > 0
 
   return (
+    <GlassBackground>
     <div className="space-y-4 p-4">
       {/* Header */}
       <div className="mb-2">
@@ -221,5 +222,6 @@ export default function SessionPage() {
         <SessionNotes sessionId={lastWorkout.id} />
       )}
     </div>
+    </GlassBackground>
   )
 }
