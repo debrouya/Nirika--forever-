@@ -35,6 +35,7 @@ import Toasts from './components/Toasts'
 import Onboarding, { useOnboarding } from './components/Onboarding'
 import { useSubscription } from './hooks/useSubscription'
 import { cleanupStaleSessions } from './hooks/useBackgroundHandler'
+import DesignSystemPlayground from './design-system/DesignSystemPlayground'
 
 const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || '').split(',').map(e => e.trim()).filter(Boolean)
 
@@ -252,6 +253,7 @@ export default function App() {
       {currentView === 'photos' && <ProgressPhotos />}
       {currentView === 'form-check' && <FormCheck />}
       {currentView === 'pricing' && <Pricing subscription={subscription} />}
+      {currentView === 'playground' && <DesignSystemPlayground />}
       {!['dashboard','profile','workout-detail','calisthenics','cardio','ai','stats','fitmatrix','calendar','programme','session','daily-workout','warmup','cooldown','templates','nutrition','photos','form-check','pricing','admin'].includes(currentView) && <Dashboard />}
       <Navigation active={currentView} onChange={(id) => useStore.getState().setCurrentView(id)} isAdmin={isAdmin} userRole={profile?.role} onAdminClick={() => useStore.getState().setCurrentView('admin')} onLogout={handleLogout} onPricingClick={() => useStore.getState().setCurrentView('pricing')} />
       </ErrorBoundary>

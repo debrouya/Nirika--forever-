@@ -1,4 +1,4 @@
-import GlassCard from '../GlassCard'
+import GlassCard from './GlassCard'
 
 export function StreakWidget({ streak = 0, bestStreak = 0, sessionsThisWeek = 0 }) {
   return (
