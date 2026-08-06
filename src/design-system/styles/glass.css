@@ -1,5 +1,5 @@
 .nirika-glass {
-  background: var(--nirika-glass);
+  background: rgba(255,255,255,.28);
   backdrop-filter: blur(var(--nirika-blur)) saturate(1.25) contrast(1.03) brightness(1.04);
   -webkit-backdrop-filter: blur(var(--nirika-blur)) saturate(1.25) contrast(1.03) brightness(1.04);
   border-radius: var(--nirika-radius);
