@@ -26,51 +26,51 @@
 }
 
 .s1 { width:720px; height:720px; top:-340px; right:-280px; --blur:140px;
-  background: radial-gradient(circle at 46% 44%, rgba(255,255,255,.32) 0%, rgba(255,255,255,.08) 25%, transparent 68%);
+  background: radial-gradient(circle at 46% 44%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.32) 0%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.08) 25%, transparent 68%);
   animation: s1 38s ease-in-out infinite; }
 
 .s2 { width:540px; height:540px; bottom:-240px; left:-160px; --blur:120px;
-  background: radial-gradient(circle at 40% 42%, rgba(255,255,255,.26) 0%, rgba(255,255,255,.06) 30%, transparent 72%);
+  background: radial-gradient(circle at 40% 42%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.26) 0%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.06) 30%, transparent 72%);
   animation: s2 42s ease-in-out infinite; }
 
 .s3 { width:300px; height:300px; top:42%; right:-80px; --blur:60px;
-  background: radial-gradient(circle at 38% 36%, rgba(255,255,255,.20) 0%, rgba(255,255,255,.05) 28%, transparent 62%);
+  background: radial-gradient(circle at 38% 36%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.20) 0%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.05) 28%, transparent 62%);
   animation: s3 32s ease-in-out infinite; }
 
 .s4 { width:220px; height:220px; top:28%; left:-40px; --blur:50px;
-  background: radial-gradient(circle at 40% 34%, rgba(255,255,255,.22) 0%, rgba(255,255,255,.05) 32%, transparent 66%);
+  background: radial-gradient(circle at 40% 34%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.22) 0%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.05) 32%, transparent 66%);
   animation: s4 34s ease-in-out infinite; }
 
 .s5 { width:420px; height:420px; top:58%; right:18%; --blur:85px;
-  background: radial-gradient(circle at 42% 40%, rgba(255,255,255,.16) 0%, rgba(255,255,255,.035) 32%, transparent 68%);
+  background: radial-gradient(circle at 42% 40%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.16) 0%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.035) 32%, transparent 68%);
   animation: s5 36s ease-in-out infinite; }
 
 .s6 { width:580px; height:580px; top:-220px; left:-240px; --blur:150px;
-  background: radial-gradient(circle at 48% 46%, rgba(255,255,255,.18) 0%, rgba(255,255,255,.035) 38%, transparent 72%);
+  background: radial-gradient(circle at 48% 46%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.18) 0%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.035) 38%, transparent 72%);
   animation: s6 44s ease-in-out infinite; }
 
 .s7 { width:380px; height:380px; bottom:-80px; right:-100px; --blur:80px;
-  background: radial-gradient(circle at 42% 38%, rgba(255,255,255,.18) 0%, rgba(255,255,255,.04) 28%, transparent 62%);
+  background: radial-gradient(circle at 42% 38%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.18) 0%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.04) 28%, transparent 62%);
   animation: s7 35s ease-in-out infinite; }
 
 .s8 { width:140px; height:140px; top:48%; left:10%; --blur:40px;
-  background: radial-gradient(circle at 38% 36%, rgba(255,255,255,.24) 0%, rgba(255,255,255,.06) 34%, transparent 68%);
+  background: radial-gradient(circle at 38% 36%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.24) 0%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.06) 34%, transparent 68%);
   animation: s8 28s ease-in-out infinite; }
 
 .s9 { width:800px; height:800px; top:-350px; right:-400px; --blur:180px;
-  background: radial-gradient(circle at 48% 46%, rgba(255,255,255,.14) 0%, rgba(255,255,255,.025) 32%, transparent 68%);
+  background: radial-gradient(circle at 48% 46%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.14) 0%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.025) 32%, transparent 68%);
   animation: s9 46s ease-in-out infinite; }
 
 .s10 { width:100px; height:100px; bottom:18%; left:8%; --blur:30px;
-  background: radial-gradient(circle at 36% 34%, rgba(255,255,255,.28) 0%, rgba(255,255,255,.08) 38%, transparent 72%);
+  background: radial-gradient(circle at 36% 34%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.28) 0%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.08) 38%, transparent 72%);
   animation: s10 24s ease-in-out infinite; }
 
 .s11 { width:260px; height:260px; top:8%; left:38%; --blur:65px;
-  background: radial-gradient(circle at 44% 40%, rgba(255,255,255,.17) 0%, rgba(255,255,255,.04) 30%, transparent 64%);
+  background: radial-gradient(circle at 44% 40%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.17) 0%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.04) 30%, transparent 64%);
   animation: s11 30s ease-in-out infinite; }
 
 .s12 { width:320px; height:320px; top:32%; right:22%; --blur:70px;
-  background: radial-gradient(circle at 42% 38%, rgba(255,255,255,.16) 0%, rgba(255,255,255,.035) 28%, transparent 60%);
+  background: radial-gradient(circle at 42% 38%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.16) 0%, rgba(var(--nirika-light-r,255),var(--nirika-light-g,255),var(--nirika-light-b,255),.035) 28%, transparent 60%);
   animation: s12 33s ease-in-out infinite; }
 
 /* === DRIFT KEYFRAMES === */
