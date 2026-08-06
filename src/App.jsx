@@ -227,6 +227,10 @@ export default function App() {
     return <AdminPanel user={user} profile={profile} onLogout={() => useStore.getState().setCurrentView('dashboard')} />
   }
 
+  if (currentView === 'playground') {
+    return <DesignSystemPlayground />
+  }
+
   if (currentView === 'custom-exercises') {
     return <CustomExercisePanel onClose={() => useStore.getState().setCurrentView('calisthenics')} />
   }
@@ -253,7 +257,6 @@ export default function App() {
       {currentView === 'photos' && <ProgressPhotos />}
       {currentView === 'form-check' && <FormCheck />}
       {currentView === 'pricing' && <Pricing subscription={subscription} />}
-      {currentView === 'playground' && <DesignSystemPlayground />}
       {!['dashboard','profile','workout-detail','calisthenics','cardio','ai','stats','fitmatrix','calendar','programme','session','daily-workout','warmup','cooldown','templates','nutrition','photos','form-check','pricing','admin'].includes(currentView) && <Dashboard />}
       <Navigation active={currentView} onChange={(id) => useStore.getState().setCurrentView(id)} isAdmin={isAdmin} userRole={profile?.role} onAdminClick={() => useStore.getState().setCurrentView('admin')} onLogout={handleLogout} onPricingClick={() => useStore.getState().setCurrentView('pricing')} />
       </ErrorBoundary>
