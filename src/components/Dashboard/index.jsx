@@ -79,23 +79,36 @@ export default function Dashboard() {
         <div className="cockpit-data">
           <div className="cockpit-stat">
             <span className="cockpit-val">{streak}</span>
-            <span className="cockpit-lbl">jours streak</span>
+            <span className="cockpit-lbl">streak</span>
           </div>
           <div className="cockpit-divider" />
           <div className="cockpit-stat">
             <span className="cockpit-val">{weeklySessions}</span>
-            <span className="cockpit-lbl">cette semaine</span>
+            <span className="cockpit-lbl">séances/7j</span>
           </div>
           <div className="cockpit-divider" />
           <div className="cockpit-stat">
             <span className="cockpit-val">{Math.round(totalTime/60)}min</span>
-            <span className="cockpit-lbl">temps total</span>
+            <span className="cockpit-lbl">temps</span>
+          </div>
+        </div>
+
+        {/* RECOVERY */}
+        <div className="cockpit-recovery">
+          <span style={{fontSize:11,color:'rgba(255,255,255,.3)',textTransform:'uppercase',letterSpacing:1}}>Récupération</span>
+          <div style={{display:'flex',gap:8,alignItems:'center',marginTop:4}}>
+            <div style={{width:8,height:8,borderRadius:'50%',background:'#7ED957'}} />
+            <span style={{fontSize:13,fontWeight:500,color:'#fff'}}>Prêt</span>
+            <span style={{fontSize:11,color:'rgba(255,255,255,.3)'}}>· Score 78/100</span>
+          </div>
+          <div className="dash-xp-bar" style={{marginTop:8}}>
+            <div className="dash-xp-fill" style={{width:'78%'}} />
           </div>
         </div>
 
         {/* Quick access */}
         <div className="cockpit-actions">
-          {['Musculation','Cardio','Calisthenics','Programmes'].map(a => (
+          {['Musculation','Cardio','Programme','Exercices'].map(a => (
             <button key={a} className="cockpit-btn" onClick={() => setCurrentView('calisthenics')}>{a}</button>
           ))}
         </div>
