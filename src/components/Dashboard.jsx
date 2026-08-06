@@ -1,38 +1,31 @@
 import { useState, useMemo } from 'react'
-import {
-  Search,
-  ChevronRight,
-  Dumbbell,
-  Apple,
-  Zap,
-  Activity,
-  TrendingUp,
-  Layout,
-  LayoutDashboard,
-  Play,
-  FileText,
-  User,
-} from 'lucide-react'
+import { Play, FileText, ChevronRight, Layout, LayoutDashboard, Search, User, Apple, Zap, Activity, Dumbbell } from 'lucide-react'
 import useStore from '../store/useStore'
 import { programs } from '../data/programs'
 import Recommendations from './Recommendations'
 import StreakMotivation from './StreakMotivation'
 import DailyWorkout from './DailyWorkout'
 
+import GlassBackground from '../design-system/components/GlassBackground'
+import GlassCard from '../design-system/components/GlassCard'
+import GlassInput, { GlassSearchBar } from '../design-system/components/GlassInput'
+import GlassAvatar, { GlassBadge } from '../design-system/components/GlassAvatar'
+import { GlassSection } from '../design-system/components/GlassLayout'
+
 const PROFILE_KEY = 'nirika_coach_profile'
 const USER_PROFILE_KEY = 'nirika-profile'
 
 const PLAN_IMAGES = [
   'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=300&fit=crop',
+  'https://images.unsplash.com/photo-1571019614242-c5c5dee2f50b?w=400&h=300&fit=crop',
   'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&h=300&fit=crop',
   'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&h=300&fit=crop',
 ]
 
 const QUICK_ACTIONS = [
-  { id: 'nutrition', label: 'Nutrition', icon: Apple, color: 'from-lime/20 to-lime/5', iconColor: 'text-lime' },
-  { id: 'cardio', label: 'Cardio', icon: Activity, color: 'from-blue-500/20 to-blue-500/5', iconColor: 'text-blue-400' },
-  { id: 'calisthenics', label: 'Exercices', icon: Zap, color: 'from-orange-500/20 to-orange-500/5', iconColor: 'text-orange-400' },
+  { id: 'nutrition', label: 'Nutrition', icon: Apple },
+  { id: 'cardio', label: 'Cardio', icon: Activity },
+  { id: 'calisthenics', label: 'Exercices', icon: Zap },
 ]
 
 export default function Dashboard() {
@@ -47,183 +40,139 @@ export default function Dashboard() {
   const firstName = useMemo(() => {
     if (profile?.full_name) return profile.full_name.split(' ')[0]
     if (profile?.name) return profile.name.split(' ')[0]
-    try {
-      const saved = localStorage.getItem(USER_PROFILE_KEY)
-      if (saved) {
-        const parsed = JSON.parse(saved)
-        if (parsed.name) return parsed.name.split(' ')[0]
-      }
-    } catch {}
-    try {
-      const saved = localStorage.getItem(PROFILE_KEY)
-      if (saved) {
-        const parsed = JSON.parse(saved)
-        if (parsed.name) return parsed.name.split(' ')[0]
-      }
-    } catch {}
+    try { const s = localStorage.getItem(USER_PROFILE_KEY); if (s) { const p = JSON.parse(s); if (p.name) return p.name.split(' ')[0] } } catch {}
+    try { const s = localStorage.getItem(PROFILE_KEY); if (s) { const p = JSON.parse(s); if (p.name) return p.name.split(' ')[0] } } catch {}
     return ''
   }, [profile])
 
   const filteredPrograms = useMemo(() => {
     if (!searchQuery) return programs.slice(0, 4)
-    return programs.filter(p =>
-      p.name.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+    return programs.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
   }, [searchQuery])
 
   return (
-    <div className="space-y-10 p-6">
-      {/* Hero Greeting */}
-      <div data-onboard="hero" className="relative rounded-2xl overflow-hidden p-5 bg-gradient-to-br from-dark-card via-dark-bg to-dark-card border border-dark-border future-glass future-glow">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-lime/5 rounded-full blur-[60px] animate-hero-bg" />
-        <div className="relative z-10">
-          <p className="text-muted text-xs font-medium uppercase tracking-wider mb-1">
-            {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
-          </p>
-          <h1 className="text-white font-bold text-2xl mb-1 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-lime/20 flex items-center justify-center border border-lime/30"><User size={20} className="text-lime" /></div>
+    <GlassBackground>
+      <div style={{padding:'52px 22px 130px',maxWidth:430,margin:'0 auto',display:'flex',flexDirection:'column',gap:24,minHeight:'100dvh'}}>
+
+        {/* Header */}
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+          <div style={{display:'flex',alignItems:'center',gap:8}}>
+            <div style={{width:9,height:9,borderRadius:3,background:'var(--nirika-text)',opacity:.28,transform:'rotate(45deg)'}} />
+            <span style={{fontSize:12,fontWeight:600,letterSpacing:1.8,color:'var(--nirika-text)',opacity:.35,textTransform:'uppercase'}}>NIRIKA</span>
+          </div>
+          <GlassAvatar size={46} />
+        </div>
+
+        {/* Hero */}
+        <div>
+          <span style={{fontSize:12,color:'var(--nirika-text-soft)'}}>{new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</span>
+          <h1 style={{fontSize:30,fontWeight:670,color:'var(--nirika-text)',letterSpacing:'-.8px',lineHeight:1.1,marginTop:2}}>
             Bonjour{firstName ? ` ${firstName}` : ''}
           </h1>
-          <p className="text-lime text-sm font-semibold">Prêt pour ta séance ?</p>
+          <p style={{fontSize:15,color:'var(--nirika-text-soft)',marginTop:2}}>Prêt pour ta séance ?</p>
         </div>
-      </div>
 
-      {/* Mode Toggle */}
-      <div className="flex justify-end -mt-2 mb-2 gap-2">
-        <button onClick={() => setCurrentView('playground')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-dark-card border border-dark-border text-lime hover:text-white transition-colors text-[10px]">DS</button>
-        <button onClick={() => { const next = !simpleMode; setSimpleMode(next); try { localStorage.setItem('nirika_dashboard_mode', next ? 'simple' : 'full') } catch {} }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-dark-card border border-dark-border text-muted hover:text-white transition-colors text-[10px] future-glass">
-          {simpleMode ? <LayoutDashboard size={12} /> : <Layout size={12} />}
-          {simpleMode ? 'Complet' : 'Simplifié'}
-        </button>
-      </div>
-
-      {/* Quick Actions */}
-      <div data-onboard="quick-actions" className="grid grid-cols-3 gap-2">
-        {QUICK_ACTIONS.map((action, i) => {
-          const Icon = action.icon
-          return (
-            <button
-              key={action.id}
-              onClick={() => setCurrentView(action.id)}
-              className={`animate-fade-in bg-gradient-to-br ${action.color} rounded-2xl p-3 flex flex-col items-center gap-2 border border-dark-border hover:scale-105 active:scale-95 transition-all`}
-              style={{ animationDelay: `${i * 80}ms`, opacity: 0, animationFillMode: 'forwards' }}
-            >
-              <Icon size={20} className={action.iconColor} />
-              <span className="text-white text-[10px] font-medium">{action.label}</span>
-            </button>
-          )
-        })}
-      </div>
-
-      {/* CTA: Reprendre ou Démarrer */}
-      <div className="animate-fade-in" style={{ opacity: 0, animationFillMode: 'forwards' }}>
-        {activeSession ? (
-          <button onClick={() => setCurrentView('session')} className="w-full future-cta p-4 flex items-center gap-3 hover:brightness-110 transition-all active:scale-[0.98]">
-            <div className="w-12 h-12 rounded-xl bg-dark-bg/30 flex items-center justify-center"><Play size={24} className="text-dark-bg" fill="currentColor" /></div>
-            <div className="text-left flex-1"><p className="text-dark-bg font-bold text-sm">Reprendre ma seance</p><p className="text-dark-bg/60 text-xs">{activeSession.exerciseName}</p></div>
+        {/* Mode Toggle + DS */}
+        <div style={{display:'flex',justifyContent:'flex-end',gap:8,marginTop:-12}}>
+          <button onClick={() => setCurrentView('playground')} style={{fontSize:10,fontWeight:500,padding:'5px 12px',borderRadius:12,border:'none',background:'rgba(255,255,255,.15)',backdropFilter:'blur(15px)',color:'var(--nirika-accent)',cursor:'pointer',fontFamily:'inherit'}}>DS</button>
+          <button onClick={() => { const n = !simpleMode; setSimpleMode(n); try { localStorage.setItem('nirika_dashboard_mode',n?'simple':'full') } catch {} }} style={{fontSize:10,fontWeight:500,padding:'5px 12px',borderRadius:12,border:'none',background:'rgba(255,255,255,.15)',backdropFilter:'blur(15px)',color:'var(--nirika-text-soft)',cursor:'pointer',fontFamily:'inherit'}}>
+            {simpleMode ? 'Complet' : 'Simple'}
           </button>
-        ) : (
-          <button onClick={() => setCurrentView('calisthenics')} className="w-full future-cta p-4 flex items-center gap-3 hover:brightness-110 transition-all active:scale-[0.98]">
-            <div className="w-12 h-12 rounded-xl bg-dark-bg/30 flex items-center justify-center"><Play size={24} className="text-dark-bg" fill="currentColor" /></div>
-            <div className="text-left flex-1"><p className="text-dark-bg font-bold text-sm">Demarrer une seance</p><p className="text-dark-bg/60 text-xs">Choisis ton exercice</p></div>
-          </button>
+        </div>
+
+        {/* Quick Actions */}
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:12}}>
+          {QUICK_ACTIONS.map(action => (
+            <GlassCard key={action.id} onClick={() => setCurrentView(action.id)}>
+              <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:8,padding:'14px 0'}}>
+                <action.icon size={20} style={{color:'var(--nirika-text)',opacity:.4}} />
+                <span style={{fontSize:12,fontWeight:600,color:'var(--nirika-text)'}}>{action.label}</span>
+              </div>
+            </GlassCard>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <GlassCard variant="strong" onClick={() => setCurrentView(activeSession ? 'session' : 'calisthenics')}>
+          <div style={{display:'flex',alignItems:'center',gap:16}}>
+            <div style={{width:54,height:54,borderRadius:18,background:'rgba(0,0,0,.04)',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 .5px 0 rgba(255,255,255,.4) inset'}}>
+              <Play size={26} style={{color:'var(--nirika-text)',fill:'var(--nirika-text)',opacity:.65}} />
+            </div>
+            <div style={{flex:1}}>
+              <div style={{fontSize:17,fontWeight:600,color:'var(--nirika-text)'}}>{activeSession ? 'Reprendre ma séance' : 'Démarrer une séance'}</div>
+              <div style={{fontSize:13,color:'var(--nirika-text-soft)'}}>{activeSession ? activeSession.exerciseName : 'Choisis ton exercice'}</div>
+            </div>
+          </div>
+        </GlassCard>
+
+        {/* Profile prompt */}
+        {!profileName && (
+          <GlassCard onClick={() => setCurrentView('profile')}>
+            <div style={{display:'flex',alignItems:'center',gap:14,padding:4}}>
+              <span style={{fontSize:22}}>👋</span>
+              <div style={{flex:1}}>
+                <div style={{fontSize:14,fontWeight:500,color:'var(--nirika-text)'}}>Configure ton profil</div>
+                <div style={{fontSize:11,color:'var(--nirika-text-soft)'}}>Pour des programmes personnalisés</div>
+              </div>
+            </div>
+          </GlassCard>
         )}
-      </div>
 
-      {/* Profile prompt */}
-      {!profileName && (
-        <button onClick={() => setCurrentView('profile')} className="w-full bg-yellow-400/10 border border-yellow-400/20 rounded-2xl p-3 flex items-center gap-3 hover:bg-yellow-400/20 transition-all future-glass">
-          <span className="text-lg">👋</span>
-          <div className="text-left flex-1"><p className="text-yellow-400 text-sm font-medium">Configure ton profil</p><p className="text-yellow-400/60 text-[10px]">Pour des programmes et recommandations personnalises</p></div>
-        </button>
-      )}
+        {/* Templates */}
+        <GlassCard onClick={() => setCurrentView('templates')}>
+          <div style={{display:'flex',alignItems:'center',gap:14,padding:4}}>
+            <div style={{width:42,height:42,borderRadius:14,background:'rgba(0,0,0,.03)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+              <FileText size={20} style={{color:'var(--nirika-accent)',opacity:.6}} />
+            </div>
+            <div style={{flex:1}}>
+              <div style={{fontSize:14,fontWeight:500,color:'var(--nirika-text)'}}>Templates</div>
+              <div style={{fontSize:11,color:'var(--nirika-text-soft)'}}>Lance une séance pré-enregistrée</div>
+            </div>
+            <ChevronRight size={18} style={{color:'var(--nirika-text-soft)',opacity:.4}} />
+          </div>
+        </GlassCard>
 
-      {/* Templates quick */}
-      <button onClick={() => setCurrentView('templates')} className="w-full bg-dark-card rounded-xl p-3 flex items-center gap-3 border border-dark-border hover:border-lime/30 transition-all mb-4 future-glass">
-        <div className="w-10 h-10 rounded-lg bg-lime/10 flex items-center justify-center"><FileText size={18} className="text-lime" /></div>
-        <div className="text-left flex-1"><p className="text-white text-sm font-medium">Templates</p><p className="text-muted text-[10px]">Lance une seance pre-enregistree</p></div>
-        <ChevronRight size={16} className="text-muted" />
-      </button>
+        {/* Streak + Daily Workout + Recos */}
+        <StreakMotivation />
+        <div data-onboard="daily-workout"><DailyWorkout /></div>
+        <Recommendations />
 
-      {/* Streak */}
-      <StreakMotivation />
+        {/* Search */}
+        <GlassSearchBar value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Rechercher un programme..." />
 
-      {/* Daily Workout */}
-      <div data-onboard="daily-workout">
-        <DailyWorkout />
-      </div>
+        {/* Ton Programme */}
+        {!simpleMode && (
+          <GlassSection title="Ton Programme" action="Voir tout →" onAction={() => setCurrentView('programme')}>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+              {filteredPrograms.slice(0,2).map((prog,i) => (
+                <div key={prog.id} onClick={() => setCurrentView('programme')} style={{position:'relative',height:160,borderRadius:24,overflow:'hidden',cursor:'pointer'}}>
+                  <img src={prog.image||PLAN_IMAGES[i%PLAN_IMAGES.length]} alt={prog.name} style={{width:'100%',height:'100%',objectFit:'cover'}} />
+                  <div style={{position:'absolute',inset:0,background:'linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.6))'}} />
+                  <div style={{position:'absolute',top:12,right:12}}><GlassBadge>{prog.daysPerWeek}×/sem</GlassBadge></div>
+                  <div style={{position:'absolute',bottom:14,left:14,right:14}}>
+                    <div style={{fontSize:14,fontWeight:600,color:'#fff'}}>{prog.name}</div>
+                    <div style={{fontSize:11,color:'rgba(255,255,255,.5)'}}>{prog.durationWeeks} semaines</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </GlassSection>
+        )}
 
-      {/* Smart Recommendations */}
-      <Recommendations />
-
-      {/* Search Bar */}
-      <div className="animate-fade-in delay-200" style={{ opacity: 0, animationFillMode: 'forwards' }}>
-        <div className="relative">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-          <input
-            type="text"
-            placeholder="Rechercher un programme..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-dark-card text-white pl-10 pr-4 py-3 rounded-xl text-sm outline-none border border-dark-border placeholder:text-muted focus:border-lime/30 transition-colors future-glass"
-          />
+        {/* Explorer tags */}
+        <div>
+          <div style={{fontSize:15,fontWeight:600,color:'var(--nirika-text)',marginBottom:14}}>Explorer</div>
+          <div style={{display:'flex',gap:8,overflowX:'auto'}}>
+            {['Musculation','Calisthenics','Cardio','Débutant','Force','Endurance'].map(tag => (
+              <button key={tag} onClick={() => { setSearchQuery(tag); setCurrentView('programme') }}
+                style={{fontSize:12,fontWeight:500,padding:'8px 18px',borderRadius:16,border:'none',background:'rgba(255,255,255,.15)',backdropFilter:'blur(20px)',color:'var(--nirika-text)',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
+                {tag}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Your Plan */}
-      <div className="animate-fade-in delay-300" style={{ opacity: 0, animationFillMode: 'forwards' }}>
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-white font-semibold text-lg">Ton Programme</h2>
-          <button
-            onClick={() => setCurrentView('programme')}
-            className="text-lime text-sm font-medium flex items-center gap-1"
-          >
-            Voir tout <ChevronRight size={14} />
-          </button>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          {filteredPrograms.slice(0, 2).map((program, i) => (
-            <button
-              key={program.id}
-              onClick={() => setCurrentView('programme')}
-              className="relative rounded-2xl overflow-hidden aspect-[4/3] text-left group"
-            >
-              <img
-                src={program.image || PLAN_IMAGES[i % PLAN_IMAGES.length]}
-                alt={program.name}
-                className="w-full h-full object-cover group-active:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute top-3 right-3 bg-lime/90 px-2 py-0.5 rounded-full">
-                <span className="text-dark-bg text-[10px] font-bold">{program.daysPerWeek}x/sem</span>
-              </div>
-              <div className="absolute bottom-3 left-3 right-3">
-                <span className="text-white font-bold text-sm leading-tight block">{program.name}</span>
-                <span className="text-white/50 text-[10px]">{program.durationWeeks} semaines</span>
-              </div>
-            </button>
-          ))}
-        </div>
       </div>
-
-      {/* Quick Filters */}
-      <div className="animate-fade-in delay-400" style={{ opacity: 0, animationFillMode: 'forwards' }}>
-        <h2 className="text-white font-semibold text-lg mb-3">Explorer</h2>
-        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
-          {['Musculation', 'Calisthenics', 'Cardio', 'Débutant', 'Force', 'Endurance'].map((tag) => (
-            <button
-              key={tag}
-              onClick={() => {
-                setSearchQuery(tag)
-                setCurrentView('programme')
-              }}
-              className="px-4 py-2 rounded-full bg-dark-card border border-dark-border text-white text-sm font-medium whitespace-nowrap hover:border-lime/50 hover:bg-lime/5 transition-all active:scale-95 future-glass"
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
+    </GlassBackground>
   )
 }
