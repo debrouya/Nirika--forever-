@@ -60,6 +60,7 @@ export default function DesignSystemPlayground() {
   return (
     <GlassBackground>
       <div style={{padding:'60px 22px 160px',maxWidth:430,margin:'0 auto',display:'flex',flexDirection:'column',gap:14}}>
+        <div style={{background:'red',color:'white',padding:12,fontSize:16,fontWeight:'bold',borderRadius:8}}>PLAYGROUND OK</div>
 
         {/* Header */}
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8}}>
