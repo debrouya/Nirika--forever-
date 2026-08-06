@@ -44,17 +44,7 @@ export default function DesignSystemPlayground() {
 
   const applyTheme = (t) => {
     setTheme(t.id)
-    const html = document.documentElement
-    html.className = t.cls
-    // Force refresh CSS variables
-    const v = ['--nirika-light-r','--nirika-light-g','--nirika-light-b','--nirika-light-intensity']
-    v.forEach(k => html.style.removeProperty(k))
-    if (t.cls === 'nirika-theme-arctic') { html.style.setProperty('--nirika-light-r','210'); html.style.setProperty('--nirika-light-g','230'); html.style.setProperty('--nirika-light-b','255') }
-    else if (t.cls === 'nirika-theme-emerald') { html.style.setProperty('--nirika-light-r','180'); html.style.setProperty('--nirika-light-g','225'); html.style.setProperty('--nirika-light-b','200') }
-    else if (t.cls === 'nirika-theme-aurora-pink') { html.style.setProperty('--nirika-light-r','255'); html.style.setProperty('--nirika-light-g','210'); html.style.setProperty('--nirika-light-b','225') }
-    else if (t.cls === 'nirika-theme-sunset') { html.style.setProperty('--nirika-light-r','255'); html.style.setProperty('--nirika-light-g','200'); html.style.setProperty('--nirika-light-b','165') }
-    else if (t.cls === 'nirika-theme-amethyst') { html.style.setProperty('--nirika-light-r','215'); html.style.setProperty('--nirika-light-g','190'); html.style.setProperty('--nirika-light-b','245') }
-    else { html.style.setProperty('--nirika-light-r','255'); html.style.setProperty('--nirika-light-g','255'); html.style.setProperty('--nirika-light-b','255') }
+    document.documentElement.className = t.cls
   }
 
   return (
