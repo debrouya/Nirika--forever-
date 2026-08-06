@@ -143,6 +143,7 @@ export default function Profile({ user, onLogout }) {
       : null
 
   return (
+    <GlassBackground>
     <div className="space-y-4 p-4">
       {/* Avatar + Header */}
       <GlassCard className="p-4 flex items-center gap-4">
@@ -377,5 +378,6 @@ export default function Profile({ user, onLogout }) {
         )}
       </div>
     </div>
+    </GlassBackground>
   )
 }
