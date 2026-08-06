@@ -1,25 +1,48 @@
 .dash {
-  padding: 48px 16px 0;
+  padding: 56px 16px 0;
   max-width: 430px; margin: 0 auto;
-  display: flex; flex-direction: column; gap: 12px;
-  min-height: 100dvh;
+  display: flex; flex-direction: column;
+  gap: 24px; min-height: 100dvh;
 }
 
-.dash-hero { padding: 0; margin-bottom: 4px; }
-.dash-hero-meta { display: flex; gap: 16px; align-items: center; margin-top: 8px; }
-.dash-hero-stat { font-size: 13px; color: rgba(255,255,255,.5); display: flex; align-items: center; gap: 6px; }
+.dash-hero { padding: 0; display: flex; flex-direction: column; gap: 0; }
+.dash-hero-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+.dash-hero-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.dash-pill {
+  font-size: 11px; font-weight: 500; color: rgba(255,255,255,.6);
+  background: rgba(255,255,255,.06); padding: 4px 10px;
+  border-radius: 8px; backdrop-filter: blur(10px);
+}
+
+.dash-avatar-ring {
+  position: relative; width: 56px; height: 56px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+.dash-xp-bar {
+  height: 2px; border-radius: 1px; background: rgba(255,255,255,.06);
+  overflow: hidden; margin-top: 10px;
+}
+.dash-xp-fill {
+  height: 100%; width: 65%; border-radius: 1px;
+  background: linear-gradient(90deg, var(--nirika-accent), rgba(126,217,87,.3));
+  animation: dash-xp-glow 3s ease-in-out infinite;
+}
+@keyframes dash-xp-glow {
+  0%,100% { opacity: .4; }
+  50% { opacity: .7; }
+}
 
 .dash-section-head {
   display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 8px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,.7);
+  margin-bottom: 10px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,.6);
 }
-.dash-link { font-size: 11px; color: rgba(255,255,255,.35); cursor: pointer; transition: color .3s; }
-.dash-link:hover { color: rgba(255,255,255,.6); }
+.dash-link { font-size: 11px; color: rgba(255,255,255,.3); cursor: pointer; }
 
-.dash-quick { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-.dash-quick-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 0; justify-content: center; }
-.dash-quick-label { font-size: 10px; font-weight: 500; color: rgba(255,255,255,.6); }
+.dash-stats { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
 
-.dash-programs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.dash-explore { display: flex; flex-direction: column; gap: 8px; }
 
-.dash-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.dash-quick {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+}
