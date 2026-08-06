@@ -79,11 +79,11 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
     <>
       {/* Menu Overlay */}
       {menuOpen && (
-        <div className="fixed inset-0" onClick={() => setMenuOpen(false)} style={{zIndex:100}}>
-          <div className="absolute inset-0" style={{background:'rgba(0,0,0,.5)',backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)'}} />
+        <div className="fixed inset-0" onClick={() => setMenuOpen(false)} style={{zIndex:100,willChange:'transform'}}>
+          <div className="absolute inset-0" style={{background:'rgba(0,0,0,.5)',backdropFilter:'blur(4px)',WebkitBackdropFilter:'blur(4px)',transform:'translateZ(0)'}} />
           <div
             className="absolute bottom-20 left-3 right-3 rounded-2xl p-4 space-y-1 animate-fade-in-up max-h-[50vh] overflow-y-auto"
-            style={{background:'rgba(20,20,30,.85)',backdropFilter:'blur(50px)',WebkitBackdropFilter:'blur(50px)',border:'1px solid rgba(255,255,255,.06)'}}
+            style={{background:'rgba(20,20,30,.92)',backdropFilter:'blur(50px)',WebkitBackdropFilter:'blur(50px)',border:'1px solid rgba(255,255,255,.08)',transform:'translateZ(0)'}}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 px-1">
