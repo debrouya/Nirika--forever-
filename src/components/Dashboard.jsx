@@ -58,18 +58,18 @@ export default function Dashboard() {
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
           <div style={{display:'flex',alignItems:'center',gap:8}}>
             <div style={{width:9,height:9,borderRadius:3,background:'var(--nirika-text)',opacity:.28,transform:'rotate(45deg)'}} />
-            <span style={{fontSize:12,fontWeight:600,letterSpacing:1.8,color:'var(--nirika-text)',opacity:.35,textTransform:'uppercase'}}>NIRIKA</span>
+            <span style={{fontSize:12,fontWeight:600,letterSpacing:1.8,color:'rgba(255,255,255,.35)',textTransform:'uppercase'}}>NIRIKA</span>
           </div>
           <GlassAvatar size={46} />
         </div>
 
         {/* Hero */}
         <div>
-          <span style={{fontSize:12,color:'var(--nirika-text-soft)'}}>{new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</span>
-          <h1 style={{fontSize:30,fontWeight:670,color:'var(--nirika-text)',letterSpacing:'-.8px',lineHeight:1.1,marginTop:2}}>
+          <span style={{fontSize:12,color:'rgba(255,255,255,.4)'}}>{new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</span>
+          <h1 style={{fontSize:30,fontWeight:670,color:'rgba(255,255,255,.9)',letterSpacing:'-.8px',lineHeight:1.1,marginTop:2}}>
             Bonjour{firstName ? ` ${firstName}` : ''}
           </h1>
-          <p style={{fontSize:15,color:'var(--nirika-text-soft)',marginTop:2}}>Prêt pour ta séance ?</p>
+          <p style={{fontSize:15,color:'rgba(255,255,255,.5)',marginTop:2}}>Prêt pour ta séance ?</p>
         </div>
 
         {/* Mode Toggle + DS */}
@@ -85,8 +85,8 @@ export default function Dashboard() {
           {QUICK_ACTIONS.map(action => (
             <GlassCard key={action.id} onClick={() => setCurrentView(action.id)}>
               <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:8,padding:'14px 0'}}>
-                <action.icon size={20} style={{color:'var(--nirika-text)',opacity:.4}} />
-                <span style={{fontSize:12,fontWeight:600,color:'var(--nirika-text)'}}>{action.label}</span>
+                <action.icon size={20} style={{color:'rgba(255,255,255,.5)'}} />
+                <span style={{fontSize:12,fontWeight:600,color:'rgba(255,255,255,.85)'}}>{action.label}</span>
               </div>
             </GlassCard>
           ))}
