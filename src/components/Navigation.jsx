@@ -86,17 +86,17 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
             style={{background:'rgba(20,20,30,.85)',backdropFilter:'blur(50px)',WebkitBackdropFilter:'blur(50px)',border:'1px solid rgba(255,255,255,.06)'}}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-3 px-1">
-              <span className="text-muted text-xs uppercase tracking-wide font-medium">Menu</span>
-              <button onClick={() => setMenuOpen(false)} className="p-1 rounded-lg hover:bg-white/5 transition-colors">
-                <X size={16} className="text-muted" />
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12,padding:'0 4px'}}>
+              <span style={{fontSize:11,color:'rgba(255,255,255,.3)',textTransform:'uppercase',letterSpacing:1,fontWeight:500}}>Menu</span>
+              <button onClick={()=>setMenuOpen(false)} style={{padding:4,borderRadius:8,background:'none',border:'none',cursor:'pointer'}}>
+                <X size={16} style={{color:'rgba(255,255,255,.4)'}} />
               </button>
             </div>
 
             {CATEGORIES.map((cat, ci) => (
               <div key={ci}>
                 {cat.label && (
-                  <p className="text-muted text-[10px] uppercase tracking-wider font-medium px-3 py-1.5">{cat.label}</p>
+                  <p style={{fontSize:10,color:'rgba(255,255,255,.2)',textTransform:'uppercase',letterSpacing:1,fontWeight:500,padding:'4px 12px'}}>{cat.label}</p>
                 )}
                 {cat.items.map((item) => {
                   const Icon = item.icon
@@ -106,63 +106,57 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
                       key={item.id}
                       {...onboardAttr}
                       onClick={() => handleMenuAction(item.id)}
-                      className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-all active:scale-[0.98] text-left"
+                      style={{width:'100%',display:'flex',alignItems:'center',gap:12,padding:'12px',borderRadius:14,border:'none',background:'transparent',cursor:'pointer',textAlign:'left',fontFamily:'inherit',color:'#fff'}}
                     >
-                      <div className="w-9 h-9 rounded-xl bg-dark-bg flex items-center justify-center border border-dark-border">
-                        <Icon size={18} className="text-muted" />
+                      <div style={{width:36,height:36,borderRadius:14,background:'rgba(255,255,255,.06)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                        <Icon size={18} style={{color:'rgba(255,255,255,.5)'}} />
                       </div>
-                      <span className="text-white text-sm font-medium">{item.label}</span>
+                      <span style={{fontSize:13,fontWeight:500,color:'rgba(255,255,255,.8)'}}>{item.label}</span>
                     </button>
                   )
                 })}
-                {ci < CATEGORIES.length - 1 && <div className="border-t border-dark-border my-2" />}
+                {ci < CATEGORIES.length - 1 && <div style={{height:1,background:'rgba(255,255,255,.04)',margin:'8px 0'}} />}
               </div>
             ))}
 
             <button
               data-onboard="premium"
               onClick={() => { setMenuOpen(false); onPricingClick?.() }}
-              className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-lime/5 transition-all active:scale-[0.98] text-left"
+              style={{width:'100%',display:'flex',alignItems:'center',gap:12,padding:'12px',borderRadius:14,border:'none',background:'transparent',cursor:'pointer',textAlign:'left',fontFamily:'inherit',color:'#fff'}}
             >
-              <div className="w-9 h-9 rounded-xl bg-lime/10 flex items-center justify-center border border-lime/20">
-                <Crown size={18} className="text-lime" />
+              <div style={{width:36,height:36,borderRadius:14,background:'rgba(126,217,87,.08)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                <Crown size={18} style={{color:'#7ED957'}} />
               </div>
-              <span className="text-lime text-sm font-medium">Premium</span>
+              <span style={{fontSize:13,fontWeight:500,color:'#7ED957'}}>Premium</span>
             </button>
 
             {isAdmin && (
               <button
                 onClick={() => { setMenuOpen(false); onAdminClick?.() }}
-                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-all active:scale-[0.98] text-left"
+                style={{width:'100%',display:'flex',alignItems:'center',gap:12,padding:'12px',borderRadius:14,border:'none',background:'transparent',cursor:'pointer',textAlign:'left',fontFamily:'inherit',color:'#fff'}}
               >
-                <div className="w-9 h-9 rounded-xl bg-dark-bg flex items-center justify-center border border-dark-border">
-                  <Shield size={18} className="text-muted" />
+                <div style={{width:36,height:36,borderRadius:14,background:'rgba(255,255,255,.06)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                  <Shield size={18} style={{color:'rgba(255,255,255,.5)'}} />
                 </div>
-                <span className="text-white text-sm font-medium">Admin</span>
+                <span style={{fontSize:13,fontWeight:500,color:'rgba(255,255,255,.8)'}}>Admin</span>
               </button>
             )}
 
-            <a
-              href="/privacy.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-all active:scale-[0.98] text-left"
-            >
-              <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center border border-dark-border">
-                <FileText size={18} className="text-muted" />
+            <a href="/privacy.html" target="_blank" rel="noopener noreferrer"
+              style={{width:'100%',display:'flex',alignItems:'center',gap:12,padding:'12px',borderRadius:14,textDecoration:'none'}}>
+              <div style={{width:36,height:36,borderRadius:14,background:'rgba(255,255,255,.04)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                <FileText size={18} style={{color:'rgba(255,255,255,.3)'}} />
               </div>
-              <span className="text-muted text-sm font-medium">Confidentialité</span>
+              <span style={{fontSize:13,fontWeight:500,color:'rgba(255,255,255,.4)'}}>Confidentialité</span>
             </a>
 
             {onLogout && (
-              <button
-                onClick={() => { setMenuOpen(false); onLogout() }}
-                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-red-500/5 transition-all active:scale-[0.98] text-left"
-              >
-                <div className="w-9 h-9 rounded-xl bg-red-500/10 flex items-center justify-center border border-red-500/20">
-                  <LogOut size={18} className="text-red-400" />
+              <button onClick={()=>{setMenuOpen(false);onLogout()}}
+                style={{width:'100%',display:'flex',alignItems:'center',gap:12,padding:'12px',borderRadius:14,border:'none',background:'transparent',cursor:'pointer',textAlign:'left',fontFamily:'inherit'}}>
+                <div style={{width:36,height:36,borderRadius:14,background:'rgba(239,68,68,.1)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                  <LogOut size={18} style={{color:'#f87171'}} />
                 </div>
-                <span className="text-red-400 text-sm font-medium">Déconnexion</span>
+                <span style={{fontSize:13,fontWeight:500,color:'#f87171'}}>Déconnexion</span>
               </button>
             )}
           </div>
