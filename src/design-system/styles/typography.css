@@ -1,0 +1,18 @@
+:root {
+  --nirika-font: 'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;
+  --nirika-text-xs: 10px;
+  --nirika-text-sm: 12px;
+  --nirika-text-base: 14px;
+  --nirika-text-md: 17px;
+  --nirika-text-lg: 22px;
+  --nirika-text-xl: 30px;
+  --nirika-text-2xl: 34px;
+  --nirika-font-normal: 400;
+  --nirika-font-medium: 500;
+  --nirika-font-semibold: 600;
+  --nirika-font-bold: 670;
+}
+html, body, #root {
+  font-family: var(--nirika-font);
+  -webkit-font-smoothing: antialiased;
+}

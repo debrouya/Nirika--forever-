@@ -1,0 +1,23 @@
+:root {
+  --nirika-light-r: 255; --nirika-light-g: 255; --nirika-light-b: 255;
+  --nirika-light-intensity: 1;
+}
+
+.nirika-theme-pearl {
+  --nirika-light-r: 255; --nirika-light-g: 255; --nirika-light-b: 255;
+}
+.nirika-theme-arctic {
+  --nirika-light-r: 210; --nirika-light-g: 230; --nirika-light-b: 255;
+}
+.nirika-theme-emerald {
+  --nirika-light-r: 180; --nirika-light-g: 225; --nirika-light-b: 200;
+}
+.nirika-theme-aurora-pink {
+  --nirika-light-r: 255; --nirika-light-g: 210; --nirika-light-b: 225;
+}
+.nirika-theme-sunset {
+  --nirika-light-r: 255; --nirika-light-g: 200; --nirika-light-b: 165;
+}
+.nirika-theme-amethyst {
+  --nirika-light-r: 215; --nirika-light-g: 190; --nirika-light-b: 245;
+}

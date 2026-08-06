@@ -1,0 +1,21 @@
+:root {
+  --nirika-bg: #EDEFF4;
+  --nirika-bg-warm: #F2F4F7;
+  --nirika-glass: rgba(255,255,255,.14);
+  --nirika-glass-strong: rgba(255,255,255,.26);
+  --nirika-glass-nav: rgba(255,255,255,.30);
+  --nirika-glass-border: rgba(255,255,255,.45);
+  --nirika-text: #1B1D22;
+  --nirika-text-soft: #6E737C;
+  --nirika-text-faint: #9BA0A8;
+  --nirika-accent: #7ED957;
+  --nirika-accent-dim: rgba(126,217,87,.3);
+  --nirika-shadow: 0 20px 56px rgba(10,10,14,.06);
+  --nirika-shadow-sm: 0 12px 36px rgba(10,10,14,.04);
+  --nirika-radius: 28px;
+  --nirika-radius-sm: 20px;
+  --nirika-radius-xs: 14px;
+  --nirika-blur: 48px;
+  --nirika-blur-nav: 60px;
+  --nirika-font: 'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;
+}

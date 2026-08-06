@@ -1,0 +1,31 @@
+@keyframes nirika-appear {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes nirika-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes nirika-slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes nirika-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(var(--nirika-accent-r,126), var(--nirika-accent-g,217), var(--nirika-accent-b,87), 0); }
+  50% { box-shadow: 0 0 24px rgba(var(--nirika-accent-r,126), var(--nirika-accent-g,217), var(--nirika-accent-b,87), .15); }
+}
+@keyframes nirika-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes nirika-skeleton {
+  0% { opacity: .3; }
+  50% { opacity: .5; }
+  100% { opacity: .3; }
+}
+.animate-nirika-appear  { animation: nirika-appear .6s ease both; }
+.animate-nirika-fade    { animation: nirika-fade-in .4s ease both; }
+.animate-nirika-slide   { animation: nirika-slide-up .5s cubic-bezier(.22,1,.36,1) both; }
+.animate-nirika-pulse   { animation: nirika-pulse 4s ease-in-out infinite; }
+.animate-nirika-float   { animation: nirika-float 3.5s ease-in-out infinite; }
+.animate-nirika-skel    { animation: nirika-skeleton 1.8s ease-in-out infinite; }

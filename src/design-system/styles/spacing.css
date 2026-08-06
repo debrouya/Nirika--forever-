@@ -1,0 +1,14 @@
+:root {
+  --nirika-space-xs: 4px;
+  --nirika-space-sm: 8px;
+  --nirika-space-md: 14px;
+  --nirika-space-lg: 22px;
+  --nirika-space-xl: 36px;
+  --nirika-space-2xl: 52px;
+  --nirika-page-px: 22px;
+  --nirika-page-pt: 52px;
+  --nirika-page-pb: 130px;
+  --nirika-nav-height: 72px;
+  --nirika-fab-size: 56px;
+  --nirika-fab-bottom: 110px;
+}

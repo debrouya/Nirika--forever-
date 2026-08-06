@@ -1,0 +1,19 @@
+/* NIRIKA Design System */
+@import './colors.css';
+@import './spacing.css';
+@import './radius.css';
+@import './typography.css';
+@import './glass.css';
+@import './animations.css';
+@import './theme.css';
+
+@keyframes nirika-spin {
+  to { transform: rotate(360deg); }
+}
+
+.nirika-glass-bg {
+  background:
+    radial-gradient(ellipse 45% 30% at 80% 3%, rgba(252,252,255,.92), rgba(246,248,252,.3) 25%, transparent 55%),
+    linear-gradient(168deg, #EDEFF4 0%, #F2F4F7 28%, #EFF1F5 55%, #F3F4F8 85%);
+  min-height: 100dvh;
+}
