@@ -57,7 +57,7 @@ export default function Dashboard() {
         {/* Header */}
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
           <div style={{display:'flex',alignItems:'center',gap:8}}>
-            <div style={{width:9,height:9,borderRadius:3,background:'var(--nirika-text)',opacity:.28,transform:'rotate(45deg)'}} />
+            <div style={{width:9,height:9,borderRadius:3,background:'rgba(255,255,255,.85)',opacity:.28,transform:'rotate(45deg)'}} />
             <span style={{fontSize:12,fontWeight:600,letterSpacing:1.8,color:'rgba(255,255,255,.35)',textTransform:'uppercase'}}>NIRIKA</span>
           </div>
           <GlassAvatar size={46} />
@@ -75,7 +75,7 @@ export default function Dashboard() {
         {/* Mode Toggle + DS */}
         <div style={{display:'flex',justifyContent:'flex-end',gap:8,marginTop:-12}}>
           <button onClick={() => setCurrentView('playground')} style={{fontSize:10,fontWeight:500,padding:'5px 12px',borderRadius:12,border:'none',background:'rgba(255,255,255,.15)',backdropFilter:'blur(15px)',color:'var(--nirika-accent)',cursor:'pointer',fontFamily:'inherit'}}>DS</button>
-          <button onClick={() => { const n = !simpleMode; setSimpleMode(n); try { localStorage.setItem('nirika_dashboard_mode',n?'simple':'full') } catch {} }} style={{fontSize:10,fontWeight:500,padding:'5px 12px',borderRadius:12,border:'none',background:'rgba(255,255,255,.15)',backdropFilter:'blur(15px)',color:'var(--nirika-text-soft)',cursor:'pointer',fontFamily:'inherit'}}>
+          <button onClick={() => { const n = !simpleMode; setSimpleMode(n); try { localStorage.setItem('nirika_dashboard_mode',n?'simple':'full') } catch {} }} style={{fontSize:10,fontWeight:500,padding:'5px 12px',borderRadius:12,border:'none',background:'rgba(255,255,255,.15)',backdropFilter:'blur(15px)',color:'rgba(255,255,255,.5)',cursor:'pointer',fontFamily:'inherit'}}>
             {simpleMode ? 'Complet' : 'Simple'}
           </button>
         </div>
@@ -96,11 +96,11 @@ export default function Dashboard() {
         <GlassCard variant="strong" onClick={() => setCurrentView(activeSession ? 'session' : 'calisthenics')}>
           <div style={{display:'flex',alignItems:'center',gap:16}}>
             <div style={{width:54,height:54,borderRadius:18,background:'rgba(0,0,0,.04)',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 .5px 0 rgba(255,255,255,.4) inset'}}>
-              <Play size={26} style={{color:'var(--nirika-text)',fill:'var(--nirika-text)',opacity:.65}} />
+              <Play size={26} style={{color:'rgba(255,255,255,.85)',fill:'rgba(255,255,255,.85)',opacity:.65}} />
             </div>
             <div style={{flex:1}}>
-              <div style={{fontSize:17,fontWeight:600,color:'var(--nirika-text)'}}>{activeSession ? 'Reprendre ma séance' : 'Démarrer une séance'}</div>
-              <div style={{fontSize:13,color:'var(--nirika-text-soft)'}}>{activeSession ? activeSession.exerciseName : 'Choisis ton exercice'}</div>
+              <div style={{fontSize:17,fontWeight:600,color:'rgba(255,255,255,.85)'}}>{activeSession ? 'Reprendre ma séance' : 'Démarrer une séance'}</div>
+              <div style={{fontSize:13,color:'rgba(255,255,255,.5)'}}>{activeSession ? activeSession.exerciseName : 'Choisis ton exercice'}</div>
             </div>
           </div>
         </GlassCard>
@@ -111,8 +111,8 @@ export default function Dashboard() {
             <div style={{display:'flex',alignItems:'center',gap:14,padding:4}}>
               <span style={{fontSize:22}}>👋</span>
               <div style={{flex:1}}>
-                <div style={{fontSize:14,fontWeight:500,color:'var(--nirika-text)'}}>Configure ton profil</div>
-                <div style={{fontSize:11,color:'var(--nirika-text-soft)'}}>Pour des programmes personnalisés</div>
+                <div style={{fontSize:14,fontWeight:500,color:'rgba(255,255,255,.85)'}}>Configure ton profil</div>
+                <div style={{fontSize:11,color:'rgba(255,255,255,.5)'}}>Pour des programmes personnalisés</div>
               </div>
             </div>
           </GlassCard>
@@ -125,17 +125,17 @@ export default function Dashboard() {
               <FileText size={20} style={{color:'var(--nirika-accent)',opacity:.6}} />
             </div>
             <div style={{flex:1}}>
-              <div style={{fontSize:14,fontWeight:500,color:'var(--nirika-text)'}}>Templates</div>
-              <div style={{fontSize:11,color:'var(--nirika-text-soft)'}}>Lance une séance pré-enregistrée</div>
+              <div style={{fontSize:14,fontWeight:500,color:'rgba(255,255,255,.85)'}}>Templates</div>
+              <div style={{fontSize:11,color:'rgba(255,255,255,.5)'}}>Lance une séance pré-enregistrée</div>
             </div>
-            <ChevronRight size={18} style={{color:'var(--nirika-text-soft)',opacity:.4}} />
+            <ChevronRight size={18} style={{color:'rgba(255,255,255,.5)',opacity:.4}} />
           </div>
         </GlassCard>
 
         {/* Streak + Daily Workout + Recos */}
-        <StreakMotivation />
-        <div data-onboard="daily-workout"><DailyWorkout /></div>
-        <Recommendations />
+        <GlassCard><StreakMotivation /></GlassCard>
+        <div data-onboard="daily-workout"><GlassCard><DailyWorkout /></GlassCard></div>
+        <GlassCard><Recommendations /></GlassCard>
 
         {/* Search */}
         <GlassSearchBar value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Rechercher un programme..." />
@@ -161,11 +161,11 @@ export default function Dashboard() {
 
         {/* Explorer tags */}
         <div>
-          <div style={{fontSize:15,fontWeight:600,color:'var(--nirika-text)',marginBottom:14}}>Explorer</div>
+          <div style={{fontSize:15,fontWeight:600,color:'rgba(255,255,255,.85)',marginBottom:14}}>Explorer</div>
           <div style={{display:'flex',gap:8,overflowX:'auto'}}>
             {['Musculation','Calisthenics','Cardio','Débutant','Force','Endurance'].map(tag => (
               <button key={tag} onClick={() => { setSearchQuery(tag); setCurrentView('programme') }}
-                style={{fontSize:12,fontWeight:500,padding:'8px 18px',borderRadius:16,border:'none',background:'rgba(255,255,255,.15)',backdropFilter:'blur(20px)',color:'var(--nirika-text)',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
+                style={{fontSize:12,fontWeight:500,padding:'8px 18px',borderRadius:16,border:'none',background:'rgba(255,255,255,.15)',backdropFilter:'blur(20px)',color:'rgba(255,255,255,.85)',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
                 {tag}
               </button>
             ))}
