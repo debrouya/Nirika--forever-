@@ -9,6 +9,14 @@
   animation: nirika-bg-breathe 40s ease-in-out infinite alternate;
 }
 
+/* Auto-glass for legacy pages inside GlassBackground */
+.nirika-bg .bg-dark-card { background: rgba(255,255,255,.04) !important; backdrop-filter: blur(25px) !important; -webkit-backdrop-filter: blur(25px) !important; }
+.nirika-bg .border-dark-border { border-color: rgba(255,255,255,.04) !important; }
+.nirika-bg .bg-dark-bg { background: rgba(255,255,255,.02) !important; }
+.nirika-bg .text-white, .nirika-bg h1, .nirika-bg h2, .nirika-bg h3 { color: rgba(255,255,255,.9) !important; }
+.nirika-bg .text-muted { color: rgba(255,255,255,.4) !important; }
+.nirika-bg .text-lime { color: #7ED957 !important; }
+
 @keyframes nirika-bg-breathe {
   0% { background-position: 0 0,0 0,0 0,0 0,0 0; }
   100% { background-position: 1px -1px,2px 1px,-1px -1px,0 1px,0 0; }
