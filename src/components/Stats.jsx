@@ -14,6 +14,7 @@ import {
   Rocket,
   Heart,
 } from 'lucide-react'
+import GlassBackground from '../design-system/components/GlassBackground'
 import useStore from '../store/useStore'
 import CalisthenicsTracker from './CalisthenicsTracker'
 import CalisthenicsBilan from './CalisthenicsBilan'

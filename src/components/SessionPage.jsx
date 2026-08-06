@@ -14,6 +14,7 @@ import {
   Trophy,
   FileText,
 } from 'lucide-react'
+import GlassBackground from '../design-system/components/GlassBackground'
 import useStore from '../store/useStore'
 import SessionNotes from './SessionNotes'
 import WorkoutScreen from './WorkoutScreen'

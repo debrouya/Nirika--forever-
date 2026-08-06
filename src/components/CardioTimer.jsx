@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Play, Pause, SkipForward, ArrowLeft, Flame } from 'lucide-react'
+import GlassBackground from '../design-system/components/GlassBackground'
 import useStore from '../store/useStore'
 import { useBackgroundHandler } from '../hooks/useBackgroundHandler'
 import { feedback } from '../services/feedback'

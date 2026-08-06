@@ -21,6 +21,7 @@ import {
   Shield,
 } from 'lucide-react'
 import { cardioActivities, calculateCalories } from '../data/cardio'
+import GlassBackground from '../design-system/components/GlassBackground'
 import useStore from '../store/useStore'
 import { fireStreakToast } from './StreakMotivation'
 

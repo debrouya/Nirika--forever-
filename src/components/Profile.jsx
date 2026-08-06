@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { User, Ruler, Weight, Activity, Target, MapPin, Wrench, LogOut, Save, Bell, BellOff, Check } from 'lucide-react'
+import GlassBackground from '../design-system/components/GlassBackground'
 import useStore from '../store/useStore'
 import GlassCard from './GlassCard'
 import { useNotifications } from '../hooks/useNotifications'
