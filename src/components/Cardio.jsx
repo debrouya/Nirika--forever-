@@ -682,6 +682,7 @@ export default function Cardio() {
 
   // ==================== GRID VIEW ====================
   return (
+    <GlassBackground>
     <div data-onboard="cardio" className="space-y-4 p-4">
       <div className="mb-2">
         <h2 className="text-white font-bold text-lg">Cardio</h2>
@@ -717,5 +718,6 @@ export default function Cardio() {
         ))}
       </div>
     </div>
+    </GlassBackground>
   )
 }
