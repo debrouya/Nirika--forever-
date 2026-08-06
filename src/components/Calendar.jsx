@@ -9,6 +9,7 @@ import {
   Calendar as CalendarIcon,
 } from 'lucide-react'
 import useStore from '../store/useStore'
+import GlassBackground from '../design-system/components/GlassBackground'
 import GlassCard from './GlassCard'
 import YearHeatmap from './YearHeatmap'
 
@@ -114,6 +115,7 @@ export default function Calendar() {
   const goToNextMonth = () => setCurrentDate(new Date(year, month + 1, 1))
 
   return (
+    <GlassBackground>
     <div className="space-y-4 p-4">
       {/* Month Navigation */}
       <div className="flex items-center justify-between">
@@ -353,5 +355,6 @@ export default function Calendar() {
         </div>
       </GlassCard>
     </div>
+    </GlassBackground>
   )
 }
