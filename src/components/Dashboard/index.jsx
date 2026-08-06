@@ -75,24 +75,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* DATA ROW */}
-        <div className="cockpit-data">
-          <div className="cockpit-stat">
-            <span className="cockpit-val">{streak}</span>
-            <span className="cockpit-lbl">streak</span>
-          </div>
-          <div className="cockpit-divider" />
-          <div className="cockpit-stat">
-            <span className="cockpit-val">{weeklySessions}</span>
-            <span className="cockpit-lbl">séances/7j</span>
-          </div>
-          <div className="cockpit-divider" />
-          <div className="cockpit-stat">
-            <span className="cockpit-val">{Math.round(totalTime/60)}min</span>
-            <span className="cockpit-lbl">temps</span>
-          </div>
-        </div>
-
         {/* RECOVERY */}
         <div className="cockpit-recovery">
           <span style={{fontSize:11,color:'rgba(255,255,255,.3)',textTransform:'uppercase',letterSpacing:1}}>Récupération</span>
