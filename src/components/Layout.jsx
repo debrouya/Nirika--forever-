@@ -1,16 +1,16 @@
 export default function Layout({ children }) {
   return (
     <div className="h-[100dvh] flex flex-col bg-[#0E0E10] max-w-lg mx-auto overflow-hidden">
-      <header className="flex-shrink-0 z-40 bg-dark-bg/90 backdrop-blur-xl safe-top border-b border-dark-border/50">
+      <header className="flex-shrink-0 z-40 backdrop-blur-xl safe-top" style={{background:'rgba(14,14,16,.8)',borderBottom:'1px solid rgba(255,255,255,.04)'}}>
         <div className="flex items-center gap-3 py-3 px-4">
-          <div className="w-12 h-12 rounded-xl bg-dark-card flex items-center justify-center p-0.5 border border-dark-border animate-glow-pulse">
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center p-0.5" style={{background:'rgba(255,255,255,.06)'}}>
             <img src="/logo.png" alt="Nirika" className="w-full h-full object-cover rounded-[10px]" />
           </div>
           <div>
-            <h1 className="text-xl font-black tracking-tight text-white leading-tight">
-              NIRIKA <span className="text-white">FOR EVER</span>
+            <h1 className="text-xl font-black tracking-tight leading-tight" style={{color:'rgba(255,255,255,.9)'}}>
+              NIRIKA <span style={{color:'rgba(255,255,255,.5)'}}>FOR EVER</span>
             </h1>
-            <p className="text-[10px] text-lime/60 font-medium tracking-widest uppercase">Ton coach personnel</p>
+            <p style={{fontSize:10,color:'rgba(126,217,87,.4)',fontWeight:500,letterSpacing:2,textTransform:'uppercase'}}>Ton coach personnel</p>
           </div>
         </div>
       </header>

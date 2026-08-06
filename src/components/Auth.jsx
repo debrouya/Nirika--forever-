@@ -5,18 +5,11 @@ import GlassCard from './GlassCard'
 
 function InputField({ icon: Icon, type: inputType, placeholder, value, onChange, rightSlot }) {
   return (
-    <div className="relative">
-      <Icon size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
-      <input
-        type={inputType}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-10 pr-12 text-white placeholder-white/30 text-sm focus:outline-none focus:border-lime/50 focus:ring-1 focus:ring-lime/20 transition-all"
-      />
-      {rightSlot && (
-        <div className="absolute right-3 top-1/2 -translate-y-1/2">{rightSlot}</div>
-      )}
+    <div style={{position:'relative'}}>
+      <Icon size={18} style={{position:'absolute',left:12,top:'50%',transform:'translateY(-50%)',color:'rgba(255,255,255,.25)'}} />
+      <input type={inputType} placeholder={placeholder} value={value} onChange={onChange}
+        style={{width:'100%',background:'rgba(255,255,255,.04)',border:'1px solid rgba(255,255,255,.06)',borderRadius:14,height:46,padding:'0 44px 0 40px',fontSize:14,fontFamily:'inherit',color:'#fff',outline:'none'}} />
+      {rightSlot && <div style={{position:'absolute',right:12,top:'50%',transform:'translateY(-50%)'}}>{rightSlot}</div>}
     </div>
   )
 }
@@ -43,11 +36,11 @@ export function LoginView({ onSwitch, onForgot }) {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[100dvh] px-4">
+    <div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100dvh',padding:16,background:'#0C0C10'}}>
       <GlassCard className="w-full max-w-sm p-6 space-y-5">
         <div className="text-center">
-          <h2 className="text-xl font-bold text-white">Connexion</h2>
-          <p className="text-white/40 text-sm mt-1">Connecte-toi à ton compte</p>
+          <h2 style={{fontSize:20,fontWeight:700,color:'#fff'}}>Connexion</h2>
+          <p style={{fontSize:13,color:'rgba(255,255,255,.3)',marginTop:4}}>Connecte-toi à ton compte</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-3">
