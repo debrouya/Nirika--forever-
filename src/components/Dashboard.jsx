@@ -50,126 +50,137 @@ export default function Dashboard() {
     return programs.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
   }, [searchQuery])
 
+  const streak = useMemo(() => {
+    const all = [...workoutHistory, ...sessionHistory]
+    const dates = new Set(all.map(s => new Date(s.completedAt || s.date || s.endedAt || s.startedAt).toISOString().slice(0,10)).filter(Boolean))
+    let s = 0; const today = new Date()
+    for (let i=0;i<365;i++){ const d=new Date(today);d.setDate(d.getDate()-i);if(dates.has(d.toISOString().slice(0,10)))s++;else break }
+    return s
+  }, [workoutHistory, sessionHistory])
+
   return (
     <GlassBackground>
-      <div style={{padding:'52px 22px 130px',maxWidth:430,margin:'0 auto',display:'flex',flexDirection:'column',gap:24,minHeight:'100dvh'}}>
+      <div style={{padding:'48px 16px 120px',maxWidth:430,margin:'0 auto',display:'flex',flexDirection:'column',gap:16,minHeight:'100dvh'}}>
 
-        {/* Header */}
-        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+        {/* Header bar */}
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8}}>
           <div style={{display:'flex',alignItems:'center',gap:8}}>
-            <div style={{width:9,height:9,borderRadius:3,background:'rgba(255,255,255,.85)',opacity:.28,transform:'rotate(45deg)'}} />
-            <span style={{fontSize:12,fontWeight:600,letterSpacing:1.8,color:'rgba(255,255,255,.35)',textTransform:'uppercase'}}>NIRIKA</span>
+            <div style={{width:8,height:8,borderRadius:3,background:'rgba(255,255,255,.25)',transform:'rotate(45deg)'}} />
+            <span style={{fontSize:11,fontWeight:600,letterSpacing:2,color:'rgba(255,255,255,.3)',textTransform:'uppercase'}}>NIRIKA</span>
           </div>
-          <GlassAvatar size={46} />
+          <div style={{display:'flex',alignItems:'center',gap:8}}>
+            <button onClick={() => setCurrentView('playground')} style={{fontSize:10,fontWeight:500,padding:'4px 10px',borderRadius:8,border:'none',background:'rgba(255,255,255,.08)',color:'rgba(255,255,255,.4)',cursor:'pointer',fontFamily:'inherit'}}>DS</button>
+            <GlassAvatar size={36} />
+          </div>
         </div>
 
-        {/* Hero */}
-        <div>
-          <span style={{fontSize:12,color:'rgba(255,255,255,.4)'}}>{new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</span>
-          <h1 style={{fontSize:30,fontWeight:670,color:'rgba(255,255,255,.9)',letterSpacing:'-.8px',lineHeight:1.1,marginTop:2}}>
+        {/* HERO */}
+        <div style={{marginBottom:8}}>
+          <span style={{fontSize:11,color:'rgba(255,255,255,.35)'}}>{new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</span>
+          <h1 style={{fontSize:32,fontWeight:700,color:'#fff',letterSpacing:'-.8px',lineHeight:1.15,margin:'4px 0'}}>
             Bonjour{firstName ? ` ${firstName}` : ''}
           </h1>
-          <p style={{fontSize:15,color:'rgba(255,255,255,.5)',marginTop:2}}>Prêt pour ta séance ?</p>
-        </div>
-
-        {/* Mode Toggle + DS */}
-        <div style={{display:'flex',justifyContent:'flex-end',gap:8,marginTop:-12}}>
-          <button onClick={() => setCurrentView('playground')} style={{fontSize:10,fontWeight:500,padding:'5px 12px',borderRadius:12,border:'none',background:'rgba(255,255,255,.15)',backdropFilter:'blur(15px)',color:'var(--nirika-accent)',cursor:'pointer',fontFamily:'inherit'}}>DS</button>
-          <button onClick={() => { const n = !simpleMode; setSimpleMode(n); try { localStorage.setItem('nirika_dashboard_mode',n?'simple':'full') } catch {} }} style={{fontSize:10,fontWeight:500,padding:'5px 12px',borderRadius:12,border:'none',background:'rgba(255,255,255,.15)',backdropFilter:'blur(15px)',color:'rgba(255,255,255,.5)',cursor:'pointer',fontFamily:'inherit'}}>
-            {simpleMode ? 'Complet' : 'Simple'}
-          </button>
-        </div>
-
-        {/* Quick Actions */}
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:12}}>
-          {QUICK_ACTIONS.map(action => (
-            <GlassCard key={action.id} onClick={() => setCurrentView(action.id)}>
-              <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:8,padding:'14px 0'}}>
-                <action.icon size={20} style={{color:'rgba(255,255,255,.5)'}} />
-                <span style={{fontSize:12,fontWeight:600,color:'rgba(255,255,255,.85)'}}>{action.label}</span>
-              </div>
-            </GlassCard>
-          ))}
+          <div style={{display:'flex',gap:16,marginTop:8}}>
+            <div style={{display:'flex',alignItems:'center',gap:6}}>
+              <span style={{fontSize:18}}>🔥</span>
+              <span style={{fontSize:13,color:'rgba(255,255,255,.5)'}}>{streak}j</span>
+            </div>
+            <div style={{display:'flex',alignItems:'center',gap:6}}>
+              <span style={{width:6,height:6,borderRadius:'50%',background:'var(--nirika-accent)',opacity:.6}} />
+              <span style={{fontSize:13,color:'rgba(255,255,255,.5)'}}>Prêt pour ta séance</span>
+            </div>
+          </div>
         </div>
 
         {/* CTA */}
         <GlassCard variant="strong" onClick={() => setCurrentView(activeSession ? 'session' : 'calisthenics')}>
           <div style={{display:'flex',alignItems:'center',gap:16}}>
-            <div style={{width:54,height:54,borderRadius:18,background:'rgba(0,0,0,.04)',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 .5px 0 rgba(255,255,255,.4) inset'}}>
-              <Play size={26} style={{color:'rgba(255,255,255,.85)',fill:'rgba(255,255,255,.85)',opacity:.65}} />
+            <div style={{width:48,height:48,borderRadius:16,background:'rgba(255,255,255,.08)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+              <Play size={24} style={{color:'#fff',fill:'#fff'}} />
             </div>
             <div style={{flex:1}}>
-              <div style={{fontSize:17,fontWeight:600,color:'rgba(255,255,255,.85)'}}>{activeSession ? 'Reprendre ma séance' : 'Démarrer une séance'}</div>
-              <div style={{fontSize:13,color:'rgba(255,255,255,.5)'}}>{activeSession ? activeSession.exerciseName : 'Choisis ton exercice'}</div>
+              <div style={{fontSize:16,fontWeight:600,color:'#fff'}}>{activeSession ? 'Reprendre' : 'Démarrer une séance'}</div>
+              <div style={{fontSize:12,color:'rgba(255,255,255,.35)'}}>{activeSession ? activeSession.exerciseName : 'Choisis ton exercice'}</div>
+            </div>
+            <div style={{width:32,height:32,borderRadius:10,background:'rgba(255,255,255,.06)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+              <ChevronRight size={16} style={{color:'rgba(255,255,255,.4)'}} />
             </div>
           </div>
         </GlassCard>
 
-        {/* Profile prompt */}
-        {!profileName && (
-          <GlassCard onClick={() => setCurrentView('profile')}>
-            <div style={{display:'flex',alignItems:'center',gap:14,padding:4}}>
-              <span style={{fontSize:22}}>👋</span>
-              <div style={{flex:1}}>
-                <div style={{fontSize:14,fontWeight:500,color:'rgba(255,255,255,.85)'}}>Configure ton profil</div>
-                <div style={{fontSize:11,color:'rgba(255,255,255,.5)'}}>Pour des programmes personnalisés</div>
+        {/* Quick Actions + Profile prompt */}
+        <div style={{display:'grid',gridTemplateColumns:!profileName?'1fr 1fr 1fr':undefined,gap:8}}>
+          {[{icon:Apple,id:'nutrition',label:'Nutrition'},{icon:Activity,id:'cardio',label:'Cardio'},{icon:Zap,id:'calisthenics',label:'Exercices'}].map(a => (
+            <GlassCard key={a.id} onClick={() => setCurrentView(a.id)}>
+              <div style={{display:'flex',alignItems:'center',justifyContent:'center',padding:'16px 0',flexDirection:'column',gap:6}}>
+                <a.icon size={18} style={{color:'rgba(255,255,255,.45)'}} />
+                <span style={{fontSize:11,fontWeight:500,color:'rgba(255,255,255,.7)'}}>{a.label}</span>
               </div>
-            </div>
-          </GlassCard>
-        )}
+            </GlassCard>
+          ))}
+          {!profileName && (
+            <GlassCard onClick={() => setCurrentView('profile')}>
+              <div style={{display:'flex',alignItems:'center',justifyContent:'center',padding:'16px 0',flexDirection:'column',gap:6}}>
+                <span style={{fontSize:20}}>👋</span>
+                <span style={{fontSize:11,fontWeight:500,color:'rgba(255,255,255,.7)'}}>Profil</span>
+              </div>
+            </GlassCard>
+          )}
+        </div>
 
         {/* Templates */}
         <GlassCard onClick={() => setCurrentView('templates')}>
-          <div style={{display:'flex',alignItems:'center',gap:14,padding:4}}>
-            <div style={{width:42,height:42,borderRadius:14,background:'rgba(0,0,0,.03)',display:'flex',alignItems:'center',justifyContent:'center'}}>
-              <FileText size={20} style={{color:'var(--nirika-accent)',opacity:.6}} />
-            </div>
-            <div style={{flex:1}}>
-              <div style={{fontSize:14,fontWeight:500,color:'rgba(255,255,255,.85)'}}>Templates</div>
-              <div style={{fontSize:11,color:'rgba(255,255,255,.5)'}}>Lance une séance pré-enregistrée</div>
-            </div>
-            <ChevronRight size={18} style={{color:'rgba(255,255,255,.5)',opacity:.4}} />
+          <div style={{display:'flex',alignItems:'center',gap:12,padding:4}}>
+            <FileText size={18} style={{color:'rgba(255,255,255,.35)'}} />
+            <div style={{flex:1,fontSize:13,fontWeight:500,color:'rgba(255,255,255,.7)'}}>Templates</div>
+            <span style={{fontSize:11,color:'rgba(255,255,255,.3)'}}>Séances pré-enregistrées</span>
           </div>
         </GlassCard>
 
-        {/* Streak + Daily Workout + Recos */}
-        <GlassCard><StreakMotivation /></GlassCard>
-        <div data-onboard="daily-workout"><GlassCard><DailyWorkout /></GlassCard></div>
-        <GlassCard><Recommendations /></GlassCard>
-
-        {/* Search */}
-        <GlassSearchBar value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Rechercher un programme..." />
+        {/* AI Suggestion (Recommendations compact) */}
+        <Recommendations />
 
         {/* Ton Programme */}
-        {!simpleMode && (
-          <GlassSection title="Ton Programme" action="Voir tout →" onAction={() => setCurrentView('programme')}>
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+        {!simpleMode && filteredPrograms.length > 0 && (
+          <div>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8}}>
+              <span style={{fontSize:13,fontWeight:600,color:'rgba(255,255,255,.7)'}}>Ton Programme</span>
+              <span onClick={() => setCurrentView('programme')} style={{fontSize:11,color:'rgba(255,255,255,.35)',cursor:'pointer'}}>Voir tout</span>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
               {filteredPrograms.slice(0,2).map((prog,i) => (
-                <div key={prog.id} onClick={() => setCurrentView('programme')} style={{position:'relative',height:160,borderRadius:24,overflow:'hidden',cursor:'pointer'}}>
+                <div key={prog.id} onClick={() => setCurrentView('programme')} style={{position:'relative',height:180,borderRadius:20,overflow:'hidden',cursor:'pointer'}}>
                   <img src={prog.image||PLAN_IMAGES[i%PLAN_IMAGES.length]} alt={prog.name} style={{width:'100%',height:'100%',objectFit:'cover'}} />
-                  <div style={{position:'absolute',inset:0,background:'linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.6))'}} />
-                  <div style={{position:'absolute',top:12,right:12}}><GlassBadge>{prog.daysPerWeek}×/sem</GlassBadge></div>
-                  <div style={{position:'absolute',bottom:14,left:14,right:14}}>
-                    <div style={{fontSize:14,fontWeight:600,color:'#fff'}}>{prog.name}</div>
-                    <div style={{fontSize:11,color:'rgba(255,255,255,.5)'}}>{prog.durationWeeks} semaines</div>
+                  <div style={{position:'absolute',inset:0,background:'linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.35) 50%,rgba(0,0,0,.75) 100%)'}} />
+                  <div style={{position:'absolute',top:10,right:10}}>
+                    <span style={{background:'rgba(255,255,255,.15)',backdropFilter:'blur(15px)',padding:'3px 8px',borderRadius:12,fontSize:10,fontWeight:500,color:'rgba(255,255,255,.85)'}}>{prog.daysPerWeek}×/sem</span>
+                  </div>
+                  <div style={{position:'absolute',bottom:12,left:12,right:12}}>
+                    <div style={{fontSize:15,fontWeight:600,color:'#fff',marginBottom:2}}>{prog.name}</div>
+                    <div style={{fontSize:11,color:'rgba(255,255,255,.45)',marginBottom:6}}>{prog.durationWeeks} semaines</div>
+                    <div style={{height:2,borderRadius:1,background:'rgba(255,255,255,.1)',overflow:'hidden'}}>
+                      <div style={{height:'100%',width:`${Math.min(100,Math.round((i+1)*15+25))}%`,borderRadius:1,background:'var(--nirika-accent)',opacity:.5}} />
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
-          </GlassSection>
+          </div>
         )}
 
-        {/* Explorer tags */}
-        <div>
-          <div style={{fontSize:15,fontWeight:600,color:'rgba(255,255,255,.85)',marginBottom:14}}>Explorer</div>
-          <div style={{display:'flex',gap:8,overflowX:'auto'}}>
-            {['Musculation','Calisthenics','Cardio','Débutant','Force','Endurance'].map(tag => (
-              <button key={tag} onClick={() => { setSearchQuery(tag); setCurrentView('programme') }}
-                style={{fontSize:12,fontWeight:500,padding:'8px 18px',borderRadius:16,border:'none',background:'rgba(255,255,255,.15)',backdropFilter:'blur(20px)',color:'rgba(255,255,255,.85)',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
-                {tag}
-              </button>
-            ))}
-          </div>
+        {/* Daily + Streak */}
+        <div data-onboard="daily-workout"><GlassCard><DailyWorkout /></GlassCard></div>
+        <GlassCard><StreakMotivation /></GlassCard>
+
+        {/* Search + Explorer */}
+        <GlassSearchBar value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Rechercher un programme..." />
+        <div style={{display:'flex',gap:8,overflowX:'auto'}}>
+          {['Musculation','Calisthenics','Cardio','Débutant','Force','Endurance'].map(tag => (
+            <button key={tag} onClick={() => { setSearchQuery(tag); setCurrentView('programme') }}
+              style={{fontSize:11,fontWeight:500,padding:'6px 16px',borderRadius:14,border:'none',background:'rgba(255,255,255,.08)',color:'rgba(255,255,255,.5)',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
+              {tag}
+            </button>
+          ))}
         </div>
 
       </div>
