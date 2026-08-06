@@ -1,11 +1,11 @@
 /* NIRIKA Design System */
-@import './colors.css';
-@import './spacing.css';
-@import './radius.css';
-@import './typography.css';
-@import './glass.css';
-@import './animations.css';
-@import './theme.css';
+@import '../styles/colors.css';
+@import '../styles/spacing.css';
+@import '../styles/radius.css';
+@import '../styles/typography.css';
+@import '../styles/glass.css';
+@import '../styles/animations.css';
+@import '../styles/theme.css';
 
 @keyframes nirika-spin {
   to { transform: rotate(360deg); }
