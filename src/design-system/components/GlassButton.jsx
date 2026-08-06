@@ -1,8 +1,41 @@
-export function GlassButton({ children, variant = 'glass', className = '', ...props }) {
-  const base = variant === 'primary' ? 'nirika-glass-strong' : 'nirika-glass'
-  return <button className={`${base} ${className}`} style={{border:'none',font:'inherit',cursor:'pointer',padding:'14px 22px',borderRadius:'var(--nirika-radius-sm)',color:'var(--nirika-text)',fontSize:'var(--nirika-text-sm)',fontWeight:'var(--nirika-font-medium)'}} {...props}>{children}</button>
-}
+import './GlassButton.css'
 
-export function GlassIconButton({ children, size = 44, className = '', ...props }) {
-  return <button className={`nirika-glass ${className}`} style={{width:size,height:size,borderRadius:'var(--nirika-radius-xs)',display:'flex',alignItems:'center',justifyContent:'center',border:'none',cursor:'pointer',background:'rgba(0,0,0,.04)',boxShadow:'0 .5px 0 rgba(255,255,255,.4) inset'}} {...props}>{children}</button>
+export default function GlassButton({
+  children,
+  variant = 'default',
+  size = 'md',
+  icon: Icon,
+  disabled,
+  loading,
+  onClick,
+  className = '',
+  type = 'button',
+}) {
+  const variants = {
+    default: '',
+    primary: 'nirika-btn-primary',
+    dark: 'nirika-btn-dark',
+    icon: 'nirika-btn-icon',
+  }
+  const sizes = {
+    sm: 'nirika-btn-sm',
+    md: '',
+    lg: 'nirika-btn-lg',
+  }
+
+  return (
+    <button
+      type={type}
+      className={`nirika-btn ${variants[variant] || ''} ${sizes[size] || ''} ${className}`}
+      disabled={disabled || loading}
+      onClick={onClick}
+    >
+      {loading ? (
+        <span style={{width:18,height:18,borderRadius:'50%',border:'2px solid rgba(255,255,255,.2)',borderTopColor:'currentColor',animation:'nirika-spin .6s linear infinite',display:'inline-block'}} />
+      ) : Icon ? (
+        <Icon size={size === 'sm' ? 16 : size === 'lg' ? 22 : 18} />
+      ) : null}
+      {variant !== 'icon' && children}
+    </button>
+  )
 }

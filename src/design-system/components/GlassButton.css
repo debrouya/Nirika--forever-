@@ -1,0 +1,49 @@
+.nirika-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  font-family: inherit; font-size: 14px; font-weight: 500; color: var(--nirika-text, #1B1D22);
+  border: none; cursor: pointer; outline: none;
+  border-radius: 18px; padding: 0 22px; height: 52px;
+  background: rgba(255,255,255,.16);
+  backdrop-filter: blur(44px); -webkit-backdrop-filter: blur(44px);
+  box-shadow: 0 .5px 0 rgba(255,255,255,.55) inset, 0 12px 36px rgba(10,10,14,.04);
+  transition: all .5s cubic-bezier(.22,1,.36,1);
+  position: relative; overflow: hidden;
+  white-space: nowrap;
+}
+
+.nirika-btn::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,.8), rgba(255,255,255,.35), transparent);
+  z-index: 2;
+}
+
+.nirika-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 44px rgba(10,10,14,.06), 0 .5px 0 rgba(255,255,255,.6) inset; }
+.nirika-btn:active { transform: scale(.97); }
+
+.nirika-btn-primary {
+  background: rgba(255,255,255,.24);
+  backdrop-filter: blur(54px) saturate(1.32);
+  -webkit-backdrop-filter: blur(54px) saturate(1.32);
+  height: 58px; border-radius: 20px;
+  font-size: 16px; font-weight: 600;
+  box-shadow: 0 .5px 0 rgba(255,255,255,.7) inset, 0 20px 52px rgba(10,10,14,.06);
+}
+
+.nirika-btn-dark {
+  background: rgba(28,28,30,.85); color: #fff;
+  box-shadow: 0 .5px 0 rgba(255,255,255,.15) inset, 0 12px 36px rgba(10,10,14,.08);
+}
+.nirika-btn-dark:hover { background: rgba(28,28,30,.95); }
+
+.nirika-btn-sm { height: 40px; padding: 0 16px; font-size: 12px; border-radius: 14px; }
+.nirika-btn-lg { height: 62px; padding: 0 28px; font-size: 17px; border-radius: 24px; }
+
+.nirika-btn-icon {
+  width: 44px; height: 44px; padding: 0; border-radius: 14px;
+  background: rgba(0,0,0,.035);
+  box-shadow: 0 .5px 0 rgba(255,255,255,.4) inset;
+}
+
+.nirika-btn:disabled {
+  opacity: .4; cursor: not-allowed; transform: none;
+}
