@@ -1,11 +1,6 @@
 .nirika-bg {
   position: relative; min-height: 100dvh; overflow: hidden;
-  background:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.006'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse 55% 40% at 8% 92%, rgba(195,200,215,.45) 0%, transparent 65%),
-    radial-gradient(ellipse 52% 38% at 50% 58%, rgba(205,210,222,.3) 0%, transparent 58%),
-    radial-gradient(ellipse 45% 30% at 80% 3%, rgba(248,248,254,.9) 0%, rgba(238,240,246,.35) 30%, transparent 55%),
-    linear-gradient(168deg, #DEE1E8 0%, #E8EBF0 28%, #E3E6EC 55%, #EAEDF2 85%, #E5E8EE 100%);
+  background: #141416;
   animation: nirika-bg-breathe 40s ease-in-out infinite alternate;
 }
 
