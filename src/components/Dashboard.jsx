@@ -89,7 +89,8 @@ export default function Dashboard() {
       </div>
 
       {/* Mode Toggle */}
-      <div className="flex justify-end -mt-2 mb-2">
+      <div className="flex justify-end -mt-2 mb-2 gap-2">
+        <button onClick={() => setCurrentView('playground')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-dark-card border border-dark-border text-lime hover:text-white transition-colors text-[10px]">DS</button>
         <button onClick={() => { const next = !simpleMode; setSimpleMode(next); try { localStorage.setItem('nirika_dashboard_mode', next ? 'simple' : 'full') } catch {} }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-dark-card border border-dark-border text-muted hover:text-white transition-colors text-[10px] future-glass">
           {simpleMode ? <LayoutDashboard size={12} /> : <Layout size={12} />}
           {simpleMode ? 'Complet' : 'Simplifié'}
