@@ -82,7 +82,8 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
         <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="absolute bottom-20 left-3 right-3 bg-dark-card rounded-2xl p-4 space-y-1 animate-fade-in-up border border-dark-border shadow-2xl shadow-black/30 max-h-[50vh] overflow-y-auto"
+            className="absolute bottom-20 left-3 right-3 rounded-2xl p-4 space-y-1 animate-fade-in-up max-h-[50vh] overflow-y-auto"
+            style={{background:'rgba(20,20,30,.85)',backdropFilter:'blur(50px)',WebkitBackdropFilter:'blur(50px)',border:'1px solid rgba(255,255,255,.06)'}}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3 px-1">
@@ -172,7 +173,8 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-lg z-50 px-3" style={{ paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))' }}>
         <nav
           ref={containerRef}
-          className="bg-dark-card/95 backdrop-blur-xl rounded-2xl px-2 py-2 flex items-center relative border border-dark-border shadow-xl shadow-black/20"
+          className="rounded-2xl px-2 py-2 flex items-center relative"
+          style={{background:'rgba(255,255,255,.06)',backdropFilter:'blur(60px)',WebkitBackdropFilter:'blur(60px)',border:'1px solid rgba(255,255,255,.04)'}}
         >
           {!menuOpen && (
             <div
