@@ -109,7 +109,6 @@ export default function Dashboard() {
         {/* Quick access */}
         <div className="cockpit-actions">
           {[
-            {label:'Musculation',view:'calisthenics'},
             {label:'Cardio',view:'cardio'},
             {label:'Exercices',view:'calisthenics'},
             {label:'Programme',view:'programme'},
