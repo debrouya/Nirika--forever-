@@ -11,6 +11,7 @@ import {
   CheckCircle2,
 } from 'lucide-react'
 import useStore from '../store/useStore'
+import GlassBackground from '../design-system/components/GlassBackground'
 
 const EXERCISE_TIPS = {
   jumping_jacks: [
@@ -173,7 +174,8 @@ export default function ExerciseTutorial({ exercise, onClose }) {
   }, [])
 
   return (
-    <div className="fixed inset-0 z-[999] bg-dark-bg animate-fade-in" style={{ overscrollBehavior: 'contain', touchAction: 'none' }}>
+    <GlassBackground>
+    <div className="fixed inset-0 z-[999] animate-fade-in" style={{ overscrollBehavior: 'contain', touchAction: 'none' }}>
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-dark-border">
         <button
@@ -308,5 +310,6 @@ export default function ExerciseTutorial({ exercise, onClose }) {
         </div>
       </div>
     </div>
+    </GlassBackground>
   )
 }

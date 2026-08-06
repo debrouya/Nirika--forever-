@@ -27,6 +27,7 @@ import useExercises from '../hooks/useExercises'
 import ExerciseTracker from './ExerciseTracker'
 import CalisthenicsTracker from './CalisthenicsTracker'
 import useStore from '../store/useStore'
+import GlassBackground from '../design-system/components/GlassBackground'
 
 const levelColors = {
   debutant: 'text-lime bg-lime/10',
