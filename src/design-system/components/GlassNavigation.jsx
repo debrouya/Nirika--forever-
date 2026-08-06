@@ -1,16 +1,50 @@
-export default function GlassNavigation({ children, className = '' }) {
-  return (
-    <nav className={`nirika-glass-nav ${className}`} style={{position:'fixed',bottom:'22px',left:'50%',transform:'translateX(-50%)',width:'calc(100% - 40px)',maxWidth:'390px',height:'var(--nirika-nav-height)',display:'flex',alignItems:'center',justifyContent:'center',gap:'36px',zIndex:50}}>
-      {children}
-    </nav>
-  )
-}
+import { useState } from 'react'
+import './GlassNavigation.css'
 
-export function GlassTab({ icon, active, onClick }) {
+export default function GlassNavigation({ tabs = [], activeTab, onTabChange, menuItems = [], onMenuItemClick, fab }) {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const visibleTabs = tabs.slice(0, 5)
+
   return (
-    <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4,cursor:'pointer',position:'relative'}} onClick={onClick}>
-      <span style={{opacity:active?'.6':'.22',color:'var(--nirika-text)',fontSize:20,transition:'opacity .3s'}}>{icon}</span>
-      {active && <span style={{width:4,height:4,borderRadius:'50%',background:'var(--nirika-accent)',opacity:.7,position:'absolute',bottom:-7}} />}
-    </div>
+    <>
+      {menuOpen && (
+        <div className="nirika-nav-menu" onClick={() => setMenuOpen(false)}>
+          <div className="nirika-nav-menu-panel" onClick={e => e.stopPropagation()}>
+            {menuItems.map((item, i) => (
+              <button
+                key={item.id || i}
+                className="nirika-nav-menu-item"
+                onClick={() => { setMenuOpen(false); onMenuItemClick?.(item.id) }}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {fab}
+
+      <nav className="nirika-nav">
+        {visibleTabs.map((tab, i) => {
+          const active = tab.id === activeTab
+          const handleClick = () => {
+            if (tab.id === 'menu') { setMenuOpen(true); return }
+            onTabChange?.(tab.id)
+          }
+          return (
+            <button
+              key={tab.id || i}
+              className={`nirika-nav-tab ${active ? 'nirika-nav-tab-active' : ''}`}
+              onClick={handleClick}
+            >
+              <span className="nirika-nav-icon">{tab.icon}</span>
+              {tab.label && <span className="nirika-nav-label">{tab.label}</span>}
+            </button>
+          )
+        })}
+      </nav>
+    </>
   )
 }
