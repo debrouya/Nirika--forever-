@@ -108,8 +108,13 @@ export default function Dashboard() {
 
         {/* Quick access */}
         <div className="cockpit-actions">
-          {['Musculation','Cardio','Programme','Exercices'].map(a => (
-            <button key={a} className="cockpit-btn" onClick={() => setCurrentView('calisthenics')}>{a}</button>
+          {[
+            {label:'Musculation',view:'calisthenics'},
+            {label:'Cardio',view:'cardio'},
+            {label:'Exercices',view:'calisthenics'},
+            {label:'Programme',view:'programme'},
+          ].map(a => (
+            <button key={a.label} className="cockpit-btn" onClick={() => setCurrentView(a.view)}>{a.label}</button>
           ))}
         </div>
 
