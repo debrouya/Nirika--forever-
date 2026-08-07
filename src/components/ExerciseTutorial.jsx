@@ -136,25 +136,30 @@ export default function ExerciseTutorial({ exercise, onClose }) {
       if (!apiKey || settings.youtubeEnabled === false) { setSearching(false); return }
 
       const cacheKey = `yt_cache_${exercise.name}`
+      const controller = new AbortController()
+      const timeout = setTimeout(() => controller.abort(), 5000)
+
       try {
         const cached = JSON.parse(localStorage.getItem(cacheKey))
         if (cached && Date.now() - cached.ts < 86400000) {
-          if (cached.id) { setYoutubeId(cached.id); setSearching(false); return }
+          if (cached.id) { setYoutubeId(cached.id); setSearching(false); clearTimeout(timeout); return }
         }
       } catch {}
 
       const query = `${exercise.name} exercice technique forme`
-      fetch(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&maxResults=1&type=video&videoEmbeddable=true&key=${apiKey}`)
+      fetch(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&maxResults=1&type=video&videoEmbeddable=true&key=${apiKey}`, { signal: controller.signal })
         .then(r => r.json())
         .then(data => {
+          clearTimeout(timeout)
           const videoId = data?.items?.[0]?.id?.videoId
           if (videoId) {
             setYoutubeId(videoId)
             try { localStorage.setItem(cacheKey, JSON.stringify({ id: videoId, ts: Date.now() })) } catch {}
           }
+          setSearching(false)
         })
-        .catch(() => {})
-        .finally(() => setSearching(false))
+        .catch(() => { setSearching(false) })
+      return () => { clearTimeout(timeout); controller.abort() }
     }
   }, [exercise.youtubeId, exercise.name])
 
@@ -174,17 +179,13 @@ export default function ExerciseTutorial({ exercise, onClose }) {
   }, [])
 
   return (
-    <GlassBackground>
-    <div className="fixed inset-0 z-[999] animate-fade-in" style={{ overscrollBehavior: 'contain', touchAction: 'none' }}>
+    <div className="fixed inset-0 z-[999] animate-fade-in" style={{ overscrollBehavior: 'contain', touchAction: 'none', background:'#0C0C10' }}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-dark-border">
-        <button
-          onClick={onClose}
-          className="w-10 h-10 rounded-full bg-dark-card flex items-center justify-center"
-        >
-          <X size={20} className="text-white" />
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 16px',borderBottom:'1px solid rgba(255,255,255,.04)'}}>
+        <button onClick={onClose} style={{width:40,height:40,borderRadius:14,background:'rgba(255,255,255,.06)',border:'none',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer'}}>
+          <X size={20} style={{color:'rgba(255,255,255,.6)'}} />
         </button>
-        <span className="text-white font-semibold text-sm">Tutoriel</span>
+        <span style={{fontSize:14,fontWeight:600,color:'rgba(255,255,255,.8)'}}>Tutoriel</span>
         <div className="w-10" />
       </div>
 
@@ -303,13 +304,12 @@ export default function ExerciseTutorial({ exercise, onClose }) {
           {/* Start Workout */}
           <button
             onClick={() => { useStore.getState().startSession(exercise.id, exercise.name); onClose(); useStore.getState().setCurrentView('session') }}
-            className="w-full py-3 rounded-xl bg-lime text-dark-bg font-bold text-sm flex items-center justify-center gap-2"
+            style={{width:'100%',height:48,borderRadius:16,border:'none',background:'#7ED957',color:'#0C0C10',fontSize:14,fontWeight:600,fontFamily:'inherit',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:8}}
           >
             <Play size={16} fill="currentColor" /> Demarrer l'exercice
           </button>
         </div>
       </div>
     </div>
-    </GlassBackground>
   )
 }
