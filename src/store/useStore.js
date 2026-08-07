@@ -63,20 +63,23 @@ const useStore = create(
         })),
 
       getStreak: () => {
-        const { workoutHistory } = get()
-        if (workoutHistory.length === 0) return 0
+        const { workoutHistory, sessionHistory } = get()
+        const all = [...workoutHistory, ...sessionHistory]
+        if (all.length === 0) return 0
 
         const today = new Date()
         today.setHours(0, 0, 0, 0)
 
         const completedDates = [
           ...new Set(
-            workoutHistory
+            all
               .map((w) => {
-                const d = new Date(w.completedAt)
+                const d = new Date(w.completedAt || w.date || w.endedAt || w.startedAt)
+                if (isNaN(d)) return null
                 d.setHours(0, 0, 0, 0)
                 return d.getTime()
               })
+              .filter(Boolean)
               .sort((a, b) => b - a)
           ),
         ]
@@ -102,6 +105,8 @@ const useStore = create(
       savedProgramState: null,
       setSavedProgramState: (state) => set({ savedProgramState: state }),
       startSession: (exerciseId, exerciseName, sessionType = 'exercise') => {
+        const { activeSession } = get()
+        if (activeSession) get().endSession()
         track('seance_lancee', { exerciseId, exerciseName, sessionType })
         set({
           activeSession: {

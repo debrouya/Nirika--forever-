@@ -27,7 +27,12 @@ export function useBackgroundHandler(pauseFn, resumeFn) {
 
 // Called once at app start - clear stale snapshots
 export function cleanupStaleSessions() {
-  try { sessionStorage.removeItem('lv_snap') } catch {}
+  try {
+    const snap = JSON.parse(sessionStorage.getItem('lv_snap'))
+    if (snap && snap.startedAt && Date.now() - snap.startedAt > 4 * 60 * 60 * 1000) {
+      sessionStorage.removeItem('lv_snap')
+    }
+  } catch {}
   const s = useStore.getState().activeSession
   if (s && Date.now() - s.startedAt > 4 * 60 * 60 * 1000) {
     useStore.getState().cancelSession()
