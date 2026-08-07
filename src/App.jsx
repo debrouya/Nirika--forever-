@@ -1,11 +1,14 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react'
 import useStore from './store/useStore'
 import { supabase, isSupabaseConfigured } from './lib/supabase'
 import { track } from './services/analytics'
 import { flush } from './services/offlineQueue'
+
+const AdminPanelLazy = lazy(() => import('./components/AdminPanel'))
+const AICoachLazy = lazy(() => import('./components/AICoach'))
+const CalendarLazy = lazy(() => import('./components/Calendar'))
 import { LoginView, SignupView, ForgotPasswordView } from './components/Auth'
 import { signOut, getSession, getProfile } from './services/supabaseService'
-import AdminPanel from './components/AdminPanel'
 import Layout from './components/Layout'
 import Navigation from './components/Navigation'
 import Dashboard from './components/Dashboard/index'
@@ -15,10 +18,8 @@ import Profile from './components/Profile'
 import Calisthenics from './components/Calisthenics'
 import CustomExercisePanel from './components/CustomExercisePanel'
 import Cardio from './components/Cardio'
-import AICoach from './components/AICoach'
 import Stats from './components/Stats'
 import FitMatrix from './components/FitMatrix'
-import Calendar from './components/Calendar'
 import Programme from './components/Programme'
 import SessionPage from './components/SessionPage'
 import WorkoutDetail from './components/WorkoutDetail'
@@ -196,10 +197,10 @@ export default function App() {
         {currentView === 'workout-detail' && <WorkoutDetail />}
         {currentView === 'calisthenics' && <Calisthenics isPremium={true} />}
         {currentView === 'cardio' && <Cardio />}
-      {currentView === 'ai' && <AICoach isPremium={true} />}
+      {currentView === 'ai' && <Suspense fallback={<div style={{minHeight:"100dvh",background:"#0C0C10"}} />}><AICoachLazy isPremium={true} /></Suspense>}
         {currentView === 'stats' && <Stats isPremium={true} />}
         {currentView === 'fitmatrix' && <FitMatrix />}
-        {currentView === 'calendar' && <Calendar />}
+        {currentView === 'calendar' && <Suspense fallback={<div style={{minHeight:"100dvh",background:"#0C0C10"}} />}><CalendarLazy /></Suspense>}
         {currentView === 'programme' && <Programme isPremium={true} />}
         {currentView === 'session' && <SessionPage />}
         {currentView === 'daily-workout' && <DailyWorkoutSession />}
@@ -224,7 +225,7 @@ export default function App() {
   }
 
   if (isAdmin && currentView === 'admin') {
-    return <AdminPanel user={user} profile={profile} onLogout={() => useStore.getState().setCurrentView('dashboard')} />
+    return <Suspense fallback={<div style={{minHeight:"100dvh",background:"#0C0C10"}} />}><AdminPanelLazy user={user} profile={profile} onLogout={() => useStore.getState().setCurrentView("dashboard")} /></Suspense>
   }
 
   if (currentView === 'playground') {
@@ -246,7 +247,7 @@ export default function App() {
       {currentView === 'ai' && <AICoach isPremium={hasFeature('chat_ia')} onShowPaywall={() => !isAdmin && setShowPaywall(true)} />}
       {currentView === 'stats' && <Stats />}
       {currentView === 'fitmatrix' && <FitMatrix />}
-      {currentView === 'calendar' && <Calendar />}
+      {currentView === 'calendar' && <Suspense fallback={<div style={{minHeight:"100dvh",background:"#0C0C10"}} />}><CalendarLazy /></Suspense>}
       {currentView === 'programme' && <Programme user={user} isPremium={hasFeature('programmes')} />}
       {currentView === 'session' && <SessionPage />}
       {currentView === 'daily-workout' && <DailyWorkoutSession />}
