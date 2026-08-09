@@ -5,6 +5,7 @@ import GlassBackground from '../../design-system/components/GlassBackground'
 import { useDashboardData } from './hooks/useDashboardData'
 import Recommendations from '../Recommendations'
 import { useI18n } from '../../i18n'
+import { feedbackSystem, getStreakState, getMilestone } from '../../lib/feedback'
 import './styles/dashboard.css'
 
 const RADIUS = 130
@@ -19,6 +20,10 @@ export default function Dashboard() {
     const pct = Math.min(100, Math.max(0, (streak / 30) * 100))
     return CIRC - (pct / 100) * CIRC
   }, [streak])
+
+  const streakState = getStreakState(streak)
+  const milestone = getMilestone(streak)
+  const stateInfo = feedbackSystem.states[streakState]
 
   return (
     <GlassBackground>
@@ -38,6 +43,14 @@ export default function Dashboard() {
           <h1 style={{fontSize:32,fontWeight:700,color:'#fff',letterSpacing:'-.8px',lineHeight:1.1}}>
             {t('dashboard.greeting',{name:firstName})}
           </h1>
+          {streak > 0 && (
+            <div style={{display:'flex',alignItems:'center',gap:8,marginTop:6}}>
+              <span style={{padding:'2px 10px',borderRadius:8,fontSize:10,fontWeight:500,background:`${stateInfo.color}18`,color:stateInfo.color}}>
+                {stateInfo.label} · {stateInfo.message}
+              </span>
+              {milestone && <span style={{fontSize:10,color:'rgba(255,255,255,.25)'}}>{milestone}</span>}
+            </div>
+          )}
         </div>
 
         {/* MAIN COCKPIT CIRCLE */}
