@@ -23,7 +23,7 @@ export default function Dashboard() {
 
   const streakState = getStreakState(streak)
   const milestone = getMilestone(streak)
-  const stateInfo = feedbackSystem.states[streakState]
+  const stateInfo = feedbackSystem.states[streakState] || feedbackSystem.states.adaptation
 
   return (
     <GlassBackground>
@@ -41,7 +41,7 @@ export default function Dashboard() {
             {new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}
           </div>
           <h1 style={{fontSize:32,fontWeight:700,color:'#fff',letterSpacing:'-.8px',lineHeight:1.1}}>
-            {t('dashboard.greeting',{name:firstName})}
+            {t('dashboard.greeting',{name:firstName||''})}
           </h1>
           {streak > 0 && (
             <div style={{display:'flex',alignItems:'center',gap:8,marginTop:6}}>

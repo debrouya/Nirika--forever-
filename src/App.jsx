@@ -244,7 +244,7 @@ export default function App() {
       {currentView === 'workout-detail' && <WorkoutDetail />}
       {currentView === 'calisthenics' && <Calisthenics isPremium={hasAccess} onShowPaywall={() => !isAdmin && setShowPaywall(true)} />}
       {currentView === 'cardio' && <Cardio />}
-      {currentView === 'ai' && <AICoach isPremium={hasFeature('chat_ia')} onShowPaywall={() => !isAdmin && setShowPaywall(true)} />}
+      {currentView === 'ai' && <Suspense fallback={<div style={{minHeight:"100dvh",background:"#0C0C10"}} />}><AICoachLazy isPremium={hasFeature('chat_ia')} onShowPaywall={() => !isAdmin && setShowPaywall(true)} /></Suspense>}
       {currentView === 'stats' && <Stats />}
       {currentView === 'fitmatrix' && <FitMatrix />}
       {currentView === 'calendar' && <Suspense fallback={<div style={{minHeight:"100dvh",background:"#0C0C10"}} />}><CalendarLazy /></Suspense>}

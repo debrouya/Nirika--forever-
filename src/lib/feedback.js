@@ -12,7 +12,8 @@ export const feedbackSystem = {
   },
 }
 
-export function getStreakState(streak) {
+export function getStreakState(streak = 0) {
+  if (!streak || streak < 0) return 'adaptation'
   if (streak >= 14) return 'performance'
   if (streak >= 7) return 'intensity'
   return 'adaptation'

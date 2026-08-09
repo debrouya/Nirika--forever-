@@ -47,6 +47,8 @@ export function I18nProvider({ children }) {
 
 export function useI18n() {
   const ctx = useContext(I18nContext)
-  if (!ctx) throw new Error('useI18n must be inside I18nProvider')
+  if (!ctx) {
+    return { t: (k) => k, locale: 'fr', setLocale: () => {}, SUPPORTED: ['fr','en'] }
+  }
   return ctx
 }
