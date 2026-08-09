@@ -36,6 +36,9 @@ export default function WorkoutScreen({exercise,onComplete}){
 
   const h=S.getState().exerciseHistory
   const pr=(h?.[exercise.id]||[]).reduce((m,x)=>Math.max(m,x.weight||0),0)
+  const lastEntry=(h?.[exercise.id]||[]).slice(-1)[0]
+  const lastW=lastEntry?.weight||0
+  const lastR=lastEntry?.reps||0
 
   useEffect(()=>{
     if(paused||phase==='done')return
@@ -132,19 +135,46 @@ export default function WorkoutScreen({exercise,onComplete}){
               background:dur===d?'rgba(255,255,255,.15)':'rgba(255,255,255,.04)',color:dur===d?'#fff':'rgba(255,255,255,.4)'}}>{d}s</button>))}
         </div>
 
-        {/* Inputs */}
+        {/* Set Card */}
         {phase!=='rest'&&(
-          <div style={{display:'flex',gap:20,alignItems:'center',marginBottom:24}}>
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
-              <span style={{fontSize:10,color:'rgba(255,255,255,.3)',textTransform:'uppercase'}}>Charge</span>
-              <input type="number" min="0" max="999" value={w} onChange={e=>setW(e.target.value)} placeholder="0"
-                style={{width:64,height:44,textAlign:'center',background:'rgba(255,255,255,.06)',border:'none',borderRadius:14,fontSize:18,fontWeight:600,color:'#fff',fontFamily:'inherit'}} />
+          <div style={{width:'100%',marginBottom:24}}>
+            {/* Last session hint */}
+            <div style={{fontSize:10,color:'rgba(255,255,255,.2)',textAlign:'center',marginBottom:12}}>
+              Dernière : {lastW||'—'} kg × {lastR||'—'} reps
             </div>
-            <span style={{color:'rgba(255,255,255,.2)',fontSize:18}}>×</span>
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
-              <span style={{fontSize:10,color:'rgba(255,255,255,.3)',textTransform:'uppercase'}}>Reps</span>
-              <input type="number" min="0" max="999" value={r} onChange={e=>setR(e.target.value)} placeholder="0"
-                style={{width:64,height:44,textAlign:'center',background:'rgba(255,255,255,.06)',border:'none',borderRadius:14,fontSize:18,fontWeight:600,color:'#fff',fontFamily:'inherit'}} />
+
+            <div style={{background:'rgba(255,255,255,.04)',backdropFilter:'blur(25px)',borderRadius:20,padding:'20px',textAlign:'center',border:'1px solid rgba(255,255,255,.04)',transition:'all .3s ease',boxShadow:newPR?'0 0 20px rgba(126,217,87,.15)':undefined}}>
+              <div style={{fontSize:11,fontWeight:600,color:'rgba(255,255,255,.35)',textTransform:'uppercase',letterSpacing:2,marginBottom:16}}>SET {curSet}/{tgtSets}</div>
+              <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:24}}>
+                {/* Weight */}
+                <div style={{display:'flex',alignItems:'center',gap:6}}>
+                  <button onClick={()=>setW(p=>String(Math.max(0,Number(p)-1)))} style={{width:36,height:36,borderRadius:12,border:'none',background:'rgba(255,255,255,.06)',color:'rgba(255,255,255,.5)',fontSize:18,cursor:'pointer',fontFamily:'inherit',lineHeight:1}}>−</button>
+                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',minWidth:56}}>
+                    <span style={{fontSize:36,fontWeight:700,color:'#fff',lineHeight:1}}>{w||0}</span>
+                    <span style={{fontSize:10,color:'rgba(255,255,255,.3)',textTransform:'uppercase',letterSpacing:1}}>kg</span>
+                  </div>
+                  <button onClick={()=>setW(p=>String(Math.min(999,Number(p)+1)))} style={{width:36,height:36,borderRadius:12,border:'none',background:'rgba(255,255,255,.06)',color:'rgba(255,255,255,.5)',fontSize:18,cursor:'pointer',fontFamily:'inherit',lineHeight:1}}>+</button>
+                </div>
+                <span style={{color:'rgba(255,255,255,.1)',fontSize:24,fontWeight:300}}>×</span>
+                {/* Reps */}
+                <div style={{display:'flex',alignItems:'center',gap:6}}>
+                  <button onClick={()=>setR(p=>String(Math.max(0,Number(p)-1)))} style={{width:36,height:36,borderRadius:12,border:'none',background:'rgba(255,255,255,.06)',color:'rgba(255,255,255,.5)',fontSize:18,cursor:'pointer',fontFamily:'inherit',lineHeight:1}}>−</button>
+                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',minWidth:56}}>
+                    <span style={{fontSize:36,fontWeight:700,color:'#fff',lineHeight:1}}>{r||0}</span>
+                    <span style={{fontSize:10,color:'rgba(255,255,255,.3)',textTransform:'uppercase',letterSpacing:1}}>reps</span>
+                  </div>
+                  <button onClick={()=>setR(p=>String(Math.min(999,Number(p)+1)))} style={{width:36,height:36,borderRadius:12,border:'none',background:'rgba(255,255,255,.06)',color:'rgba(255,255,255,.5)',fontSize:18,cursor:'pointer',fontFamily:'inherit',lineHeight:1}}>+</button>
+                </div>
+              </div>
+              <div style={{fontSize:12,color:'rgba(255,255,255,.25)',marginTop:14}}>Volume : {(Number(w)||0)*(Number(r)||0)} kg</div>
+              {newPR && <div style={{fontSize:11,fontWeight:600,color:'#7ED957',marginTop:8}}>🏆 Nouveau record !</div>}
+            </div>
+
+            {/* Set dots */}
+            <div style={{display:'flex',justifyContent:'center',gap:8,marginTop:12}}>
+              {Array.from({length:tgtSets}).map((_,i)=>(
+                <div key={i} style={{width:8,height:8,borderRadius:'50%',background:i<sets.length?'rgba(255,255,255,.3)':'rgba(255,255,255,.06)',transition:'all .3s ease'}} />
+              ))}
             </div>
           </div>
         )}
