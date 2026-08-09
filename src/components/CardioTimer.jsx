@@ -1,11 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { Play, Pause, SkipForward, ArrowLeft, Flame } from 'lucide-react'
-import GlassBackground from '../design-system/components/GlassBackground'
 import useStore from '../store/useStore'
 import { useBackgroundHandler } from '../hooks/useBackgroundHandler'
 import { feedback } from '../services/feedback'
 
 function f(s) { const m = Math.floor(s / 60); return `${m}:${String(s % 60).padStart(2, '0')}` }
+
+const R = 120; const CIRC = 2 * Math.PI * R
+const COLOR = '#f97316'
 
 export default function CardioTimer({ onComplete }) {
   const store = useStore
@@ -31,67 +33,89 @@ export default function CardioTimer({ onComplete }) {
     return () => clearInterval(intervalRef.current)
   }, [paused, done])
 
-  const remaining = total - elapsed; const progress = (elapsed / total) * 100
+  const remaining = total - elapsed
+  const progress = (elapsed / total) * 100
   const calories = Math.round(elapsed * 0.15)
-  const r = 130; const c = 2 * Math.PI * r; const dash = c - (Math.min(100, progress) / 100) * c
+  const progressOffset = useMemo(() => CIRC - (Math.min(100, progress) / 100) * CIRC, [progress])
 
   const end = () => { setConfirmQuit(false); clearInterval(intervalRef.current); if (wakeLockRef.current) wakeLockRef.current.release().catch(() => {}); setTimeout(() => onComplete(), 50) }
 
   if (done) return (
-    <div className="fixed inset-0 z-40 bg-dark-bg flex flex-col items-center justify-center p-6" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 90px)' }}>
-      <Flame size={40} className="text-orange-400 mb-4" />
-      <h1 className="text-white font-bold text-xl mb-6">Cardio termine</h1>
-      <div className="grid grid-cols-2 gap-3 w-full max-w-xs mb-4">
-        <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-lime font-bold text-lg">{f(elapsed)}</p><p className="text-muted text-[10px]">duree</p></div>
-        <div className="bg-dark-card rounded-2xl p-3 text-center"><p className="text-orange-400 font-bold text-lg">{calories}</p><p className="text-muted text-[10px]">kcal</p></div>
+    <div style={{position:'fixed',inset:0,zIndex:40,background:'#0C0C10',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:24,paddingBottom:'calc(env(safe-area-inset-bottom,20px)+90px)'}}>
+      <Flame size={40} style={{color:'#f97316',marginBottom:16}} />
+      <div style={{fontSize:24,fontWeight:700,color:'#fff',marginBottom:8}}>Cardio terminé</div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,width:'100%',maxWidth:280,marginBottom:24}}>
+        <div style={{background:'rgba(255,255,255,.06)',borderRadius:18,padding:'16px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}><div style={{fontSize:24,fontWeight:700,color:'#fff'}}>{f(elapsed)}</div><div style={{fontSize:11,color:'rgba(255,255,255,.35)'}}>durée</div></div>
+        <div style={{background:'rgba(255,255,255,.06)',borderRadius:18,padding:'16px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}><div style={{fontSize:24,fontWeight:700,color:'#f97316'}}>{calories}</div><div style={{fontSize:11,color:'rgba(255,255,255,.35)'}}>kcal</div></div>
       </div>
-      <button onClick={end} className="w-full max-w-xs h-12 rounded-xl bg-lime text-dark-bg font-bold">Terminer</button>
+      <button onClick={end} style={{width:'100%',maxWidth:280,height:48,borderRadius:16,border:'none',background:'#f97316',color:'#0C0C10',fontSize:14,fontWeight:600,fontFamily:'inherit',cursor:'pointer'}}>Terminer</button>
     </div>
   )
 
   return (
-    <div className="fixed inset-0 z-40 bg-dark-bg flex flex-col">
-      <div className="flex items-center justify-between px-4" style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 12px)' }}>
-        <button onClick={() => setConfirmQuit(true)} className="p-2 text-white/50 hover:text-white"><ArrowLeft size={22} /></button>
-        <div className="text-center flex-1">
-          <h1 className="text-white font-bold text-lg uppercase tracking-wide">{session?.exerciseName || 'Cardio'}</h1>
-          <p className="text-white/50 text-xs">{calories} kcal</p>
+    <div style={{position:'fixed',inset:0,zIndex:40,background:'#0C0C10'}}>
+      <div style={{padding:'52px 20px 120px',maxWidth:430,margin:'0 auto',display:'flex',flexDirection:'column',alignItems:'center',minHeight:'100dvh'}}>
+
+        {/* Header */}
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',width:'100%',marginBottom:32}}>
+          <button onClick={()=>setConfirmQuit(true)} style={{background:'rgba(255,255,255,.06)',border:'none',borderRadius:14,width:40,height:40,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',backdropFilter:'blur(20px)'}}>
+            <ArrowLeft size={20} style={{color:'rgba(255,255,255,.5)'}} />
+          </button>
+          <div style={{width:40}} />
         </div>
-        <div className="w-10" />
-      </div>
-      <div className="flex-1 flex flex-col items-center justify-center gap-3">
-        <div className="relative">
-          <svg width="280" height="280" className="-rotate-90">
-            <circle cx="140" cy="140" r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="10" />
-            <circle cx="140" cy="140" r={r} fill="none" stroke="#22c55e" strokeWidth="10" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={dash} style={{ transition: 'stroke-dashoffset 0.5s linear', filter: 'drop-shadow(0 0 6px #22c55e)' }} />
+
+        {/* COCKPIT CIRCLE */}
+        <div style={{position:'relative',width:280,height:280,marginBottom:28}}>
+          <svg viewBox="0 0 280 280" width="280" height="280" style={{transform:'rotate(-90deg)',position:'absolute'}}>
+            <circle cx="140" cy="140" r={R} fill="none" stroke="rgb(255,255,255)" strokeOpacity="0.03" strokeWidth="2" />
+            <circle cx="140" cy="140" r={R} fill="none" stroke={COLOR} strokeWidth="5" strokeLinecap="round"
+              strokeDasharray={CIRC} strokeDashoffset={progressOffset}
+              style={{filter:'drop-shadow(0 0 12px rgba(249,115,22,.25))',transition:'stroke-dashoffset .5s linear'}} />
           </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-6xl font-black font-mono tabular-nums text-lime">{f(remaining)}</span>
-            <span className="text-white/30 text-xs mt-1">restant</span>
+
+          <div style={{position:'absolute',inset:0,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:2}}>
+            <span style={{fontSize:11,fontWeight:600,color:'rgba(255,255,255,.4)',textTransform:'uppercase',letterSpacing:1}}>{session?.exerciseName||'Cardio'}</span>
+            <div style={{fontSize:52,fontWeight:700,color:'#fff',letterSpacing:'-2px',fontVariantNumeric:'tabular-nums'}}>{f(remaining)}</div>
+            <div style={{fontSize:13,color:COLOR,fontWeight:500,textTransform:'uppercase',letterSpacing:1}}>restant</div>
+            <div style={{fontSize:12,color:'rgba(255,255,255,.3)',marginTop:4}}>{calories} kcal</div>
           </div>
         </div>
-        <div className="w-full max-w-xs px-4"><div className="bg-white/5 rounded-xl p-2 text-center"><p className="text-white/20 text-[10px]">Objectif : {targetMin} minutes</p></div></div>
-      </div>
-      <div className="px-4 flex gap-3" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 20px) + 80px)' }}>
-        <button onClick={() => setPaused(p => !p)} className="flex-1 h-12 rounded-2xl bg-white/10 active:bg-white/20 border border-white/10 text-white font-bold flex items-center justify-center gap-2">
-          {paused ? <Play size={20} /> : <Pause size={20} />}{paused ? 'Reprendre' : 'Pause'}
-        </button>
-        <button onClick={() => { setDone(true); clearInterval(intervalRef.current) }} className="flex-1 h-12 rounded-2xl bg-lime/20 active:bg-lime/30 border border-lime/30 text-lime font-bold flex items-center justify-center gap-2">
-          <SkipForward size={20} />Terminer
-        </button>
-      </div>
-      {confirmQuit && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-6">
-          <div className="bg-dark-card rounded-2xl p-6 w-full max-w-xs text-center space-y-4">
-            <p className="text-white font-bold text-lg">Quitter la seance ?</p>
-            <p className="text-white/50 text-sm">Ta progression sera sauvegardee.</p>
-            <div className="flex gap-3">
-              <button onClick={() => setConfirmQuit(false)} className="flex-1 h-12 rounded-xl bg-dark-bg border border-dark-border text-white font-bold">Annuler</button>
-              <button onClick={end} className="flex-1 h-12 rounded-xl bg-lime text-dark-bg font-bold">Quitter</button>
+
+        {/* Goal indicator */}
+        <div style={{width:'100%',maxWidth:280,marginBottom:20}}>
+          <div style={{background:'rgba(255,255,255,.04)',borderRadius:12,padding:'8px',textAlign:'center'}}>
+            <span style={{fontSize:11,color:'rgba(255,255,255,.2)'}}>Objectif : {targetMin} minutes</span>
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div style={{display:'flex',gap:12,width:'100%'}}>
+          <button onClick={()=>setPaused(p=>!p)}
+            style={{flex:1,height:52,borderRadius:16,border:'none',fontFamily:'inherit',fontSize:14,fontWeight:500,cursor:'pointer',
+              background:'rgba(255,255,255,.08)',color:'#fff',backdropFilter:'blur(20px)',display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
+            {paused?<Play size={18}/>:<Pause size={18}/>}{paused?'Reprendre':'Pause'}
+          </button>
+          <button onClick={()=>{setDone(true);clearInterval(intervalRef.current)}}
+            style={{flex:1,height:52,borderRadius:16,border:'none',fontFamily:'inherit',fontSize:14,fontWeight:600,cursor:'pointer',
+              background:'rgba(249,115,22,.15)',color:COLOR,backdropFilter:'blur(20px)',display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
+            <SkipForward size={18}/>Terminer
+          </button>
+        </div>
+
+        {/* Confirm quit modal */}
+        {confirmQuit && (
+          <div style={{position:'fixed',inset:0,zIndex:999,display:'flex',alignItems:'center',justifyContent:'center',background:'rgba(0,0,0,.6)',backdropFilter:'blur(8px)'}}>
+            <div style={{background:'rgba(255,255,255,.08)',backdropFilter:'blur(30px)',borderRadius:24,padding:24,maxWidth:300,width:'90%',textAlign:'center'}}>
+              <div style={{fontSize:17,fontWeight:600,color:'#fff',marginBottom:8}}>Quitter la séance ?</div>
+              <div style={{fontSize:12,color:'rgba(255,255,255,.4)',marginBottom:20}}>Ta progression sera sauvegardée</div>
+              <div style={{display:'flex',gap:10}}>
+                <button onClick={()=>setConfirmQuit(false)} style={{flex:1,height:48,borderRadius:14,border:'none',fontFamily:'inherit',fontSize:14,fontWeight:500,cursor:'pointer',background:'rgba(255,255,255,.06)',color:'#fff'}}>Annuler</button>
+                <button onClick={end} style={{flex:1,height:48,borderRadius:14,border:'none',fontFamily:'inherit',fontSize:14,fontWeight:600,cursor:'pointer',background:COLOR,color:'#0C0C10'}}>Quitter</button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
