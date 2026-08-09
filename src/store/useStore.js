@@ -630,6 +630,27 @@ const useStore = create(
           calisthenie30: { startDate: null, completedDays: {}, currentPhase: 1 },
         }),
 
+      activeProgram: null,
+      startProgram: (program) => set({
+        activeProgram: { ...program, currentDay: 0, currentStep: 0, startedAt: Date.now() }
+      }),
+      nextProgramExercise: () => set((state) => {
+        if (!state.activeProgram) return state
+        const p = state.activeProgram
+        const steps = p.days?.[p.currentDay]?.exercises || []
+        const next = p.currentStep + 1
+        if (next < steps.length) return { activeProgram: { ...p, currentStep: next } }
+        const nextDay = p.currentDay + 1
+        if (nextDay >= (p.totalDays || 30)) return { activeProgram: null }
+        return { activeProgram: { ...p, currentDay: nextDay, currentStep: 0 } }
+      }),
+      completeProgramDay: () => set((state) => {
+        if (!state.activeProgram) return state
+        const d = Math.round((Date.now() - state.activeProgram.startedAt) / 1000)
+        const w = { exerciseName: `${state.activeProgram.name} Jour ${state.activeProgram.currentDay+1}`, duration: Math.floor(d/60), calories: Math.round(d*.15), type: 'program' }
+        return { workoutHistory: [...state.workoutHistory, { ...w, id: Date.now(), completedAt: new Date().toISOString() }], activeProgram: { ...state.activeProgram, currentDay: state.activeProgram.currentDay+1, currentStep: 0 } }
+      }),
+
       customExercises: [],
       addCustomExercise: (ex) =>
         set((state) => ({
