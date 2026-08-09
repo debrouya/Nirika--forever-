@@ -4,6 +4,7 @@ import useStore from '../../store/useStore'
 import GlassBackground from '../../design-system/components/GlassBackground'
 import { useDashboardData } from './hooks/useDashboardData'
 import Recommendations from '../Recommendations'
+import { useI18n } from '../../i18n'
 import './styles/dashboard.css'
 
 const RADIUS = 130
@@ -12,6 +13,7 @@ const CIRC = 2 * Math.PI * RADIUS
 export default function Dashboard() {
   const { setCurrentView } = useStore()
   const { firstName, activeSession, streak, weeklySessions, totalTime } = useDashboardData()
+  const { t } = useI18n()
 
   const progressOffset = useMemo(() => {
     const pct = Math.min(100, Math.max(0, (streak / 30) * 100))
@@ -34,7 +36,7 @@ export default function Dashboard() {
             {new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}
           </div>
           <h1 style={{fontSize:32,fontWeight:700,color:'#fff',letterSpacing:'-.8px',lineHeight:1.1}}>
-            Bonjour{firstName?` ${firstName}`:''}
+            {t('dashboard.greeting',{name:firstName})}
           </h1>
         </div>
 
@@ -62,13 +64,13 @@ export default function Dashboard() {
                 <>
                   <div className="circle-timer">▶</div>
                   <div className="circle-main">{activeSession.exerciseName}</div>
-                  <div className="circle-sub">Reprendre</div>
+                  <div className="circle-sub">{t('dashboard.resumeWorkout')}</div>
                 </>
               ) : (
                 <>
                   <div className="circle-play">▶</div>
-                  <div className="circle-main">DÉMARRER</div>
-                  <div className="circle-sub">une séance</div>
+                  <div className="circle-main">{t('dashboard.startWorkout')}</div>
+                  <div className="circle-sub">{t('dashboard.chooseExercise')}</div>
                 </>
               )}
             </div>
@@ -77,11 +79,11 @@ export default function Dashboard() {
 
         {/* RECOVERY */}
         <div className="cockpit-recovery">
-          <span style={{fontSize:11,color:'rgba(255,255,255,.3)',textTransform:'uppercase',letterSpacing:1}}>Récupération</span>
+          <span style={{fontSize:11,color:'rgba(255,255,255,.3)',textTransform:'uppercase',letterSpacing:1}}>{t('dashboard.recovery')}</span>
           <div style={{display:'flex',gap:8,alignItems:'center',marginTop:4}}>
             <div style={{width:8,height:8,borderRadius:'50%',background:'#7ED957'}} />
-            <span style={{fontSize:13,fontWeight:500,color:'#fff'}}>Prêt</span>
-            <span style={{fontSize:11,color:'rgba(255,255,255,.3)'}}>· Score 78/100</span>
+            <span style={{fontSize:13,fontWeight:500,color:'#fff'}}>{t('dashboard.ready_status')}</span>
+            <span style={{fontSize:11,color:'rgba(255,255,255,.3)'}}>· {t('recovery.score',{score:78})}</span>
           </div>
           <div className="dash-xp-bar" style={{marginTop:8}}>
             <div className="dash-xp-fill" style={{width:'78%'}} />
@@ -91,9 +93,9 @@ export default function Dashboard() {
         {/* Quick access */}
         <div className="cockpit-actions">
           {[
-            {label:'Cardio',view:'cardio'},
-            {label:'Exercices',view:'calisthenics'},
-            {label:'Programme',view:'programme'},
+            {label:t('dashboard.cardio'),view:'cardio'},
+            {label:t('dashboard.exercises'),view:'calisthenics'},
+            {label:t('dashboard.program'),view:'programme'},
           ].map(a => (
             <button key={a.label} className="cockpit-btn" onClick={() => setCurrentView(a.view)}>{a.label}</button>
           ))}
