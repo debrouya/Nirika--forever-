@@ -14,12 +14,14 @@ export default function Dashboard() {
   const activeProgram = useStore(s => s.activeProgram)
   const sessionHistory = useStore(s => s.sessionHistory)
   const workoutHistory = useStore(s => s.workoutHistory)
-  const streak = useStore(s => s.getStreak())
+  const streak = useStore.getState().getStreak()
   const { t } = useI18n()
 
   const recovery = useMemo(() => {
-    const all = [...workoutHistory, ...sessionHistory]
-    return getRecoveryScore({}, all)
+    try {
+      const all = [...workoutHistory, ...sessionHistory]
+      return getRecoveryScore({}, all)
+    } catch { return { status: 'ready', score: 50, explanation: '' } }
   }, [workoutHistory, sessionHistory])
 
   const mode = activeProgram
