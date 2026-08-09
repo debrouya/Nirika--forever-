@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import useStore from '../../store/useStore'
 import GlassBackground from '../../design-system/components/GlassBackground'
 import CockpitCore from '../../design-system/components/CockpitCore'
@@ -14,7 +15,9 @@ export default function Dashboard() {
   const activeProgram = useStore(s => s.activeProgram)
   const sessionHistory = useStore(s => s.sessionHistory)
   const workoutHistory = useStore(s => s.workoutHistory)
-  const streak = useStore.getState().getStreak()
+  const streak = useMemo(() => {
+    try { return useStore.getState().getStreak() } catch { return 0 }
+  }, [workoutHistory, sessionHistory])
   const { t } = useI18n()
 
   const recovery = useMemo(() => {
