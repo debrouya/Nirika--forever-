@@ -516,164 +516,75 @@ export default function Cardio() {
 
   // ==================== TIMER VIEW ====================
   if (view === 'timer' && selectedActivity) {
+    const R=120; const CIRC=2*Math.PI*R
+    const progress=Math.min(100,(elapsed/3600)*100)
+    const offset=CIRC-(progress/100)*CIRC
     return (
-      <div className="space-y-4 p-4">
-        <button
-          onClick={() => { if (!isRunning) { setView('grid'); setSelectedActivity(null) } }}
-          className="flex items-center gap-1 text-muted hover:text-white text-sm transition-colors"
-        >
-          <ChevronLeft size={16} /> {isRunning ? 'Session en cours' : 'Retour'}
+      <div style={{padding:'52px 20px 120px',maxWidth:430,margin:'0 auto',minHeight:'100dvh',display:'flex',flexDirection:'column',alignItems:'center',background:'#0C0C10'}}>
+        <button onClick={()=>{if(!isRunning){setView('grid');setSelectedActivity(null)}}}
+          style={{alignSelf:'flex-start',background:'none',border:'none',color:'rgba(255,255,255,.4)',fontSize:13,fontFamily:'inherit',cursor:'pointer',marginBottom:32,display:'flex',alignItems:'center',gap:4}}>
+          ← {isRunning?'Session en cours':'Retour'}
         </button>
 
-        {/* Activity Header */}
-        <div className="relative bg-dark-card rounded-2xl overflow-hidden h-32 border border-dark-border text-center">
-          <img
-            src={selectedActivity.image}
-            alt={selectedActivity.name}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-          <div className="relative z-10 h-full flex flex-col items-center justify-end pb-3">
-            <h2 className="text-white font-bold">{selectedActivity.name}</h2>
-            <span className="text-lime text-[10px] font-medium uppercase">{OBJECTIVES.find(o => o.id === objective)?.label}</span>
+        {/* COCKPIT CIRCLE */}
+        <div style={{position:'relative',width:280,height:280,marginBottom:24}}>
+          <svg viewBox="0 0 280 280" width="280" height="280" style={{transform:'rotate(-90deg)',position:'absolute'}}>
+            <circle cx="140" cy="140" r={R} fill="none" stroke="rgb(255,255,255)" strokeOpacity="0.03" strokeWidth="2" />
+            <circle cx="140" cy="140" r={R} fill="none" stroke="#f97316" strokeWidth="5" strokeLinecap="round"
+              strokeDasharray={CIRC} strokeDashoffset={offset}
+              style={{filter:'drop-shadow(0 0 12px rgba(249,115,22,.25))',transition:'stroke-dashoffset .5s linear'}} />
+          </svg>
+          <div style={{position:'absolute',inset:0,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:2}}>
+            <span style={{fontSize:11,fontWeight:600,color:'rgba(255,255,255,.4)',textTransform:'uppercase',letterSpacing:1}}>{selectedActivity.name}</span>
+            <div style={{fontSize:48,fontWeight:700,color:'#fff',letterSpacing:'-2px',fontVariantNumeric:'tabular-nums'}}>{formatTime(elapsed)}</div>
+            {isRunning && <div style={{display:'flex',alignItems:'center',gap:6,marginTop:2}}><Heart size={16} style={{color:'#f87171'}} /><span style={{fontSize:14,fontWeight:600,color:'#fff'}}>{currentBPM}</span><span style={{fontSize:10,color:'rgba(255,255,255,.3)'}}>BPM</span><span style={{padding:'2px 8px',borderRadius:8,fontSize:10,fontWeight:500,background:currentZone.color,color:'#0C0C10'}}>Zone {currentZone.zone}</span></div>}
+            {!isRunning && <div style={{fontSize:12,color:'rgba(255,255,255,.25)',marginTop:4}}>{OBJECTIVES.find(o=>o.id===objective)?.label}</div>}
           </div>
         </div>
 
-        {/* Timer + BPM */}
-        <div className="bg-dark-card rounded-2xl p-6 border border-dark-border text-center">
-          <div className="text-5xl font-black text-white font-mono tabular-nums mb-4">
-            {formatTime(elapsed)}
-          </div>
-
-          {/* BPM Live */}
-          {isRunning && (
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <div className="flex items-center gap-2">
-                <Heart size={20} className="text-red-400 animate-pulse" />
-                <span className="text-white font-bold text-2xl">{currentBPM}</span>
-                <span className="text-muted text-xs">BPM</span>
-              </div>
-              <div
-                className="px-3 py-1 rounded-full text-xs font-bold text-dark-bg"
-                style={{ backgroundColor: currentZone.color }}
-              >
-                Zone {currentZone.zone}
-              </div>
-            </div>
-          )}
-
-          {/* Zone Bar */}
-          {isRunning && (
-            <div className="flex gap-1 mb-4">
-              {ZONES.map((z) => (
-                <div key={z.zone} className="flex-1 h-2 rounded-full overflow-hidden bg-dark-bg">
-                  <div
-                    className="h-full rounded-full transition-all duration-1000"
-                    style={{
-                      width: `${(zoneTime[z.zone] || 0) / Math.max(elapsed, 1) * 100}%`,
-                      backgroundColor: z.color,
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Coaching Message */}
-          {isRunning && coachingMsg && (
-            <div className="bg-lime/10 border border-lime/20 rounded-xl px-4 py-2 mb-4">
-              <p className="text-lime text-sm font-medium">{coachingMsg}</p>
-            </div>
-          )}
-
-          {/* Stats Row */}
-          <div className="flex items-center justify-center gap-2 text-sm flex-wrap">
-            <div className="bg-dark-bg rounded-lg px-3 py-1.5">
-              <Flame size={12} className="text-orange-400 inline mr-1" />
-              <span className="text-white font-bold">{currentCalories}</span>
-              <span className="text-muted"> kcal</span>
-            </div>
-            <div className="bg-dark-bg rounded-lg px-3 py-1.5">
-              <span className="text-muted">MET </span>
-              <span className="text-white font-bold">{dynamicMET}</span>
-            </div>
-            {currentDistance > 0 && (
-              <div className="bg-dark-bg rounded-lg px-3 py-1.5">
-                <TrendingUp size={12} className="text-lime inline mr-1" />
-                <span className="text-white font-bold">{currentDistance}</span>
-                <span className="text-muted"> km</span>
-              </div>
-            )}
-          </div>
+        {/* Stats row */}
+        <div style={{display:'flex',gap:12,marginBottom:24,flexWrap:'wrap',justifyContent:'center'}}>
+          <div style={{background:'rgba(255,255,255,.04)',borderRadius:14,padding:'8px 14px',fontSize:12,color:'#fff'}}>🔥 {currentCalories} kcal</div>
+          {currentDistance>0&&<div style={{background:'rgba(255,255,255,.04)',borderRadius:14,padding:'8px 14px',fontSize:12,color:'#fff'}}>{currentDistance} km</div>}
+          <div style={{background:'rgba(255,255,255,.04)',borderRadius:14,padding:'8px 14px',fontSize:12,color:'rgba(255,255,255,.5)'}}>MET {dynamicMET}</div>
         </div>
 
-        {/* Level Control */}
-        <div className="bg-dark-card rounded-2xl p-4 border border-dark-border">
-          <p className="text-muted text-[10px] uppercase tracking-wide text-center mb-3">
-            {getLevelLabel(selectedActivity.levelConfig, currentLevel)}
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            <button
-              onClick={() => adjustLevel(-1)}
-              disabled={currentLevel <= selectedActivity.levelConfig.min}
-              className="w-10 h-10 rounded-full bg-dark-bg border border-dark-border flex items-center justify-center text-white/60 hover:bg-dark-border disabled:opacity-30 transition-all"
-            >
-              <Minus size={16} />
-            </button>
-            <div className="w-32 relative">
-              <div className="h-2 bg-dark-bg rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-lime rounded-full transition-all duration-300"
-                  style={{
-                    width: `${((currentLevel - selectedActivity.levelConfig.min) /
-                      (selectedActivity.levelConfig.max - selectedActivity.levelConfig.min)) *
-                      100}%`,
-                  }}
-                />
-              </div>
-            </div>
-            <button
-              onClick={() => adjustLevel(1)}
-              disabled={currentLevel >= selectedActivity.levelConfig.max}
-              className="w-10 h-10 rounded-full bg-dark-bg border border-dark-border flex items-center justify-center text-white/60 hover:bg-dark-border disabled:opacity-30 transition-all"
-            >
-              <Plus size={16} />
-            </button>
+        {/* Zone bars */}
+        {isRunning && (
+          <div style={{display:'flex',gap:4,width:'100%',maxWidth:280,marginBottom:20}}>
+            {ZONES.map(z=>(<div key={z.zone} style={{flex:1,height:3,borderRadius:2,background:'rgba(255,255,255,.06)',overflow:'hidden'}}><div style={{height:'100%',width:`${(zoneTime[z.zone]||0)/Math.max(elapsed,1)*100}%`,borderRadius:2,background:z.color,transition:'width 1s'}}/></div>))}
+          </div>
+        )}
+
+        {/* Coaching message */}
+        {isRunning && coachingMsg && (
+          <div style={{background:'rgba(249,115,22,.08)',border:'1px solid rgba(249,115,22,.15)',borderRadius:14,padding:'8px 16px',marginBottom:20,fontSize:12,color:'#f97316',textAlign:'center',width:'100%',maxWidth:280}}>{coachingMsg}</div>
+        )}
+
+        {/* Level control */}
+        <div style={{width:'100%',maxWidth:280,marginBottom:24}}>
+          <div style={{fontSize:10,color:'rgba(255,255,255,.3)',textTransform:'uppercase',letterSpacing:1,textAlign:'center',marginBottom:8}}>{getLevelLabel(selectedActivity.levelConfig,currentLevel)}</div>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:12}}>
+            <button onClick={()=>adjustLevel(-1)} disabled={currentLevel<=selectedActivity.levelConfig.min} style={{width:32,height:32,borderRadius:10,border:'none',background:'rgba(255,255,255,.06)',color:'rgba(255,255,255,.4)',fontSize:16,cursor:'pointer',fontFamily:'inherit',opacity:currentLevel<=selectedActivity.levelConfig.min?.3:1}}>−</button>
+            <div style={{width:120,height:3,borderRadius:2,background:'rgba(255,255,255,.06)',overflow:'hidden'}}><div style={{height:'100%',width:`${((currentLevel-selectedActivity.levelConfig.min)/(selectedActivity.levelConfig.max-selectedActivity.levelConfig.min))*100}%`,borderRadius:2,background:'#7ED957',transition:'width .3s'}}/></div>
+            <button onClick={()=>adjustLevel(1)} disabled={currentLevel>=selectedActivity.levelConfig.max} style={{width:32,height:32,borderRadius:10,border:'none',background:'rgba(255,255,255,.06)',color:'rgba(255,255,255,.4)',fontSize:16,cursor:'pointer',fontFamily:'inherit',opacity:currentLevel>=selectedActivity.levelConfig.max?.3:1}}>+</button>
           </div>
         </div>
 
         {/* Controls */}
-        <div className="flex items-center justify-center gap-3">
+        <div style={{display:'flex',gap:16}}>
           {!isRunning ? (
-            <button
-              onClick={elapsed > 0 ? handleResume : handleStart}
-              className="w-16 h-16 rounded-full bg-lime hover:bg-lime/90 text-dark-bg flex items-center justify-center transition-all shadow-lg shadow-lime/30"
-            >
-              <Play size={28} fill="currentColor" />
-            </button>
-          ) : (
-            <button
-              onClick={handlePause}
-              className="w-16 h-16 rounded-full bg-yellow-500 hover:bg-yellow-400 text-dark-bg flex items-center justify-center transition-all shadow-lg shadow-yellow-500/30"
-            >
-              <Pause size={28} />
-            </button>
+            <button onClick={elapsed>0?handleResume:handleStart} style={{width:64,height:64,borderRadius:'50%',border:'none',background:'#f97316',color:'#0C0C10',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 4px 20px rgba(249,115,22,.3)'}}><Play size={28} fill="currentColor"/></button>
+          ):(
+            <button onClick={handlePause} style={{width:64,height:64,borderRadius:'50%',border:'none',background:'#eab308',color:'#0C0C10',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}><Pause size={28}/></button>
           )}
-          <button
-            onClick={handleStop}
-            className="w-16 h-16 rounded-full bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-400 flex items-center justify-center transition-all"
-          >
-            <Square size={28} />
-          </button>
+          <button onClick={handleStop} style={{width:64,height:64,borderRadius:'50%',border:'none',background:'rgba(239,68,68,.15)',color:'#f87171',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}><Square size={28}/></button>
         </div>
 
-        {/* Live indicator */}
         {isRunning && (
-          <div className="bg-dark-card rounded-2xl p-3 border border-lime/20">
-            <div className="flex items-center justify-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-lime animate-pulse" />
-              <span className="text-muted text-xs">Session en cours — {OBJECTIVES.find(o => o.id === objective)?.label}</span>
-            </div>
+          <div style={{marginTop:16,display:'flex',alignItems:'center',gap:6,fontSize:11,color:'rgba(255,255,255,.25)'}}>
+            <div style={{width:6,height:6,borderRadius:'50%',background:'#7ED957',animation:'pulse 2s infinite'}}/>
+            Session en cours — {OBJECTIVES.find(o=>o.id===objective)?.label}
           </div>
         )}
       </div>
