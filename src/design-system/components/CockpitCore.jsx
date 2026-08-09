@@ -1,123 +1,85 @@
-import { useMemo, useRef, useCallback } from 'react'
+import { useMemo } from 'react'
+import useCockpitGestures from '../hooks/useCockpitGestures'
 import './Cockpit.css'
 
+const SIZE = 280
+const CENTER = SIZE / 2
 const R = { outer: 120, mid: 100, inner: 80 }
-const CIRC = { outer: 2*Math.PI*R.outer, mid: 2*Math.PI*R.mid, inner: 2*Math.PI*R.inner }
+const circ = (r) => 2 * Math.PI * r
 
-const MODE_CONFIG = {
-  default:  { icon: '▶', color: '#7ED957', glow: 'rgba(126,217,87,.06)', outer: .35, mid: .4, inner: .5, className: '' },
-  program:  { icon: '📋', color: '#60a5fa', glow: 'rgba(96,165,250,.05)', outer: .5, mid: .3, inner: .2, className: '' },
-  cardio:   { icon: '❤️', color: '#f97316', glow: 'rgba(249,115,22,.05)', outer: .2, mid: .5, inner: .3, className: 'c-mode-cardio' },
-  exercise: { icon: '💪', color: '#7ED957', glow: 'rgba(126,217,87,.08)', outer: .1, mid: .2, inner: .7, className: 'c-mode-exercise' },
-  coach:    { icon: '✨', color: '#c084fc', glow: 'rgba(192,132,252,.05)', outer: .3, mid: .2, inner: .4, className: '' },
+const COLORS = {
+  default: '#7ED957',
+  program: '#60a5fa',
+  cardio: '#f97316',
+  exercise: '#7ED957',
+  coach: '#a855f7',
 }
 
 export default function CockpitCore({
   mode = 'default',
   streak = 0,
-  activeSession,
+  bpm = 0,
+  reps = 0,
+  setNumber = 1,
+  programDay = 1,
   programProgress = 0,
-  cardioIntensity = 0,
   onTap,
   onSwipeLeft,
   onSwipeRight,
-  onLongPress,
+  onHold,
 }) {
-  const touchStart = useRef({ x: 0, y: 0, time: 0 })
-  const longPressTimer = useRef(null)
+  const color = COLORS[mode] || COLORS.default
+  const gestures = useCockpitGestures({ onTap, onSwipeLeft, onSwipeRight, onHold })
 
-  const config = MODE_CONFIG[mode] || MODE_CONFIG.default
+  const outerOffset = circ(R.outer) * (1 - Math.min(streak / 30, 1))
 
-  const offsets = useMemo(() => ({
-    outer: CIRC.outer - (Math.min(100, (streak/30)*100) / 100) * CIRC.outer,
-    mid: CIRC.mid - (programProgress * CIRC.mid),
-    inner: CIRC.inner - (cardioIntensity * CIRC.inner),
-  }), [streak, programProgress, cardioIntensity])
+  const midProgress = mode === 'program' ? programProgress : mode === 'cardio' ? Math.min(bpm / 180, 1) : 0
+  const midOffset = circ(R.mid) * (1 - midProgress)
 
-  const handleTouchStart = useCallback((e) => {
-    const t = e.touches?.[0] || e
-    touchStart.current = { x: t.clientX, y: t.clientY, time: Date.now() }
-    longPressTimer.current = setTimeout(() => onLongPress?.(), 600)
-  }, [onLongPress])
+  const innerProgress = mode === 'exercise' ? Math.min(reps / 20, 1) : mode === 'cardio' ? Math.min(bpm / 180, 1) : 0
+  const innerOffset = circ(R.inner) * (1 - innerProgress)
 
-  const handleTouchEnd = useCallback((e) => {
-    clearTimeout(longPressTimer.current)
-    const t = e.changedTouches?.[0] || e
-    const dx = t.clientX - touchStart.current.x
-    const dy = t.clientY - touchStart.current.y
-    const dt = Date.now() - touchStart.current.time
-
-    if (dt > 500) return
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
-      dx > 0 ? onSwipeRight?.() : onSwipeLeft?.()
-      return
+  const center = useMemo(() => {
+    switch (mode) {
+      case 'program': return { label: 'PROGRAM', value: programDay, sub: '/30' }
+      case 'cardio': return { label: 'RHYTHM', value: bpm, sub: 'bpm' }
+      case 'exercise': return { label: `SET ${setNumber}`, value: reps, sub: 'reps' }
+      case 'coach': return { label: 'ANALYSE', value: '...', sub: '' }
+      default: return { label: 'PRÊT', value: 'GO', sub: '' }
     }
-    if (Math.abs(dx) < 20 && Math.abs(dy) < 20) {
-      onTap?.()
-    }
-  }, [onTap, onSwipeLeft, onSwipeRight])
+  }, [mode, bpm, reps, setNumber, programDay])
 
   return (
-    <div
-      className={`cockpit ${config.className}`}
-      style={{ width: 280, height: 280 }}
-      onClick={onTap}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      {/* Glow */}
-      <div className="c-glow" style={{ '--glow-color': config.glow }} />
+    <div className={`cockpit ${mode ? `mode-${mode}` : ''}`} {...gestures}>
+      <div className="c-glow" style={{ '--glow-color': `${color}10` }} />
 
-      {/* Particles (coach mode) */}
       {mode === 'coach' && (
         <>
-          <div className="c-particle" />
-          <div className="c-particle" />
-          <div className="c-particle" />
+          <div className="c-particle" /><div className="c-particle" /><div className="c-particle" />
         </>
       )}
 
-      {/* SVG Rings */}
-      <svg viewBox="0 0 280 280" width="280" height="280">
-        {/* Outer — streak */}
-        <circle cx="140" cy="140" r={R.outer} className="c-ring c-ring-outer" stroke="rgba(255,255,255,.04)" strokeDasharray={CIRC.outer} strokeDashoffset="0" />
-        <circle cx="140" cy="140" r={R.outer} className="c-ring c-ring-outer-active" stroke={config.color}
-          strokeDasharray={CIRC.outer} strokeDashoffset={offsets.outer}
-          style={{ '--glow': config.glow }} />
-
-        {/* Mid — program / session */}
-        <circle cx="140" cy="140" r={R.mid} className="c-ring c-ring-mid" stroke="rgba(255,255,255,.05)" strokeDasharray={CIRC.mid} strokeDashoffset="0" />
-        <circle cx="140" cy="140" r={R.mid} className="c-ring c-ring-mid-active" stroke={config.color}
-          strokeDasharray={CIRC.mid} strokeDashoffset={offsets.mid}
-          style={{ '--glow': config.glow }} />
-
-        {/* Inner — real-time */}
-        <circle cx="140" cy="140" r={R.inner} className="c-ring c-ring-inner" stroke="rgba(255,255,255,.06)" strokeDasharray={CIRC.inner} strokeDashoffset="0" />
-        <circle cx="140" cy="140" r={R.inner} className="c-ring c-ring-inner-active" stroke={config.color}
-          strokeDasharray={CIRC.inner} strokeDashoffset={offsets.inner}
-          style={{ '--glow': config.glow }} />
+      <svg width={SIZE} height={SIZE}>
+        {[
+          ['outer', R.outer, outerOffset, 4],
+          ['mid', R.mid, midOffset, 3],
+          ['inner', R.inner, innerOffset, 3],
+        ].map(([key, r, offset, stroke]) => (
+          <g key={key}>
+            <circle cx={CENTER} cy={CENTER} r={r} stroke="rgba(255,255,255,.04)" strokeWidth="2" fill="none" />
+            <circle cx={CENTER} cy={CENTER} r={r} stroke={color} strokeWidth={stroke} fill="none"
+              strokeDasharray={circ(r)} strokeDashoffset={offset} className={`ring ring-${key}`}
+              style={{ filter: `drop-shadow(0 0 ${key==='inner'?12:8}px ${color}30)`, transition: 'stroke-dashoffset 1.5s ease' }} />
+          </g>
+        ))}
       </svg>
 
-      {/* Core Center */}
       <div className="c-core">
-        <span className="c-core-icon">{config.icon}</span>
-        <span className="c-core-main">
-          {mode === 'default' && (activeSession ? 'REPRENDRE' : 'DÉMARRER')}
-          {mode === 'program' && `JOUR ${Math.ceil(programProgress * 30)}/30`}
-          {mode === 'cardio' && 'RHYTHM'}
-          {mode === 'exercise' && 'SET'}
-          {mode === 'coach' && 'ANALYSE'}
-        </span>
-        <span className="c-core-sub">
-          {mode === 'default' && (activeSession ? activeSession.exerciseName : 'une séance')}
-          {mode === 'program' && `${Math.round(programProgress * 100)}%`}
-          {mode === 'cardio' && `${Math.round(cardioIntensity * 100)} bpm`}
-          {mode === 'exercise' && '3 séries'}
-          {mode === 'coach' && 'en cours...'}
-        </span>
+        <span className="c-core-label">{center.label}</span>
+        <span className="c-core-value">{center.value}</span>
+        <span className="c-core-sub">{center.sub}</span>
       </div>
 
-      {/* Swipe hint */}
       <div className="c-swipe-hint">← SWIPE →</div>
     </div>
   )
