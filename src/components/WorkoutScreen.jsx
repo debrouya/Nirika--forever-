@@ -102,7 +102,6 @@ export default function WorkoutScreen({exercise,onComplete}){
           <button onClick={()=>setConfirmQuit(true)} style={{background:'rgba(255,255,255,.06)',border:'none',borderRadius:14,width:40,height:40,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',backdropFilter:'blur(20px)'}}>
             <ArrowLeft size={20} style={{color:'rgba(255,255,255,.5)'}} />
           </button>
-          <span style={{fontSize:13,fontWeight:600,color:'#fff',textTransform:'uppercase',letterSpacing:2}}>{exercise.name}</span>
           <div style={{width:40}} />
         </div>
 
@@ -115,7 +114,8 @@ export default function WorkoutScreen({exercise,onComplete}){
               style={{filter:`drop-shadow(0 0 12px ${color}44)`,transition:'stroke-dashoffset .5s linear'}} />
           </svg>
 
-          <div style={{position:'absolute',inset:0,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:4}}>
+          <div style={{position:'absolute',inset:0,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:2}}>
+            <span style={{fontSize:11,fontWeight:600,color:'rgba(255,255,255,.4)',textTransform:'uppercase',letterSpacing:1}}>{exercise.name}</span>
             <div style={{fontSize:56,fontWeight:700,color:'#fff',letterSpacing:'-2px',fontVariantNumeric:'tabular-nums',fontFamily:'Inter,sans-serif'}}>
               {f(rem)}
             </div>
