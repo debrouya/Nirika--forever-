@@ -30,7 +30,7 @@ const DAILY_MOTIVATION = [
   { day: 2, msg: "Encore un jour 💪", sub: "La régularité est la clé" },
   { day: 3, msg: "Tu tiens le coup 🎯", sub: "3 jours, c'est déjà un début" },
   { day: 5, msg: "Une semaine bientôt ! 🔥", sub: "Continue comme ça" },
-  { day: 7, msg: "Première semaine完成ie 🏆", sub: "Tu es sur la bonne voie" },
+  { day: 7, msg: "Première semaine terminée 🏆", sub: "Tu es sur la bonne voie" },
   { day: 10, msg: "Phase 1 terminée ! 🟢", sub: "Adaptation réussie" },
   { day: 11, msg: "Nouveau défi 🟡", sub: "Phase 2 : Intensité" },
   { day: 14, msg: "2 semaines ! 💪", sub: "À mi-chemin" },
