@@ -5,13 +5,22 @@ import { useDashboardData } from './hooks/useDashboardData'
 import Recommendations from '../Recommendations'
 import { useI18n } from '../../i18n'
 import { feedbackSystem, getStreakState, getMilestone } from '../../lib/feedback'
+import { getRecoveryScore } from '../../services/aiCoaching'
 import './styles/dashboard.css'
 
 export default function Dashboard() {
   const { setCurrentView } = useStore()
-  const { firstName, activeSession, streak, weeklySessions, totalTime } = useDashboardData()
+  const { firstName, activeSession, weeklySessions, totalTime, exerciseHistory } = useDashboardData()
   const activeProgram = useStore(s => s.activeProgram)
+  const sessionHistory = useStore(s => s.sessionHistory)
+  const workoutHistory = useStore(s => s.workoutHistory)
+  const streak = useStore(s => s.getStreak())
   const { t } = useI18n()
+
+  const recovery = useMemo(() => {
+    const all = [...workoutHistory, ...sessionHistory]
+    return getRecoveryScore({}, all)
+  }, [workoutHistory, sessionHistory])
 
   const mode = activeProgram
     ? 'program'
@@ -72,11 +81,11 @@ export default function Dashboard() {
           <span style={{fontSize:11,color:'rgba(255,255,255,.3)',textTransform:'uppercase',letterSpacing:1}}>{t('dashboard.recovery')}</span>
           <div style={{display:'flex',gap:8,alignItems:'center',marginTop:4}}>
             <div style={{width:8,height:8,borderRadius:'50%',background:'#7ED957'}} />
-            <span style={{fontSize:13,fontWeight:500,color:'#fff'}}>{t('dashboard.ready_status')}</span>
-            <span style={{fontSize:11,color:'rgba(255,255,255,.3)'}}>· {t('recovery.score',{score:78})}</span>
+            <span style={{fontSize:13,fontWeight:500,color:'#fff'}}>{recovery.status === 'ready' ? t('dashboard.ready_status') : recovery.status}</span>
+            <span style={{fontSize:11,color:'rgba(255,255,255,.3)'}}>· {t('recovery.score',{score:recovery.score})}</span>
           </div>
           <div className="dash-xp-bar" style={{marginTop:8}}>
-            <div className="dash-xp-fill" style={{width:'78%'}} />
+            <div className="dash-xp-fill" style={{width:`${recovery.score}%`}} />
           </div>
         </div>
 

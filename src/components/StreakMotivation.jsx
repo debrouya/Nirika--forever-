@@ -72,7 +72,7 @@ function getWeekDays() {
 }
 
 export default function StreakMotivation() {
-  const { workoutHistory, getStreak } = useStore()
+  const { workoutHistory, sessionHistory, getStreak } = useStore()
   const [toast, setToast] = useState(null)
   const [lastShown, setLastShown] = useState(0)
 
@@ -80,12 +80,14 @@ export default function StreakMotivation() {
 
   const weekDays = useMemo(() => {
     const days = getWeekDays()
+    const all = [...workoutHistory, ...sessionHistory]
     const completedDates = new Set(
-      workoutHistory.map(w => {
-        const d = new Date(w.completedAt)
+      all.map(w => {
+        const d = new Date(w.completedAt || w.date || w.endedAt || w.startedAt)
+        if (isNaN(d)) return null
         d.setHours(0, 0, 0, 0)
         return d.getTime()
-      })
+      }).filter(Boolean)
     )
     const today = new Date()
     today.setHours(0, 0, 0, 0)

@@ -738,6 +738,12 @@ const useStore = create(
       version: 1,
       onRehydrateStorage: () => (state, error) => {
         if (error) { console.warn('Storage corrupted, resetting.'); try { localStorage.removeItem('nf-storage') } catch {} }
+        try {
+          const snap = JSON.parse(sessionStorage.getItem('lv_snap'))
+          if (snap && snap.startedAt && Date.now() - snap.startedAt < 4 * 60 * 60 * 1000 && snap.exerciseId) {
+            useStore.setState({ activeSession: { exerciseId: snap.exerciseId, exerciseName: snap.exerciseName, sessionType: 'exercise', sets: snap.sets || [], startedAt: snap.startedAt, paused: true, pausedAt: Date.now(), totalPausedMs: snap.totalPausedMs || 0 } })
+          }
+        } catch {}
       },
       partialize: (state) => {
         const { activeSession, ...rest } = state
