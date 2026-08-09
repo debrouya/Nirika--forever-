@@ -70,7 +70,7 @@ export default function WorkoutScreen({exercise,onComplete}){
     const durTotal=Math.round((Date.now()-started.current)/1000)
     const vol=sets.reduce((s,x)=>s+x.w*x.r,0)
     return(
-      <GlassBackground>
+      <div style={{position:'fixed',inset:0,zIndex:40,background:'#0C0C10'}}>
         <div id="wo-summary" style={{padding:'60px 20px 120px',maxWidth:430,margin:'0 auto',display:'flex',flexDirection:'column',alignItems:'center',gap:24,minHeight:'100dvh',textAlign:'center'}}>
           <CheckCircle size={48} style={{color:'#7ED957',filter:'drop-shadow(0 0 12px rgba(126,217,87,.3))'}} />
           <div style={{fontSize:24,fontWeight:700,color:'#fff'}}>Séance terminée</div>
@@ -86,12 +86,12 @@ export default function WorkoutScreen({exercise,onComplete}){
             <button onClick={end} style={{flex:1,background:'#7ED957',border:'none',borderRadius:16,height:48,color:'#0E0E10',fontSize:13,fontWeight:600,cursor:'pointer',fontFamily:'inherit',display:'flex',alignItems:'center',justifyContent:'center',gap:8}}><CheckCircle size={16} /> Terminer</button>
           </div>
         </div>
-      </GlassBackground>
+      </div>
     )
   }
 
   return(
-    <GlassBackground>
+    <div style={{position:'fixed',inset:0,zIndex:40,background:'#0C0C10'}}>
       <div style={{padding:'52px 20px 120px',maxWidth:430,margin:'0 auto',display:'flex',flexDirection:'column',alignItems:'center',minHeight:'100dvh'}}>
 
         {/* Header */}
@@ -180,6 +180,6 @@ export default function WorkoutScreen({exercise,onComplete}){
           </div>
         )}
       </div>
-    </GlassBackground>
+    </div>
   )
 }
