@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import useCockpitGestures from '../hooks/useCockpitGestures'
+import useCockpitGestures from '../../hooks/useCockpitGestures'
 import './Cockpit.css'
 
 const SIZE = 280

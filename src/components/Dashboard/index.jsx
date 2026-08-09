@@ -1,25 +1,16 @@
-import { useMemo } from 'react'
-import { Play } from 'lucide-react'
 import useStore from '../../store/useStore'
 import GlassBackground from '../../design-system/components/GlassBackground'
+import CockpitCore from '../../design-system/components/CockpitCore'
 import { useDashboardData } from './hooks/useDashboardData'
 import Recommendations from '../Recommendations'
 import { useI18n } from '../../i18n'
 import { feedbackSystem, getStreakState, getMilestone } from '../../lib/feedback'
 import './styles/dashboard.css'
 
-const RADIUS = 130
-const CIRC = 2 * Math.PI * RADIUS
-
 export default function Dashboard() {
   const { setCurrentView } = useStore()
   const { firstName, activeSession, streak, weeklySessions, totalTime } = useDashboardData()
   const { t } = useI18n()
-
-  const progressOffset = useMemo(() => {
-    const pct = Math.min(100, Math.max(0, (streak / 30) * 100))
-    return CIRC - (pct / 100) * CIRC
-  }, [streak])
 
   const streakState = getStreakState(streak)
   const milestone = getMilestone(streak)
@@ -53,41 +44,13 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* MAIN COCKPIT CIRCLE */}
+        {/* MAIN COCKPIT CORE */}
         <div style={{display:'flex',justifyContent:'center',marginBottom:32}}>
-          <div className="circle-cockpit" style={{width:280,height:280}} onClick={() => setCurrentView(activeSession?'session':'calisthenics')}>
-
-            {/* Outer ring — progression */}
-            <svg className="circle-rings" viewBox="0 0 280 280" width="280" height="280">
-              <circle cx="140" cy="140" r={RADIUS} fill="none" stroke="rgba(255,255,255,.03)" strokeWidth="1.5" />
-              <circle cx="140" cy="140" r={RADIUS} fill="none" stroke="#7ED957" strokeWidth="5"
-                strokeLinecap="round" strokeDasharray={CIRC} strokeDashoffset={progressOffset}
-                style={{filter:'drop-shadow(0 0 14px rgba(126,217,87,.3))',transition:'stroke-dashoffset 1.5s ease'}} />
-
-              {/* Inner ring — daily goal */}
-              <circle cx="140" cy="140" r="115" fill="none" stroke="rgba(255,255,255,.04)" strokeWidth="2" />
-              <circle cx="140" cy="140" r="115" fill="none" stroke="rgba(255,255,255,.12)" strokeWidth="3"
-                strokeLinecap="round" strokeDasharray={2*Math.PI*115} strokeDashoffset={2*Math.PI*115*.4}
-                style={{transition:'stroke-dashoffset 1s ease'}} />
-            </svg>
-
-            {/* Center content */}
-            <div className="circle-center">
-              {activeSession ? (
-                <>
-                  <div className="circle-timer">▶</div>
-                  <div className="circle-main">{activeSession.exerciseName}</div>
-                  <div className="circle-sub">{t('dashboard.resumeWorkout')}</div>
-                </>
-              ) : (
-                <>
-                  <div className="circle-play">▶</div>
-                  <div className="circle-main">{t('dashboard.startWorkout')}</div>
-                  <div className="circle-sub">{t('dashboard.chooseExercise')}</div>
-                </>
-              )}
-            </div>
-          </div>
+          <CockpitCore
+            mode="default"
+            streak={streak}
+            onTap={() => setCurrentView(activeSession ? 'session' : 'calisthenics')}
+          />
         </div>
 
         {/* RECOVERY */}
