@@ -94,7 +94,7 @@ export default function WorkoutScreen({exercise,onComplete}){
   }
 
   return(
-    <div style={{position:'fixed',inset:0,zIndex:40,background:'#0C0C10'}}>
+    <div style={{position:'fixed',inset:0,zIndex:40,background:'#0C0C10',overflowY:'auto',WebkitOverflowScrolling:'touch'}}>
       <div style={{padding:'52px 20px 120px',maxWidth:430,margin:'0 auto',display:'flex',flexDirection:'column',alignItems:'center',minHeight:'100dvh'}}>
 
         {/* Header */}
@@ -126,6 +126,13 @@ export default function WorkoutScreen({exercise,onComplete}){
               Série {curSet}/{tgtSets}
             </div>
           </div>
+        </div>
+
+        {/* Stats pills */}
+        <div style={{display:'flex',gap:8,marginBottom:20,flexWrap:'wrap',justifyContent:'center'}}>
+          <div style={{background:'rgba(255,255,255,.04)',borderRadius:14,padding:'6px 14px',fontSize:12,color:'#fff'}}>🔥 {Math.round((Date.now()-started.current)/1000*.15)} kcal</div>
+          <div style={{background:'rgba(255,255,255,.04)',borderRadius:14,padding:'6px 14px',fontSize:12,color:'#fff'}}>📊 {curSet}/{tgtSets}</div>
+          {pr>0&&<div style={{background:'rgba(255,255,255,.04)',borderRadius:14,padding:'6px 14px',fontSize:12,color:'#f97316'}}>🏆 PR {pr}kg</div>}
         </div>
 
         {/* Timer selectors */}
