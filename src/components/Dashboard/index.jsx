@@ -10,7 +10,16 @@ import './styles/dashboard.css'
 export default function Dashboard() {
   const { setCurrentView } = useStore()
   const { firstName, activeSession, streak, weeklySessions, totalTime } = useDashboardData()
+  const activeProgram = useStore(s => s.activeProgram)
   const { t } = useI18n()
+
+  const mode = activeProgram
+    ? 'program'
+    : activeSession?.sessionType === 'cardio'
+    ? 'cardio'
+    : activeSession
+    ? 'exercise'
+    : 'default'
 
   const streakState = getStreakState(streak)
   const milestone = getMilestone(streak)
@@ -47,9 +56,14 @@ export default function Dashboard() {
         {/* MAIN COCKPIT CORE */}
         <div style={{display:'flex',justifyContent:'center',marginBottom:32}}>
           <CockpitCore
-            mode="default"
+            mode={mode}
             streak={streak}
-            onTap={() => setCurrentView(activeSession ? 'session' : 'calisthenics')}
+            activeSession={activeSession}
+            onTap={() => {
+              const { activeProgram, nextProgramExercise } = useStore.getState()
+              if (activeProgram) { nextProgramExercise(); return }
+              setCurrentView(activeSession ? 'session' : 'calisthenics')
+            }}
           />
         </div>
 

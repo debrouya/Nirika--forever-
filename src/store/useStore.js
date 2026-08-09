@@ -637,8 +637,11 @@ const useStore = create(
       nextProgramExercise: () => set((state) => {
         if (!state.activeProgram) return state
         const p = state.activeProgram
-        const steps = p.days?.[p.currentDay]?.exercises || []
-        const next = p.currentStep + 1
+        if (!p.days?.length) return state
+        const day = p.days[p.currentDay]
+        if (!day?.exercises?.length) return state
+        const steps = day.exercises
+        const next = Math.max(0, p.currentStep) + 1
         if (next < steps.length) return { activeProgram: { ...p, currentStep: next } }
         const nextDay = p.currentDay + 1
         if (nextDay >= (p.totalDays || 30)) return { activeProgram: null }
