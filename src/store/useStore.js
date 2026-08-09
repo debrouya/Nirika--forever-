@@ -561,9 +561,10 @@ const useStore = create(
         set((state) => {
           const completed = { ...state.calisthenie30.completedDays, [dayNumber]: new Date().toISOString() }
           const totalDone = Object.keys(completed).length
+          const nextDay = totalDone + 1
           let currentPhase = 1
-          if (totalDone >= 21) currentPhase = 3
-          else if (totalDone >= 11) currentPhase = 2
+          if (nextDay > 20) currentPhase = 3
+          else if (nextDay > 10) currentPhase = 2
 
           // Save to workoutHistory for Stats/Calendar
           const newWorkout = {
@@ -612,9 +613,10 @@ const useStore = create(
           const completed = { ...state.calisthenie30.completedDays }
           delete completed[dayNumber]
           const totalDone = Object.keys(completed).length
+          const nextDay = totalDone + 1
           let currentPhase = 1
-          if (totalDone >= 21) currentPhase = 3
-          else if (totalDone >= 11) currentPhase = 2
+          if (nextDay > 20) currentPhase = 3
+          else if (nextDay > 10) currentPhase = 2
           return {
             calisthenie30: {
               ...state.calisthenie30,
