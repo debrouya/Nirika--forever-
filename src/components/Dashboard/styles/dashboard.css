@@ -5,37 +5,13 @@
   min-height: 100dvh;
 }
 
-/* === COCKPIT CIRCLE === */
-.circle-cockpit {
-  position: relative; cursor: pointer; display: flex;
-  align-items: center; justify-content: center;
-}
-.circle-rings { position: absolute; inset: 0; pointer-events: none; }
-.circle-center {
-  position: absolute; inset: 0; display: flex;
-  flex-direction: column; align-items: center; justify-content: center;
-  gap: 2px; pointer-events: none;
-}
-.circle-play { font-size: 52px; color: #fff; opacity: .9; margin-bottom: -4px; }
-.circle-timer { font-size: 52px; color: #fff; opacity: .9; margin-bottom: -4px; }
-.circle-main { font-size: 13px; font-weight: 600; color: #7ED957; letter-spacing: 1.5px; margin-top: 4px; }
-.circle-sub { font-size: 11px; color: rgba(255,255,255,.3); }
-
-/* === DATA ROW === */
-.cockpit-data {
-  display: flex; align-items: center; justify-content: center;
-  gap: 24px; width: 100%; margin-bottom: 28px;
+.cockpit-recovery {
   background: rgba(255,255,255,.03); backdrop-filter: blur(30px);
-  border-radius: 20px; padding: 16px 20px;
+  border-radius: 20px; padding: 16px 20px; width: 100%; margin-bottom: 24px;
 }
-.cockpit-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.cockpit-val { font-size: 22px; font-weight: 700; color: #fff; }
-.cockpit-lbl { font-size: 10px; color: rgba(255,255,255,.3); text-transform: uppercase; letter-spacing: .5px; }
-.cockpit-divider { width: 1px; height: 28px; background: rgba(255,255,255,.06); }
 
-/* === ACTIONS === */
 .cockpit-actions {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
   width: 100%; margin-bottom: 24px;
 }
 .cockpit-btn {
@@ -46,16 +22,5 @@
 }
 .cockpit-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
 
-.cockpit-recovery {
-  background: rgba(255,255,255,.03); backdrop-filter: blur(30px);
-  border-radius: 20px; padding: 16px 20px; width: 100%; margin-bottom: 24px;
-}
-
-.dash-xp-bar {
-  height: 2px; border-radius: 1px; background: rgba(255,255,255,.06);
-  overflow: hidden;
-}
-.dash-xp-fill {
-  height: 100%; border-radius: 1px;
-  background: linear-gradient(90deg, #7ED957, rgba(126,217,87,.3));
-}
+.dash-xp-bar { height: 2px; border-radius: 1px; background: rgba(255,255,255,.06); overflow: hidden; }
+.dash-xp-fill { height: 100%; border-radius: 1px; background: linear-gradient(90deg, #7ED957, rgba(126,217,87,.3)); }

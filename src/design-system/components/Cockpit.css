@@ -10,7 +10,6 @@
 .ring {
   stroke-linecap: round;
   transition: stroke-dashoffset 1.2s ease, stroke .6s ease;
-  filter: drop-shadow(0 0 8px currentColor);
 }
 
 .c-core {

@@ -106,7 +106,7 @@ export default function WorkoutScreen({exercise,onComplete}){
         {/* COCKPIT CIRCLE */}
         <div style={{position:'relative',width:280,height:280,marginBottom:28}}>
           <svg viewBox="0 0 280 280" width="280" height="280" style={{transform:'rotate(-90deg)',position:'absolute'}}>
-            <circle cx="140" cy="140" r={R} fill="none" stroke="rgba(255,255,255,.03)" strokeWidth="2" />
+            <circle cx="140" cy="140" r={R} fill="none" stroke="rgb(255,255,255)" strokeOpacity="0.03" strokeWidth="2" />
             <circle cx="140" cy="140" r={R} fill="none" stroke={color} strokeWidth="5" strokeLinecap="round"
               strokeDasharray={CIRC} strokeDashoffset={progressOffset}
               style={{filter:`drop-shadow(0 0 12px ${color}44)`,transition:'stroke-dashoffset .5s linear'}} />

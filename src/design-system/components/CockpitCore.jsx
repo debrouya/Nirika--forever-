@@ -31,12 +31,12 @@ export default function CockpitCore({
   const color = COLORS[mode] || COLORS.default
   const gestures = useCockpitGestures({ onTap, onSwipeLeft, onSwipeRight, onHold })
 
-  const outerOffset = circ(R.outer) * (1 - Math.min(streak / 30, 1))
+  const outerOffset = circ(R.outer) * (1 - Math.max(0, Math.min(streak / 30, 1)))
 
-  const midProgress = mode === 'program' ? programProgress : mode === 'cardio' ? Math.min(bpm / 180, 1) : 0
+  const midProgress = mode === 'program' ? Math.max(0, Math.min(programProgress, 1)) : mode === 'cardio' ? Math.max(0, Math.min(bpm / 180, 1)) : 0
   const midOffset = circ(R.mid) * (1 - midProgress)
 
-  const innerProgress = mode === 'exercise' ? Math.min(reps / 20, 1) : mode === 'cardio' ? Math.min(bpm / 180, 1) : 0
+  const innerProgress = mode === 'exercise' ? Math.max(0, Math.min(reps / 20, 1)) : mode === 'cardio' ? Math.max(0, Math.min(bpm / 180, 1)) : 0
   const innerOffset = circ(R.inner) * (1 - innerProgress)
 
   const center = useMemo(() => {
@@ -66,7 +66,7 @@ export default function CockpitCore({
           ['inner', R.inner, innerOffset, 3],
         ].map(([key, r, offset, stroke]) => (
           <g key={key}>
-            <circle cx={CENTER} cy={CENTER} r={r} stroke="rgba(255,255,255,.04)" strokeWidth="2" fill="none" />
+            <circle cx={CENTER} cy={CENTER} r={r} stroke="rgb(255,255,255)" strokeOpacity="0.04" strokeWidth="2" fill="none" />
             <circle cx={CENTER} cy={CENTER} r={r} stroke={color} strokeWidth={stroke} fill="none"
               strokeDasharray={circ(r)} strokeDashoffset={offset} className={`ring ring-${key}`}
               style={{ filter: `drop-shadow(0 0 ${key==='inner'?12:8}px ${color}30)`, transition: 'stroke-dashoffset 1.5s ease' }} />
