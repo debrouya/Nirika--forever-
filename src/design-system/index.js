@@ -18,3 +18,4 @@ export {
   StatsWidget,
   GoalWidget,
 } from './components/Widgets'
+export { default as CockpitCore } from './components/CockpitCore'
