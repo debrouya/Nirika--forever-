@@ -170,7 +170,7 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
       )}
 
       {/* Bottom Nav */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-lg z-50 px-3" style={{ paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))' }}>
+      <div className="fixed bottom-0 left-0 right-0 z-50 px-3" style={{ paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))' }}>
         <nav
           ref={containerRef}
           className="rounded-2xl px-2 py-2 flex items-center relative"
