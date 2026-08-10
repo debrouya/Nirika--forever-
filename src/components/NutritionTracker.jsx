@@ -1,3 +1,4 @@
+import GlassBackground from '../design-system/components/GlassBackground'
 import { useState, useMemo } from 'react'
 import { Search, Plus, X, Apple, UtensilsCrossed, Target, ChevronLeft, Settings2 } from 'lucide-react'
 import useStore from '../store/useStore'

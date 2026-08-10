@@ -1,3 +1,4 @@
+import GlassBackground from '../design-system/components/GlassBackground'
 import { useState, useRef, useEffect } from 'react'
 import { Camera, Plus, X, Trash2, ChevronLeft, Calendar, Image } from 'lucide-react'
 import useStore from '../store/useStore'

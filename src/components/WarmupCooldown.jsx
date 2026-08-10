@@ -1,3 +1,4 @@
+import GlassBackground from '../design-system/components/GlassBackground'
 import { useState, useRef, useEffect } from 'react'
 import { Play, Timer, ChevronLeft } from 'lucide-react'
 import { warmupExercises, cooldownExercises } from '../data/warmup'

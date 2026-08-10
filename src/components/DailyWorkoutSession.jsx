@@ -1,3 +1,4 @@
+import GlassBackground from '../design-system/components/GlassBackground'
 import { useState, useCallback } from 'react'
 import { ChevronLeft, CheckCircle, Sparkles } from 'lucide-react'
 import useStore from '../store/useStore'

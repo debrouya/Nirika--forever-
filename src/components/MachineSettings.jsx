@@ -1,3 +1,4 @@
+import GlassBackground from '../design-system/components/GlassBackground'
 import { useState, useEffect } from 'react'
 import { X, Minus, Plus, Check } from 'lucide-react'
 import GlassCard from './GlassCard'

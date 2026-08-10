@@ -1,3 +1,4 @@
+import GlassBackground from '../design-system/components/GlassBackground'
 import { useState, useEffect } from 'react'
 import { Award, X, Lock } from 'lucide-react'
 import useStore from '../store/useStore'

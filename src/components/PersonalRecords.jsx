@@ -1,3 +1,4 @@
+import GlassBackground from '../design-system/components/GlassBackground'
 import { useState, useMemo } from 'react'
 import { Trophy, TrendingUp, Dumbbell, Clock, Flame, X } from 'lucide-react'
 import useStore from '../store/useStore'

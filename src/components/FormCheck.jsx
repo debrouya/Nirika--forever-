@@ -1,3 +1,4 @@
+import GlassBackground from '../design-system/components/GlassBackground'
 import { useState, useRef, useEffect, useCallback } from 'react'
 import {
   Camera,
