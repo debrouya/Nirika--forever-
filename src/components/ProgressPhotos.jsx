@@ -98,7 +98,7 @@ export default function ProgressPhotos() {
       <FeatureGuide type="photos" />
 
       {showCamera ? (
-        <div className="fixed inset-0 z-50 bg-black">
+        <div className="fixed inset-0 z-50 bg-black" style={{paddingBottom:'calc(env(safe-area-inset-bottom, 20px) + 32px)'}}>
           <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
           <canvas ref={canvasRef} className="hidden" />
           <div className="absolute bottom-8 left-0 right-0 flex items-center justify-center gap-6">
