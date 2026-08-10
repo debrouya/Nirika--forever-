@@ -70,6 +70,7 @@ export default function NutritionTracker() {
   }
 
   return (
+    <GlassBackground>
     <div className="p-4">
       <div className="flex items-center gap-3 mb-6">
         <button onClick={() => pushView('dashboard')} className="w-10 h-10 rounded-xl bg-dark-card flex items-center justify-center text-white border border-dark-border">
@@ -223,5 +224,6 @@ export default function NutritionTracker() {
         </div>
       )}
     </div>
+    </GlassBackground>
   )
 }
