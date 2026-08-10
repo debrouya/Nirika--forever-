@@ -1,5 +1,6 @@
 import GlassBackground from '../design-system/components/GlassBackground'
 import { useState, useRef, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { Camera, Plus, X, Trash2, ChevronLeft, Calendar, Image } from 'lucide-react'
 import useStore from '../store/useStore'
 import FeatureGuide from './FeatureGuide'
@@ -97,21 +98,16 @@ export default function ProgressPhotos() {
 
       <FeatureGuide type="photos" />
 
-      {showCamera ? (
-        <div className="fixed inset-0 z-50 bg-black" style={{paddingBottom:'calc(env(safe-area-inset-bottom, 20px) + 32px)'}}>
-          <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
-          <canvas ref={canvasRef} className="hidden" />
-          <div className="absolute bottom-8 left-0 right-0 flex items-center justify-center gap-6">
-            <button onClick={stopCamera} className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center text-white backdrop-blur-xl">
-              <X size={24} />
-            </button>
-            <button onClick={capturePhoto} className="w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-xl">
-              <Camera size={32} className="text-dark-bg" />
-            </button>
+      {showCamera
+        ? createPortal(<div style={{position:'fixed',inset:0,zIndex:9999,background:'#000',display:'flex',flexDirection:'column'}}>
+          <video ref={videoRef} autoPlay playsInline style={{flex:1,width:'100%',objectFit:'cover'}} />
+          <canvas ref={canvasRef} style={{display:'none'}} />
+          <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:24,padding:'24px 20px',paddingBottom:'calc(env(safe-area-inset-bottom, 20px) + 24px)'}}>
+            <button onClick={stopCamera} style={{width:56,height:56,borderRadius:'50%',border:'none',background:'rgba(255,255,255,.2)',backdropFilter:'blur(20px)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer'}}><X size={28} color="#fff" /></button>
+            <button onClick={capturePhoto} style={{width:72,height:72,borderRadius:'50%',border:'3px solid rgba(255,255,255,.4)',background:'#fff',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',boxShadow:'0 4px 20px rgba(0,0,0,.3)'}}><Camera size={32} color="#0C0C10" /></button>
           </div>
-        </div>
-      ) : (
-        <div className="space-y-4">
+        </div>, document.body)
+        : (<div className="space-y-4">
           <div className="flex items-center justify-between">
             <input
               type="date"
