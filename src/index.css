@@ -232,3 +232,12 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 .hover\:text-white:hover { color: rgba(255,255,255,.9) !important; }
 .hover\:text-white\/60:hover { color: rgba(255,255,255,.6) !important; }
 
+/* Landscape — scale down circle on short screens */
+@media (max-height: 500px) {
+  .cockpit { width: 200px !important; height: 200px !important; }
+  .cockpit svg { width: 200px !important; height: 200px !important; }
+  .c-core-value { font-size: 36px !important; }
+  .c-core-icon { font-size: 32px !important; }
+  .dash { padding: 24px 20px 0 !important; }
+}
+
