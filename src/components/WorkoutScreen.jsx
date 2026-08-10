@@ -73,22 +73,15 @@ export default function WorkoutScreen({exercise,onComplete}){
     const durTotal=Math.round((Date.now()-started.current)/1000)
     const vol=sets.reduce((s,x)=>s+x.w*x.r,0)
     return(
-      <div style={{position:'fixed',inset:0,zIndex:40,background:'#0C0C10'}}>
-        <div id="wo-summary" style={{padding:'60px 20px 120px',maxWidth:430,margin:'0 auto',display:'flex',flexDirection:'column',alignItems:'center',gap:24,minHeight:'100dvh',textAlign:'center'}}>
-          <CheckCircle size={48} style={{color:'#7ED957',filter:'drop-shadow(0 0 12px rgba(126,217,87,.3))'}} />
-          <div style={{fontSize:24,fontWeight:700,color:'#fff'}}>Séance terminée</div>
-          <div style={{fontSize:15,color:'rgba(255,255,255,.5)'}}>{exercise.name}</div>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:12,width:'100%'}}>
-            <div style={{background:'rgba(255,255,255,.06)',borderRadius:18,padding:'16px 8px',backdropFilter:'blur(20px)'}}><div style={{fontSize:24,fontWeight:700,color:'#7ED957'}}>{sets.length}</div><div style={{fontSize:11,color:'rgba(255,255,255,.35)'}}>séries</div></div>
-            <div style={{background:'rgba(255,255,255,.06)',borderRadius:18,padding:'16px 8px',backdropFilter:'blur(20px)'}}><div style={{fontSize:24,fontWeight:700,color:'#fff'}}>{f(durTotal)}</div><div style={{fontSize:11,color:'rgba(255,255,255,.35)'}}>durée</div></div>
-            <div style={{background:'rgba(255,255,255,.06)',borderRadius:18,padding:'16px 8px',backdropFilter:'blur(20px)'}}><div style={{fontSize:24,fontWeight:700,color:'#fff'}}>{vol}</div><div style={{fontSize:11,color:'rgba(255,255,255,.35)'}}>volume</div></div>
-          </div>
-          <div style={{display:'flex',gap:12,width:'100%'}}>
-            <button onClick={share} style={{flex:1,background:'rgba(255,255,255,.06)',border:'none',borderRadius:16,height:48,color:'#fff',fontSize:13,fontWeight:500,cursor:'pointer',fontFamily:'inherit',backdropFilter:'blur(20px)',display:'flex',alignItems:'center',justifyContent:'center',gap:8}}><Share2 size={16} /> Partager</button>
-            <button onClick={()=>{setPhase('effort');setCurSet(1);setSets([]);setElapsed(0);started.current=Date.now()}} style={{flex:1,background:'rgba(255,255,255,.06)',border:'none',borderRadius:16,height:48,color:'#fff',fontSize:13,fontWeight:500,cursor:'pointer',fontFamily:'inherit',backdropFilter:'blur(20px)',display:'flex',alignItems:'center',justifyContent:'center',gap:8}}><Plus size={16} /> Refaire</button>
-            <button onClick={end} style={{flex:1,background:'#7ED957',border:'none',borderRadius:16,height:48,color:'#0E0E10',fontSize:13,fontWeight:600,cursor:'pointer',fontFamily:'inherit',display:'flex',alignItems:'center',justifyContent:'center',gap:8}}><CheckCircle size={16} /> Terminer</button>
-          </div>
+      <div style={{position:'fixed',inset:0,zIndex:40,background:'#0C0C10',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:24,paddingBottom:'calc(env(safe-area-inset-bottom,20px)+90px)'}}>
+        <CheckCircle size={40} style={{color:'#7ED957',filter:'drop-shadow(0 0 12px rgba(126,217,87,.3))',marginBottom:16}} />
+        <div style={{fontSize:24,fontWeight:700,color:'#fff',marginBottom:8}}>Séance terminée</div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:12,width:'100%',maxWidth:320,marginBottom:24}}>
+          <div style={{background:'rgba(255,255,255,.06)',borderRadius:18,padding:'16px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}><div style={{fontSize:24,fontWeight:700,color:'#7ED957'}}>{sets.length}</div><div style={{fontSize:11,color:'rgba(255,255,255,.35)'}}>séries</div></div>
+          <div style={{background:'rgba(255,255,255,.06)',borderRadius:18,padding:'16px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}><div style={{fontSize:24,fontWeight:700,color:'#fff'}}>{f(durTotal)}</div><div style={{fontSize:11,color:'rgba(255,255,255,.35)'}}>durée</div></div>
+          <div style={{background:'rgba(255,255,255,.06)',borderRadius:18,padding:'16px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}><div style={{fontSize:24,fontWeight:700,color:'#fff'}}>{vol}</div><div style={{fontSize:11,color:'rgba(255,255,255,.35)'}}>volume</div></div>
         </div>
+        <button onClick={end} style={{width:'100%',maxWidth:320,height:48,borderRadius:16,border:'none',background:'#7ED957',color:'#0C0C10',fontSize:14,fontWeight:600,fontFamily:'inherit',cursor:'pointer'}}>Terminer</button>
       </div>
     )
   }
