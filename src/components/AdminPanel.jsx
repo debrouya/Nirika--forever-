@@ -168,6 +168,45 @@ function StatCard({ label, value, icon: Icon, color, trend }) {
 
 export default function AdminPanel({ user, profile, onLogout }) {
   const [activeTab, setActiveTab] = useState('dashboard')
+  const [codeVerified, setCodeVerified] = useState(false)
+  const [codeInput, setCodeInput] = useState('')
+  const [codeError, setCodeError] = useState('')
+  const [attempts, setAttempts] = useState(0)
+
+  const handleCodeSubmit = (e) => {
+    e.preventDefault()
+    const adminCode = import.meta.env.VITE_ADMIN_CODE
+    if (!adminCode || codeInput === adminCode) {
+      setCodeVerified(true)
+      setCodeError('')
+    } else {
+      const remaining = attempts + 1
+      setAttempts(remaining)
+      setCodeError(remaining >= 3 ? 'Bloqué — recharge la page' : `Code incorrect (${3-remaining} essais)`)
+      if (remaining >= 3) setCodeInput('LOCKED')
+    }
+    setCodeInput('')
+  }
+
+  if (!codeVerified) {
+    return (
+      <div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100dvh',background:'#0C0C10',padding:24}}>
+        <form onSubmit={handleCodeSubmit} style={{maxWidth:320,width:'100%',textAlign:'center'}}>
+          <Shield size={40} style={{color:'#7ED957',marginBottom:16}} />
+          <div style={{fontSize:20,fontWeight:700,color:'#fff',marginBottom:8}}>Accès Admin</div>
+          <input type="password" placeholder="Code d'accès" value={codeInput}
+            onChange={e => setCodeInput(e.target.value)}
+            disabled={attempts >= 3}
+            style={{width:'100%',height:48,background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.08)',borderRadius:14,padding:'0 16px',fontSize:14,color:'#fff',fontFamily:'inherit',textAlign:'center',outline:'none',marginBottom:8}} />
+          {codeError && <div style={{fontSize:12,color:codeError.includes('Bloqué')?'#f87171':'#facc15',marginBottom:8}}>{codeError}</div>}
+          <button type="submit" disabled={attempts >= 3}
+            style={{width:'100%',height:48,borderRadius:14,border:'none',background:attempts>=3?'rgba(255,255,255,.04)':'#7ED957',color:attempts>=3?'rgba(255,255,255,.2)':'#0C0C10',fontSize:14,fontWeight:600,cursor:attempts>=3?'not-allowed':'pointer',fontFamily:'inherit'}}>
+            {attempts >= 3 ? 'Bloqué' : 'Accéder'}
+          </button>
+        </form>
+      </div>
+    )
+  }
 
   return (
     <div className="h-[100dvh] overflow-y-auto" style={{background:'#0C0C10'}}>
