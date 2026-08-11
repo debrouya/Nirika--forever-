@@ -1,4 +1,5 @@
 import { feedbackSystem } from './feedback'
+import { programs } from '../data/programs'
 
 const WORKOUTS = {
   strength: { name: 'Haut du corps', duration: 45, exercises: 'Développé couché, Rowing, Press épaules', why: 'force' },
@@ -24,4 +25,34 @@ export function getWorkoutRecommendation(userGoal) {
     reason: REASONS[workout.why] || REASONS.global,
     adapted: userGoal.level === 'debutant' ? `${workout.duration - 5} min` : userGoal.level === 'avance' ? `${workout.duration + 10} min` : `${workout.duration} min`,
   }
+}
+
+const GOAL_TO_PROGRAM = {
+  strength: 'force',
+  muscle: 'masse',
+  weight_loss: 'perte_poids',
+  cardio: 'endurance',
+}
+
+export function getProgramRecommendation(userGoal) {
+  if (!userGoal) return null
+  const programGoal = GOAL_TO_PROGRAM[userGoal.type]
+  if (!programGoal) return null
+
+  const candidates = programs.filter(p =>
+    p.goals?.includes(programGoal) &&
+    (!p.level || p.level === (userGoal.level === 'avance' ? 'avance' : p.level === 'intermediaire' ? 'intermediaire' : 'debutant'))
+  )
+
+  if (!candidates.length) {
+    const fallback = programs.filter(p => p.goals?.includes(programGoal))
+    if (fallback.length) return fallback[0]
+    return null
+  }
+
+  const exact = candidates.find(p => p.level === userGoal.level)
+    || candidates.find(p => !p.level || p.level === 'debutant')
+    || candidates[0]
+
+  return exact
 }

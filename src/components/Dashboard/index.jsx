@@ -8,7 +8,7 @@ import OnboardingFlow from '../OnboardingFlow'
 import { useI18n } from '../../i18n'
 import { feedbackSystem, getStreakState, getMilestone } from '../../lib/feedback'
 import { getRecoveryScore } from '../../services/aiCoaching'
-import { getWorkoutRecommendation } from '../../lib/recommendations'
+import { getWorkoutRecommendation, getProgramRecommendation } from '../../lib/recommendations'
 import './styles/dashboard.css'
 
 export default function Dashboard() {
@@ -25,6 +25,7 @@ export default function Dashboard() {
   const { t } = useI18n()
 
   const recommendation = useMemo(() => getWorkoutRecommendation(userGoal), [userGoal])
+  const programRec = useMemo(() => getProgramRecommendation(userGoal), [userGoal])
 
   const daysSinceLast = useMemo(() => {
     const all = [...workoutHistory, ...sessionHistory]
@@ -125,6 +126,18 @@ export default function Dashboard() {
               {lastSession.duration > 0 && ` · ${Math.round(lastSession.duration/60)}min`}
             </div>
             <div style={{fontSize:10,color:'rgba(255,255,255,.2)',marginTop:4,fontStyle:'italic'}}>Prochaine : {recommendation?.name || 'repos ou choix libre'}</div>
+          </div>
+        )}
+
+        {programRec && !activeProgram && (
+          <div style={{width:'100%',background:'rgba(96,165,250,.06)',borderRadius:16,padding:14,marginBottom:16,backdropFilter:'blur(20px)',border:'1px solid rgba(96,165,250,.08)'}}>
+            <div style={{display:'flex',alignItems:'center',gap:8}}>
+              <span style={{fontSize:10,fontWeight:600,color:'#60a5fa',textTransform:'uppercase',letterSpacing:1}}>Programme</span>
+              <span style={{fontSize:12,color:'#fff',fontWeight:500}}>{programRec.name}</span>
+              <span style={{fontSize:10,color:'rgba(255,255,255,.2)',marginLeft:'auto'}}>{programRec.daysPerWeek}j/sem · {programRec.durationWeeks} sem</span>
+            </div>
+            <div style={{fontSize:10,color:'rgba(255,255,255,.3)',marginTop:4,lineHeight:1.4}}>{programRec.description}</div>
+            <button onClick={()=>setCurrentView('programme')} style={{marginTop:10,width:'100%',padding:'10px 0',borderRadius:12,border:'none',fontFamily:'inherit',fontSize:13,fontWeight:600,cursor:'pointer',background:'#60a5fa',color:'#141414'}}>Voir le programme</button>
           </div>
         )}
 
