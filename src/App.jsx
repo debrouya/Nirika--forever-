@@ -37,7 +37,6 @@ import Onboarding, { useOnboarding } from './components/Onboarding'
 import { useSubscription } from './hooks/useSubscription'
 import { cleanupStaleSessions } from './hooks/useBackgroundHandler'
 import DesignSystemPlayground from './design-system/DesignSystemPlayground'
-import OnboardingFlow from './components/OnboardingFlow'
 
 const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || '').split(',').map(e => e.trim()).filter(Boolean)
 
