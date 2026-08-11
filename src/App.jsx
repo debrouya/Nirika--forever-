@@ -48,7 +48,6 @@ function checkAdmin(user) {
 
 export default function App() {
   const { currentView, onboardingDone } = useStore()
-  const { done: legacyOnboardingDone, complete: completeOnboarding } = useOnboarding()
   const popView = useStore((s) => s.popView)
   const [authView, setAuthView] = useState('login')
   const [user, setUser] = useState(null)
@@ -262,7 +261,6 @@ export default function App() {
       <Navigation active={currentView} onChange={(id) => useStore.getState().setCurrentView(id)} isAdmin={isAdmin} userRole={profile?.role} onAdminClick={() => useStore.getState().setCurrentView('admin')} onLogout={handleLogout} onPricingClick={() => useStore.getState().setCurrentView('pricing')} />
       </ErrorBoundary>
       {showPaywall && <Paywall onClose={() => setShowPaywall(false)} />}
-      {!legacyOnboardingDone && <Onboarding onComplete={completeOnboarding} />}
       <Toasts />
     </Layout>
   )
