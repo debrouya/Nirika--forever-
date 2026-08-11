@@ -28,6 +28,7 @@ import ExerciseTracker from './ExerciseTracker'
 import CalisthenicsTracker from './CalisthenicsTracker'
 import useStore from '../store/useStore'
 import GlassBackground from '../design-system/components/GlassBackground'
+import GlassButton from '../design-system/components/GlassButton'
 
 const levelColors = {
   debutant: 'text-lime bg-lime/10',
@@ -610,20 +611,15 @@ export default function Programme({ user, isPremium }) {
                     ))}
                   </div>
                   {isActive ? (
-                    <button onClick={() => setView('active')} className="w-full py-3 rounded-xl bg-lime text-dark-bg font-bold text-sm flex items-center justify-center gap-2">
-                      <RotateCcw size={16} /> Reprendre
-                    </button>
+                    <GlassButton onClick={() => setView('active')} variant="lime" className="w-full" icon={RotateCcw}>Reprendre</GlassButton>
                   ) : activeProgram ? (
                     <p className="text-center text-muted text-xs py-2">Tu as déjà un programme en cours</p>
                   ) : (
-                    <button
+                    <GlassButton
                       onClick={() => startProgram(program)}
                       disabled={starting === program.id}
-                      className="w-full py-3 rounded-xl bg-lime text-dark-bg font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50"
-                    >
-                      {starting === program.id ? <div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" /> : <Play size={16} fill="currentColor" />}
-                      Commencer
-                    </button>
+                      loading={starting === program.id}
+                      variant="lime" className="w-full" icon={Play}>Commencer</GlassButton>
                   )}
                 </div>
               )}

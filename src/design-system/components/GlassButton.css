@@ -35,6 +35,12 @@
 }
 .nirika-btn-dark:hover { background: rgba(28,28,30,.95); }
 
+.nirika-btn-lime {
+  background: #7ED957; color: #141414; font-weight: 600;
+  box-shadow: 0 .5px 0 rgba(255,255,255,.3) inset, 0 8px 28px rgba(126,217,87,.15);
+}
+.nirika-btn-lime:hover { background: #8AEF64; box-shadow: 0 .5px 0 rgba(255,255,255,.4) inset, 0 12px 36px rgba(126,217,87,.25); }
+
 .nirika-btn-sm { height: 40px; padding: 0 16px; font-size: 12px; border-radius: 14px; }
 .nirika-btn-lg { height: 62px; padding: 0 28px; font-size: 17px; border-radius: 24px; }
 

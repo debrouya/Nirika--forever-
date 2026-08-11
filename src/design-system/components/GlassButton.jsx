@@ -15,6 +15,7 @@ export default function GlassButton({
     default: '',
     primary: 'nirika-btn-primary',
     dark: 'nirika-btn-dark',
+    lime: 'nirika-btn-lime',
     icon: 'nirika-btn-icon',
   }
   const sizes = {

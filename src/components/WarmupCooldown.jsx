@@ -1,4 +1,5 @@
 import GlassBackground from '../design-system/components/GlassBackground'
+import GlassButton from '../design-system/components/GlassButton'
 import { useState, useRef, useEffect } from 'react'
 import { Play, Timer, ChevronLeft } from 'lucide-react'
 import { warmupExercises, cooldownExercises } from '../data/warmup'
@@ -56,12 +57,7 @@ export default function WarmupCooldown({ type = 'warmup', onDone }) {
           <span className="text-5xl">{type === 'warmup' ? '🔥' : '🧘'}</span>
           <p className="text-white font-bold text-xl">{type === 'warmup' ? 'Échauffement terminé !' : 'Récupération terminée !'}</p>
           <p className="text-white/50 text-sm">Prêt pour la suite</p>
-          <button
-            onClick={() => pushView('dashboard')}
-            className="px-6 py-3 rounded-xl bg-lime text-dark-bg font-bold"
-          >
-            Terminer
-          </button>
+          <GlassButton onClick={() => pushView('dashboard')} variant="lime">Terminer</GlassButton>
         </div>
       ) : activeTimer !== null ? (
         <div className="flex flex-col items-center justify-center py-16 space-y-8">

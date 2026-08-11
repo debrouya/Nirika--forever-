@@ -3,6 +3,7 @@ import { User, Ruler, Weight, Activity, Target, MapPin, Wrench, LogOut, Save, Be
 import GlassBackground from '../design-system/components/GlassBackground'
 import useStore from '../store/useStore'
 import GlassCard from './GlassCard'
+import GlassButton from '../design-system/components/GlassButton'
 import { useNotifications } from '../hooks/useNotifications'
 
 const LEVELS = ['Débutant', 'Intermédiaire', 'Avancé', 'Expert']
@@ -354,12 +355,7 @@ export default function Profile({ user, onLogout }) {
 
       {/* Actions */}
       <div className="space-y-2">
-        <button
-          onClick={handleSave}
-          className="w-full bg-lime hover:brightness-110 text-black font-semibold rounded-xl py-3 text-sm transition-all flex items-center justify-center gap-2"
-        >
-          <Save size={16} /> Enregistrer le profil
-        </button>
+        <GlassButton onClick={handleSave} variant="lime" size="lg" className="w-full" icon={Save}>Enregistrer le profil</GlassButton>
 
         <button
           onClick={() => { try { localStorage.removeItem('nirika_onboarding_done') } catch {}; window.location.reload() }}
