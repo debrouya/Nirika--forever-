@@ -79,7 +79,7 @@ export default function SessionPage() {
 
   return (
     <GlassBackground>
-    <div className="space-y-4 p-4">
+    <div className="nirika-page space-y-4">
       {/* Header */}
       <div className="mb-2">
         <h1 className="text-white font-bold text-2xl">Ma Séance</h1>

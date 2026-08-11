@@ -116,7 +116,7 @@ export default function Calendar() {
 
   return (
     <GlassBackground>
-    <div className="space-y-4 p-4">
+    <div className="nirika-page space-y-4">
       {/* Month Navigation */}
       <div className="flex items-center justify-between">
         <button onClick={goToPrevMonth} className="text-white/40 hover:text-white transition-colors p-2">

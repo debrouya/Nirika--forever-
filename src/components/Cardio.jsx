@@ -520,7 +520,7 @@ export default function Cardio() {
     const progress=Math.min(100,(elapsed/3600)*100)
     const offset=CIRC-(progress/100)*CIRC
     return (
-      <div style={{padding:'52px 20px 120px',maxWidth:430,margin:'0 auto',minHeight:'100dvh',display:'flex',flexDirection:'column',alignItems:'center',background:'#0C0C10'}}>
+      <div style={{padding:'52px 22px 120px',maxWidth:430,margin:'0 auto',minHeight:'100dvh',display:'flex',flexDirection:'column',alignItems:'center',background:'#0C0C10'}}>
         <button onClick={()=>{if(!isRunning){setView('grid');setSelectedActivity(null)}}}
           style={{alignSelf:'flex-start',background:'none',border:'none',color:'rgba(255,255,255,.4)',fontSize:13,fontFamily:'inherit',cursor:'pointer',marginBottom:32,display:'flex',alignItems:'center',gap:4}}>
           ← {isRunning?'Session en cours':'Retour'}

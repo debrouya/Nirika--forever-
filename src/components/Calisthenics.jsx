@@ -52,7 +52,7 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
 
   return (
     <GlassBackground>
-      <div data-onboard="exercices" style={{padding:'52px 20px 120px',maxWidth:430,margin:'0 auto',minHeight:'100dvh'}}>
+      <div data-onboard="exercices" style={{padding:'52px 22px 120px',maxWidth:430,margin:'0 auto',minHeight:'100dvh'}}>
         <h1 style={{fontSize:28,fontWeight:700,color:'#fff',letterSpacing:'-.7px',marginBottom:20}}>Exercices</h1>
 
         <div style={{position:'relative',marginBottom:14}}>

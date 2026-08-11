@@ -68,7 +68,7 @@ export default function FormCheck() {
   )
 
   return (
-    <div className="p-4">
+    <div className="nirika-page">
       <div className="flex items-center gap-3 mb-6">
         <button onClick={() => pushView('dashboard')} className="w-10 h-10 rounded-xl bg-dark-card flex items-center justify-center text-white border border-dark-border">
           <ChevronLeft size={20} />

@@ -246,7 +246,7 @@ export default function Stats() {
 
   return (
     <GlassBackground>
-    <div data-onboard="stats" className="space-y-5 p-4">
+    <div data-onboard="stats" className="nirika-page space-y-5">
       {/* Title */}
       <h1 className="text-white font-bold text-2xl">Performances</h1>
 

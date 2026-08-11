@@ -144,7 +144,7 @@ export default function Profile({ user, onLogout }) {
 
   return (
     <GlassBackground>
-    <div className="space-y-4 p-4">
+    <div className="nirika-page space-y-4">
       {/* Avatar + Header */}
       <GlassCard className="p-4 flex items-center gap-4">
         <div className="w-16 h-16 rounded-full bg-lime/20 flex items-center justify-center border-2 border-lime/30">

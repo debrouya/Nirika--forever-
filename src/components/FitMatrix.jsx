@@ -97,7 +97,7 @@ export default function FitMatrix() {
   }
 
   return (
-    <div data-onboard="fitmatrix" className="space-y-4 p-4">
+    <div data-onboard="fitmatrix" className="nirika-page space-y-4">
       <GlassCard className="p-4 text-center space-y-2">
         <div className="flex items-center justify-center gap-2">
           <LayoutGrid size={20} className="text-lime" />
