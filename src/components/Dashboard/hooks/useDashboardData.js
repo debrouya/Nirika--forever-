@@ -2,10 +2,7 @@ import { useMemo } from 'react'
 import useStore from '../../../store/useStore'
 
 export function useDashboardData() {
-  const profile = useStore((s) => s.profile)
-  const workoutHistory = useStore((s) => s.workoutHistory)
-  const sessionHistory = useStore((s) => s.sessionHistory)
-  const exerciseHistory = useStore((s) => s.exerciseHistory)
+  const { profile, workoutHistory, sessionHistory, exerciseHistory } = useStore()
   const activeSession = useStore((s) => s.activeSession)
 
   const firstName = useMemo(() => {
