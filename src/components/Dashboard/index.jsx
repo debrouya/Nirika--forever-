@@ -51,7 +51,8 @@ export default function Dashboard() {
     const weekStart = new Date()
     weekStart.setDate(weekStart.getDate() - weekStart.getDay())
     weekStart.setHours(0, 0, 0, 0)
-    return exerciseHistory.filter(e => e.recordType === 'PR' && new Date(e.date || e.completedAt) >= weekStart).length
+    const all = Object.values(exerciseHistory || {}).flat().filter(Boolean)
+    return all.filter(e => e.recordType === 'PR' && new Date(e.date || e.completedAt) >= weekStart).length
   }, [exerciseHistory])
 
   const recovery = useMemo(() => {
