@@ -47,6 +47,13 @@ export default function Dashboard() {
     }, all[0])
   }, [workoutHistory, sessionHistory])
 
+  const weeklyPRs = useMemo(() => {
+    const weekStart = new Date()
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay())
+    weekStart.setHours(0, 0, 0, 0)
+    return exerciseHistory.filter(e => e.recordType === 'PR' && new Date(e.date || e.completedAt) >= weekStart).length
+  }, [exerciseHistory])
+
   const recovery = useMemo(() => {
     try { return getRecoveryScore({}, [...workoutHistory, ...sessionHistory]) } catch { return { status: 'ready', score: 50, explanation: '' } }
   }, [workoutHistory, sessionHistory])
@@ -140,8 +147,8 @@ export default function Dashboard() {
             <div style={{fontSize:9,color:'rgba(255,255,255,.2)',textTransform:'uppercase',letterSpacing:".5px",marginTop:2}}>temps</div>
           </div>
           <div style={{flex:1,background:'rgba(255,255,255,.03)',borderRadius:14,padding:'12px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}>
-            <div style={{fontSize:20,fontWeight:700,color:'#fff'}}>{streak}j</div>
-            <div style={{fontSize:9,color:'rgba(255,255,255,.2)',textTransform:'uppercase',letterSpacing:".5px",marginTop:2}}>streak</div>
+            <div style={{fontSize:20,fontWeight:700,color:'#7ED957'}}>{weeklyPRs}</div>
+            <div style={{fontSize:9,color:'rgba(255,255,255,.2)',textTransform:'uppercase',letterSpacing:".5px",marginTop:2}}>PR</div>
           </div>
         </div>
 
