@@ -37,6 +37,16 @@ export default function Dashboard() {
     return Math.floor((Date.now() - last) / 86400000)
   }, [workoutHistory, sessionHistory])
 
+  const lastSession = useMemo(() => {
+    const all = [...workoutHistory, ...sessionHistory]
+    if (!all.length) return null
+    return all.reduce((best, s) => {
+      const d = new Date(s.completedAt || s.date || s.endedAt || s.startedAt)
+      const bd = new Date(best.completedAt || best.date || best.endedAt || best.startedAt)
+      return isNaN(d) ? best : (isNaN(bd) ? s : (d > bd ? s : best))
+    }, all[0])
+  }, [workoutHistory, sessionHistory])
+
   const recovery = useMemo(() => {
     try { return getRecoveryScore({}, [...workoutHistory, ...sessionHistory]) } catch { return { status: 'ready', score: 50, explanation: '' } }
   }, [workoutHistory, sessionHistory])
@@ -94,6 +104,19 @@ export default function Dashboard() {
               <span style={{fontSize:12,color:'#fff',fontWeight:500}}>{recommendation.name} · {recommendation.adapted}</span>
             </div>
             <div style={{fontSize:10,color:'rgba(255,255,255,.3)',marginTop:4,lineHeight:1.4}}>"{recommendation.reason}"</div>
+          </div>
+        )}
+
+        {daysSinceLast <= 1 && lastSession && (
+          <div style={{width:'100%',background:'rgba(126,217,87,.04)',borderRadius:16,padding:14,marginBottom:16,backdropFilter:'blur(20px)',border:'1px solid rgba(126,217,87,.06)'}}>
+            <div style={{fontSize:10,color:'rgba(255,255,255,.25)',textTransform:'uppercase',letterSpacing:1}}>Dernière séance</div>
+            <div style={{fontSize:14,color:'#7ED957',fontWeight:600,marginTop:2}}>{lastSession.name || lastSession.sessionType || 'Séance'}</div>
+            <div style={{fontSize:10,color:'rgba(255,255,255,.3)',marginTop:2}}>
+              {lastSession.exercises?.length || lastSession.sets?.length || lastSession.totalSets || 0} séries
+              {lastSession.totalWeight > 0 && ` · ${lastSession.totalWeight}kg`}
+              {lastSession.duration > 0 && ` · ${Math.round(lastSession.duration/60)}min`}
+            </div>
+            <div style={{fontSize:10,color:'rgba(255,255,255,.2)',marginTop:4,fontStyle:'italic'}}>Prochaine : {recommendation?.name || 'repos ou choix libre'}</div>
           </div>
         )}
 
