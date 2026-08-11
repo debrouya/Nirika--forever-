@@ -91,6 +91,21 @@ export default function Dashboard() {
           <div className="dash-xp-bar" style={{marginTop:8}}><div className="dash-xp-fill" style={{width:`${recovery.score}%`}} /></div>
         </div>
 
+        <div style={{width:'100%',display:'flex',gap:8,marginBottom:16}}>
+          <div style={{flex:1,background:'rgba(255,255,255,.03)',borderRadius:14,padding:'12px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}>
+            <div style={{fontSize:20,fontWeight:700,color:'#fff'}}>{weeklySessions}</div>
+            <div style={{fontSize:9,color:'rgba(255,255,255,.2)',textTransform:'uppercase',letterSpacing:'.5px',marginTop:2}}>cette semaine</div>
+          </div>
+          <div style={{flex:1,background:'rgba(255,255,255,.03)',borderRadius:14,padding:'12px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}>
+            <div style={{fontSize:20,fontWeight:700,color:'#fff'}}>{Math.round(totalTime/60)||0} min</div>
+            <div style={{fontSize:9,color:'rgba(255,255,255,.2)',textTransform:'uppercase',letterSpacing:".5px",marginTop:2}}>temps</div>
+          </div>
+          <div style={{flex:1,background:'rgba(255,255,255,.03)',borderRadius:14,padding:'12px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}>
+            <div style={{fontSize:20,fontWeight:700,color:'#fff'}}>{streak}j</div>
+            <div style={{fontSize:9,color:'rgba(255,255,255,.2)',textTransform:'uppercase',letterSpacing:".5px",marginTop:2}}>streak</div>
+          </div>
+        </div>
+
         <div className="cockpit-actions">
           <button className="cockpit-btn" onClick={()=>setCurrentView('cardio')}>{t('dashboard.cardio')}</button>
           <button className="cockpit-btn" onClick={()=>setCurrentView('calisthenics')}>{t('dashboard.exercises')}</button>
