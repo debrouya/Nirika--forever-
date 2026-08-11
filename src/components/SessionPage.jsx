@@ -60,6 +60,8 @@ export default function SessionPage() {
   }, [workoutHistory])
 
   const hasActiveSession = activeSession && activeSession.startedAt
+  const records = useMemo(() => getPersonalRecords(), [getPersonalRecords])
+  const hasRecords = Object.keys(records).length > 0
 
   if (hasActiveSession) {
     if (activeSession.sessionType === 'cardio') {
@@ -74,8 +76,6 @@ export default function SessionPage() {
       />
     )
   }
-  const records = useMemo(() => getPersonalRecords(), [getPersonalRecords])
-  const hasRecords = Object.keys(records).length > 0
 
   return (
     <GlassBackground>

@@ -22,6 +22,7 @@ import {
   Send,
   CalendarRange,
   Camera,
+  Crown,
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import GlassBackground from '../design-system/components/GlassBackground'
