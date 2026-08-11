@@ -8,6 +8,7 @@ import OnboardingFlow from '../OnboardingFlow'
 import { useI18n } from '../../i18n'
 import { feedbackSystem, getStreakState, getMilestone } from '../../lib/feedback'
 import { getRecoveryScore } from '../../services/aiCoaching'
+import { getWorkoutRecommendation } from '../../lib/recommendations'
 import './styles/dashboard.css'
 
 export default function Dashboard() {
@@ -22,6 +23,8 @@ export default function Dashboard() {
     try { return useStore.getState().getStreak() } catch { return 0 }
   }, [workoutHistory, sessionHistory])
   const { t } = useI18n()
+
+  const recommendation = useMemo(() => getWorkoutRecommendation(userGoal), [userGoal])
 
   const recovery = useMemo(() => {
     try { return getRecoveryScore({}, [...workoutHistory, ...sessionHistory]) } catch { return { status: 'ready', score: 50, explanation: '' } }
@@ -67,6 +70,16 @@ export default function Dashboard() {
         <div style={{display:'flex',justifyContent:'center',marginBottom:32,width:'100%'}}>
           <CockpitCore mode={mode} streak={streak} activeSession={activeSession} onTap={handleTap} />
         </div>
+
+        {recommendation && (
+          <div style={{width:'100%',background:'rgba(126,217,87,.04)',borderRadius:16,padding:14,marginBottom:16,backdropFilter:'blur(20px)',border:'1px solid rgba(126,217,87,.06)'}}>
+            <div style={{display:'flex',alignItems:'center',gap:8}}>
+              <span style={{fontSize:10,fontWeight:600,color:'#7ED957',textTransform:'uppercase',letterSpacing:1}}>Coach</span>
+              <span style={{fontSize:12,color:'#fff',fontWeight:500}}>{recommendation.name} · {recommendation.adapted}</span>
+            </div>
+            <div style={{fontSize:10,color:'rgba(255,255,255,.3)',marginTop:4,lineHeight:1.4}}>"{recommendation.reason}"</div>
+          </div>
+        )}
 
         <div className="cockpit-recovery">
           <span style={{fontSize:10,color:'rgba(255,255,255,.25)',textTransform:'uppercase',letterSpacing:1}}>{t('dashboard.recovery')}</span>
