@@ -37,6 +37,7 @@ import Onboarding, { useOnboarding } from './components/Onboarding'
 import { useSubscription } from './hooks/useSubscription'
 import { cleanupStaleSessions } from './hooks/useBackgroundHandler'
 import DesignSystemPlayground from './design-system/DesignSystemPlayground'
+import OnboardingFlow from './components/OnboardingFlow'
 
 const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || '').split(',').map(e => e.trim()).filter(Boolean)
 
@@ -46,7 +47,7 @@ function checkAdmin(user) {
 }
 
 export default function App() {
-  const { currentView } = useStore()
+  const { currentView, onboardingDone, completeOnboarding } = useStore()
   const popView = useStore((s) => s.popView)
   const [authView, setAuthView] = useState('login')
   const [user, setUser] = useState(null)
@@ -54,8 +55,6 @@ export default function App() {
   const [authLoading, setAuthLoading] = useState(true)
   const [showPaywall, setShowPaywall] = useState(false)
   const [splashDone, setSplashDone] = useState(false)
-  const { done: onboardingDone, complete: completeOnboarding } = useOnboarding()
-
   const supabaseReady = isSupabaseConfigured()
   const { subscription, isPremium } = useSubscription(user?.id)
   const isAdmin = checkAdmin(user) || profile?.role === 'admin'

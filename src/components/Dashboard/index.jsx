@@ -4,6 +4,7 @@ import GlassBackground from '../../design-system/components/GlassBackground'
 import CockpitCore from '../../design-system/components/CockpitCore'
 import { useDashboardData } from './hooks/useDashboardData'
 import Recommendations from '../Recommendations'
+import OnboardingFlow from '../OnboardingFlow'
 import { useI18n } from '../../i18n'
 import { feedbackSystem, getStreakState, getMilestone } from '../../lib/feedback'
 import { getRecoveryScore } from '../../services/aiCoaching'
@@ -11,6 +12,13 @@ import './styles/dashboard.css'
 
 export default function Dashboard() {
   const { setCurrentView } = useStore()
+  const userGoal = useStore(s => s.userGoal)
+  const onboardingDone = useStore(s => s.onboardingDone)
+  const setOnboardingDone = useStore(s => s.setOnboardingDone)
+
+  if (!onboardingDone || !userGoal) {
+    return <OnboardingFlow onComplete={() => {}} />
+  }
   const { firstName, activeSession, weeklySessions, totalTime, exerciseHistory } = useDashboardData()
   const activeProgram = useStore(s => s.activeProgram)
   const sessionHistory = useStore(s => s.sessionHistory)

@@ -48,6 +48,10 @@ const useStore = create(
         set((state) => ({
           profile: { ...state.profile, ...updates },
         })),
+      userGoal: null,
+      setUserGoal: (goal) => set({ userGoal: goal }),
+      onboardingDone: false,
+      setOnboardingDone: () => set({ onboardingDone: true }),
 
       workoutHistory: [],
       addWorkout: (workout) => {
