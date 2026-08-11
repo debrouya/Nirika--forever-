@@ -26,6 +26,17 @@ export default function Dashboard() {
 
   const recommendation = useMemo(() => getWorkoutRecommendation(userGoal), [userGoal])
 
+  const daysSinceLast = useMemo(() => {
+    const all = [...workoutHistory, ...sessionHistory]
+    if (!all.length) return null
+    const last = all.reduce((max, s) => {
+      const d = new Date(s.completedAt || s.date || s.endedAt || s.startedAt)
+      return isNaN(d) ? max : Math.max(max, d)
+    }, 0)
+    if (!last) return null
+    return Math.floor((Date.now() - last) / 86400000)
+  }, [workoutHistory, sessionHistory])
+
   const recovery = useMemo(() => {
     try { return getRecoveryScore({}, [...workoutHistory, ...sessionHistory]) } catch { return { status: 'ready', score: 50, explanation: '' } }
   }, [workoutHistory, sessionHistory])
@@ -65,6 +76,11 @@ export default function Dashboard() {
             <span style={{padding:'2px 10px',borderRadius:8,fontSize:10,fontWeight:500,background:`${stateInfo.color}18`,color:stateInfo.color}}>{stateInfo.label} · {stateInfo.message}</span>
             {milestone && <span style={{fontSize:10,color:'rgba(255,255,255,.25)'}}>{milestone}</span>}
           </div>)}
+          {daysSinceLast >= 3 && (
+            <div style={{marginTop:6,fontSize:11,color:'rgba(255,255,255,.2)',fontStyle:'italic'}}>
+              De retour après {daysSinceLast} jours — reprenons doucement.
+            </div>
+          )}
         </div>
 
         <div style={{display:'flex',justifyContent:'center',marginBottom:32,width:'100%'}}>
