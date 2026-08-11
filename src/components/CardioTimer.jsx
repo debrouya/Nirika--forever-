@@ -20,6 +20,8 @@ export default function CardioTimer({ onComplete }) {
   const wakeLockRef = useRef(null)
   const targetMin = 20; const total = targetMin * 60
 
+  const streak = useMemo(() => { try { return useStore.getState().getStreak() } catch { return 0 } }, [])
+
   useBackgroundHandler(() => setPaused(true), () => setPaused(false))
 
   useEffect(() => {
