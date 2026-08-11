@@ -9,6 +9,7 @@ import { useI18n } from '../../i18n'
 import { feedbackSystem, getStreakState, getMilestone } from '../../lib/feedback'
 import { getRecoveryScore } from '../../services/aiCoaching'
 import { getWorkoutRecommendation, getProgramRecommendation } from '../../lib/recommendations'
+import usePwaInstall from '../../hooks/usePwaInstall'
 import './styles/dashboard.css'
 
 export default function Dashboard() {
@@ -78,6 +79,7 @@ export default function Dashboard() {
   const streakState = getStreakState(streak)
   const milestone = getMilestone(streak)
   const stateInfo = feedbackSystem.states[streakState] || feedbackSystem.states.adaptation
+  const { showBanner: showPwa, install: installPwa, dismiss: dismissPwa } = usePwaInstall()
 
   return (
     <GlassBackground>
@@ -105,6 +107,15 @@ export default function Dashboard() {
         <div style={{display:'flex',justifyContent:'center',marginBottom:32,width:'100%'}}>
           <CockpitCore mode={mode} streak={streak} activeSession={activeSession} onTap={handleTap} />
         </div>
+
+        {showPwa && (
+          <div style={{width:'100%',background:'rgba(96,165,250,.08)',borderRadius:14,padding:12,marginBottom:16,backdropFilter:'blur(20px)',border:'1px solid rgba(96,165,250,.12)',display:'flex',alignItems:'center',gap:10}}>
+            <span style={{fontSize:20,flexShrink:0}}>📲</span>
+            <div style={{flex:1}}><div style={{fontSize:12,fontWeight:600,color:'#fff'}}>Installer NIRIKA</div><div style={{fontSize:10,color:'rgba(255,255,255,.3)'}}>Accès rapide depuis ton écran d'accueil</div></div>
+            <button onClick={installPwa} style={{padding:'6px 14px',borderRadius:10,border:'none',fontSize:11,fontWeight:600,fontFamily:'inherit',cursor:'pointer',background:'#60a5fa',color:'#fff'}}>Installer</button>
+            <button onClick={dismissPwa} style={{background:'none',border:'none',color:'rgba(255,255,255,.3)',fontSize:14,cursor:'pointer',padding:4}}>✕</button>
+          </div>
+        )}
 
         {recommendation && (
           <div style={{width:'100%',background:'rgba(126,217,87,.04)',borderRadius:16,padding:14,marginBottom:16,backdropFilter:'blur(20px)',border:'1px solid rgba(126,217,87,.06)'}}>
