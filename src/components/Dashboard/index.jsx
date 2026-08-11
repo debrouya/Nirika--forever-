@@ -23,6 +23,16 @@ export default function Dashboard() {
   }, [workoutHistory, sessionHistory])
   const { t } = useI18n()
 
+  const recovery = useMemo(() => {
+    try { return getRecoveryScore({}, [...workoutHistory, ...sessionHistory]) } catch { return { status: 'ready', score: 50, explanation: '' } }
+  }, [workoutHistory, sessionHistory])
+
+  const handleTap = useCallback(() => {
+    const { activeProgram, nextProgramExercise } = useStore.getState()
+    if (activeProgram) { nextProgramExercise(); return }
+    setCurrentView(activeSession ? 'session' : 'calisthenics')
+  }, [activeSession, setCurrentView])
+
   if (!onboardingDone || !userGoal) {
     return <OnboardingFlow onComplete={() => {}} />
   }
@@ -35,16 +45,6 @@ export default function Dashboard() {
   const streakState = getStreakState(streak)
   const milestone = getMilestone(streak)
   const stateInfo = feedbackSystem.states[streakState] || feedbackSystem.states.adaptation
-
-  const recovery = useMemo(() => {
-    try { return getRecoveryScore({}, [...workoutHistory, ...sessionHistory]) } catch { return { status: 'ready', score: 50, explanation: '' } }
-  }, [workoutHistory, sessionHistory])
-
-  const handleTap = useCallback(() => {
-    const { activeProgram, nextProgramExercise } = useStore.getState()
-    if (activeProgram) { nextProgramExercise(); return }
-    setCurrentView(activeSession ? 'session' : 'calisthenics')
-  }, [activeSession, setCurrentView])
 
   return (
     <GlassBackground>
