@@ -14,7 +14,6 @@ export default function Dashboard() {
   const { setCurrentView } = useStore()
   const userGoal = useStore(s => s.userGoal)
   const onboardingDone = useStore(s => s.onboardingDone)
-  const setOnboardingDone = useStore(s => s.setOnboardingDone)
 
   if (!onboardingDone || !userGoal) {
     return <OnboardingFlow onComplete={() => {}} />
