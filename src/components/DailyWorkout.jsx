@@ -54,7 +54,7 @@ export default function DailyWorkout() {
       <div className="flex gap-1.5 mb-2 overflow-x-auto no-scrollbar">
         {workout.exercises.map((ex, i) => (
           <span key={i} className="text-[10px] text-white/60 bg-white/5 rounded-md px-2 py-1 whitespace-nowrap">
-            {i + 1}. {ex.name}
+            {i + 1}. {ex.name}{ex.lastWeight > 0 && <span style={{color:'rgba(126,217,87,.5)',marginLeft:4}}>↑{ex.lastWeight}kg</span>}
           </span>
         ))}
       </div>

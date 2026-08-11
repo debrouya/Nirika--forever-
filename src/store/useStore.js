@@ -507,6 +507,15 @@ const useStore = create(
         const muscleCounts = {}
         recentMuscles.forEach(m => { muscleCounts[m] = (muscleCounts[m] || 0) + 1 })
 
+        const yesterday = new Date(Date.now() - 86400000)
+        const yesterdayExIds = new Set(
+          workoutHistory
+            .filter(w => new Date(w.completedAt) >= yesterday)
+            .flatMap(w => w.exercises || [])
+            .map(e => e.id || e.exerciseId)
+            .filter(Boolean)
+        )
+
         const allMuscles = ['Pectoraux', 'Dos', 'Epaules', 'Jambes', 'Abdominaux', 'Bras']
         const leastWorked = [...allMuscles].sort((a, b) => (muscleCounts[a] || 0) - (muscleCounts[b] || 0))
 
@@ -518,10 +527,12 @@ const useStore = create(
         while (selected.length < targetCount) {
           const muscle = leastWorked[muscleIdx % leastWorked.length]
           const pool = allExercises.filter(e => e.muscleGroup === muscle)
-          const unused = pool.filter(e => !selected.find(se => se.id === e.id))
+          const unused = pool.filter(e => !selected.find(se => se.id === e.id) && !yesterdayExIds.has(e.id))
           if (unused.length > 0) {
             const pick = unused[Math.floor(Math.random() * unused.length)]
-            selected.push({ ...pick, sets: 3, reps: '8-12' })
+            const eh = get().exerciseHistory[pick.id]
+            const lastWeight = eh?.length ? eh[eh.length - 1]?.weight : null
+            selected.push({ ...pick, sets: 3, reps: '8-12', lastWeight: lastWeight || undefined })
           }
           muscleIdx++
           if (muscleIdx > targetCount * 2) break
