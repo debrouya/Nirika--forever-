@@ -33,6 +33,7 @@ export default function ProgressPhotos() {
   const canvasRef = useRef(null)
   const fileInputRef = useRef(null)
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10))
+  const [comparePhotos, setComparePhotos] = useState([])
 
   useEffect(() => {
     return () => {
@@ -116,6 +117,7 @@ export default function ProgressPhotos() {
               className="px-3 py-2 rounded-xl bg-dark-card border border-dark-border text-white text-sm"
             />
             <div className="flex gap-2">
+              {comparePhotos.length > 0 && <button onClick={()=>setComparePhotos([])} className="px-4 py-2 rounded-xl bg-dark-card text-white text-sm" style={{background:'rgba(255,255,255,.06)'}}>Annuler ({comparePhotos.length}/2)</button>}
               <button onClick={startCamera} className="px-4 py-2 rounded-xl bg-lime text-dark-bg font-medium text-sm flex items-center gap-2">
                 <Camera size={16} /> Photo
               </button>
@@ -126,7 +128,25 @@ export default function ProgressPhotos() {
             </div>
           </div>
 
-          {progressPhotos.length === 0 ? (
+          {comparePhotos.length === 2 && (
+        <div style={{position:'fixed',inset:0,zIndex:100,background:'#0C0C10',display:'flex',flexDirection:'column',padding:40,paddingBottom:'calc(env(safe-area-inset-bottom,20px)+40px)'}}>
+          <button onClick={()=>setComparePhotos([])} style={{alignSelf:'flex-end',background:'none',border:'none',color:'rgba(255,255,255,.4)',fontSize:16,cursor:'pointer',marginBottom:16}}>✕</button>
+          <div style={{display:'flex',gap:12,flex:1,minHeight:0}}>
+            {comparePhotos.map((p,i) => (
+              <div key={p.id} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:8}}>
+                <img src={p.dataUrl} alt="" style={{width:'100%',height:'100%',objectFit:'contain',borderRadius:16,background:'#000',maxHeight:'70vh'}} />
+                <span style={{fontSize:11,color:'rgba(255,255,255,.4)'}}>{new Date(p.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</span>
+                <span style={{fontSize:10,color:i===0?'#7ED957':'rgba(255,255,255,.2)'}}>{i===0?'Avant':'Après'}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{textAlign:'center',marginTop:16,fontSize:12,color:'rgba(255,255,255,.3)'}}>
+            {Math.round((new Date(comparePhotos[1].date)-new Date(comparePhotos[0].date))/(86400000))} jours d'écart
+          </div>
+        </div>
+      )}
+
+      {progressPhotos.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-white/30 space-y-4">
               <Camera size={48} className="text-white/10" />
               <p className="text-sm">Prends ta première photo de progression</p>
@@ -138,22 +158,24 @@ export default function ProgressPhotos() {
                   {new Date(month + '-01').toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
                 </p>
                 <div className="grid grid-cols-3 gap-2">
-                  {photos.map((p) => (
-                    <div key={p.id} className="relative group aspect-square rounded-xl overflow-hidden bg-dark-card border border-dark-border">
+                  {photos.map((p) => {
+                    const isSelected = comparePhotos.find(c => c.id === p.id)
+                    return (
+                    <div key={p.id} onClick={()=>{
+                      if (isSelected) { setComparePhotos(comparePhotos.filter(c=>c.id!==p.id)); return }
+                      if (comparePhotos.length < 2) { setComparePhotos([...comparePhotos,p]) }
+                    }} style={{position:'relative',cursor:'pointer'}} className="relative group aspect-square rounded-xl overflow-hidden bg-dark-card border border-dark-border">
                       <img src={p.dataUrl} alt="" className="w-full h-full object-cover" />
-                      <button
-                        onClick={() => deleteProgressPhoto(p.id)}
-                        className="absolute top-1 right-1 w-7 h-7 rounded-full bg-red-500/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <Trash2 size={12} className="text-white" />
+                      {isSelected && <div style={{position:'absolute',inset:0,background:'rgba(126,217,87,.2)',display:'flex',alignItems:'center',justifyContent:'center'}}><span style={{fontSize:20}}>{comparePhotos.indexOf(isSelected)===0?'🅰️':'🅱️'}</span></div>}
+                      <button onClick={(e)=>{e.stopPropagation();deleteProgressPhoto(p.id)}} style={{position:'absolute',top:4,right:4,width:28,height:28,borderRadius:'50%',background:'rgba(239,68,68,.6)',border:'none',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',opacity:0}} className="group-hover:opacity-100">
+                        <Trash2 size={12} color="#fff" />
                       </button>
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-1">
-                        <p className="text-[10px] text-white/80">
-                          {new Date(p.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
-                        </p>
+                      <div style={{position:'absolute',bottom:0,left:0,right:0,background:'linear-gradient(transparent,rgba(0,0,0,.6))',padding:'6px 8px'}}>
+                        <p style={{fontSize:10,color:'rgba(255,255,255,.7)'}}>{new Date(p.date).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}</p>
                       </div>
                     </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             ))
