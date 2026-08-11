@@ -48,6 +48,10 @@ export default function CardioTimer({ onComplete }) {
         <div style={{background:'rgba(255,255,255,.06)',borderRadius:18,padding:'16px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}><div style={{fontSize:24,fontWeight:700,color:'#fff'}}>{f(elapsed)}</div><div style={{fontSize:11,color:'rgba(255,255,255,.35)'}}>durée</div></div>
         <div style={{background:'rgba(255,255,255,.06)',borderRadius:18,padding:'16px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}><div style={{fontSize:24,fontWeight:700,color:'#f97316'}}>{calories}</div><div style={{fontSize:11,color:'rgba(255,255,255,.35)'}}>kcal</div></div>
       </div>
+      <div style={{width:'100%',maxWidth:280,background:'rgba(249,115,22,.05)',borderRadius:14,padding:12,marginBottom:20,textAlign:'center',border:'1px solid rgba(249,115,22,.08)'}}>
+        <div style={{fontSize:10,color:'rgba(255,255,255,.3)',marginBottom:4}}>Prochaine étape</div>
+        <div style={{fontSize:13,color:'#fff',fontWeight:500}}>Récupère · Prochaine séance dans 48h</div>
+      </div>
       <button onClick={end} style={{width:'100%',maxWidth:280,height:48,borderRadius:16,border:'none',background:'#f97316',color:'#0C0C10',fontSize:14,fontWeight:600,fontFamily:'inherit',cursor:'pointer'}}>Terminer</button>
     </div>
   )

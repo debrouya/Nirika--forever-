@@ -81,6 +81,10 @@ export default function WorkoutScreen({exercise,onComplete}){
           <div style={{background:'rgba(255,255,255,.06)',borderRadius:18,padding:'16px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}><div style={{fontSize:24,fontWeight:700,color:'#fff'}}>{f(durTotal)}</div><div style={{fontSize:11,color:'rgba(255,255,255,.35)'}}>durée</div></div>
           <div style={{background:'rgba(255,255,255,.06)',borderRadius:18,padding:'16px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}><div style={{fontSize:24,fontWeight:700,color:'#fff'}}>{vol}</div><div style={{fontSize:11,color:'rgba(255,255,255,.35)'}}>volume</div></div>
         </div>
+        <div style={{width:'100%',maxWidth:320,background:'rgba(126,217,87,.04)',borderRadius:14,padding:12,marginBottom:20,textAlign:'center',border:'1px solid rgba(126,217,87,.06)'}}>
+          <div style={{fontSize:10,color:'rgba(255,255,255,.3)',marginBottom:4}}>Prochaine étape</div>
+          <div style={{fontSize:13,color:'#fff',fontWeight:500}}>Repos 48h · Puis {sets.length === 3 ? 'augmente de 2.5 kg' : 'même charge, +1 rep'}</div>
+        </div>
         <button onClick={end} style={{width:'100%',maxWidth:320,height:48,borderRadius:16,border:'none',background:'#7ED957',color:'#0C0C10',fontSize:14,fontWeight:600,fontFamily:'inherit',cursor:'pointer'}}>Terminer</button>
       </div>
     )
