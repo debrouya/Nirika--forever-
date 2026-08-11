@@ -61,6 +61,19 @@ export default function Dashboard() {
     try { return getRecoveryScore({}, [...workoutHistory, ...sessionHistory]) } catch { return { status: 'ready', score: 50, explanation: '' } }
   }, [workoutHistory, sessionHistory])
 
+  const volumeByGroup = useMemo(() => {
+    const groups = {}
+    const monthAgo = Date.now() - 30 * 86400000
+    workoutHistory.forEach(w => {
+      if (new Date(w.completedAt || w.date) < monthAgo) return
+      const g = w.muscleGroup || 'Autre'
+      groups[g] = (groups[g] || 0) + (w.totalVolume || 0)
+    })
+    const entries = Object.entries(groups).sort((a, b) => b[1] - a[1])
+    const maxVal = entries.length ? entries[0][1] : 1
+    return entries.map(([g, v]) => ({ group: g, volume: v, pct: Math.round((v / maxVal) * 100) }))
+  }, [workoutHistory])
+
   const handleTap = useCallback(() => {
     const { activeProgram, nextProgramExercise } = useStore.getState()
     if (activeProgram) { nextProgramExercise(); return }
@@ -149,6 +162,23 @@ export default function Dashboard() {
             </div>
             <div style={{fontSize:10,color:'rgba(255,255,255,.3)',marginTop:4,lineHeight:1.4}}>{programRec.description}</div>
             <button onClick={()=>setCurrentView('programme')} style={{marginTop:10,width:'100%',padding:'10px 0',borderRadius:12,border:'none',fontFamily:'inherit',fontSize:13,fontWeight:600,cursor:'pointer',background:'#60a5fa',color:'#141414'}}>Voir le programme</button>
+          </div>
+        )}
+
+        {volumeByGroup.length > 0 && (
+          <div className="cockpit-recovery" style={{marginBottom:16}}>
+            <span style={{fontSize:10,color:'rgba(255,255,255,.25)',textTransform:'uppercase',letterSpacing:1}}>Volume 30 jours</span>
+            <div style={{marginTop:8,display:'flex',flexDirection:'column',gap:6}}>
+              {volumeByGroup.slice(0, 5).map(({group, volume, pct}) => (
+                <div key={group} style={{display:'flex',alignItems:'center',gap:8}}>
+                  <span style={{fontSize:11,color:'rgba(255,255,255,.5)',width:80,textAlign:'right',flexShrink:0}}>{group}</span>
+                  <div style={{flex:1,height:4,borderRadius:2,background:'rgba(255,255,255,.06)',overflow:'hidden'}}>
+                    <div style={{height:'100%',borderRadius:2,background:'#7ED957',width:`${pct}%`,transition:'width 1s ease'}} />
+                  </div>
+                  <span style={{fontSize:10,color:'rgba(255,255,255,.3)',width:40,flexShrink:0}}>{volume.toLocaleString()} kg</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
