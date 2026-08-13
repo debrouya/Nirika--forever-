@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Search, FileText, Video } from 'lucide-react'
 import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
-import WorkoutScreen from './WorkoutScreen'
+import ExerciseTracker from './ExerciseTracker'
 import ExerciseTutorial from './ExerciseTutorial'
 import GlassBackground from '../design-system/components/GlassBackground'
 
@@ -46,7 +46,9 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
   }
 
   if (selectedExercise) {
-    return <WorkoutScreen exercise={selectedExercise}
+    const lastSessionHistory = useStore.getState().getExerciseHistory(selectedExercise.id)?.slice(-1) || []
+    return <ExerciseTracker exercise={selectedExercise}
+      sessionHistory={lastSessionHistory}
       onComplete={() => { useStore.getState().endSession(); setSelectedExercise(null) }} />
   }
 

@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
-import WorkoutScreen from './WorkoutScreen'
+import ExerciseTracker from './ExerciseTracker'
 import CalisthenicsBilan from './CalisthenicsBilan'
 import ExerciseTutorial from './ExerciseTutorial'
 
@@ -120,7 +120,8 @@ export default function CalisthenicsTracker({ onStartExercise }) {
   if (launchExercise) {
     const ex = exerciseMap[launchExercise.id]
     const realEx = ex || { id: launchExercise.id, name: launchExercise.name, muscleGroup: 'Autre', equipment: 'none' }
-    return <WorkoutScreen exercise={realEx} onComplete={() => { useStore.getState().endSession(); setLaunchExercise(null) }} />
+    const lastSessionHistory = useStore.getState().getExerciseHistory(realEx.id)?.slice(-1) || []
+    return <ExerciseTracker exercise={realEx} sessionHistory={lastSessionHistory} onComplete={() => { useStore.getState().endSession(); setLaunchExercise(null) }} />
   }
 
   if (selectedExercise) {

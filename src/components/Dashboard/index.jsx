@@ -17,6 +17,7 @@ export default function Dashboard() {
   const onboardingDone = useStore(s => s.onboardingDone)
   const { firstName, activeSession, weeklySessions, totalTime, exerciseHistory } = useDashboardData()
   const activeProgram = useStore(s => s.activeProgram)
+  const pendingDailyWorkout = useStore(s => s.pendingDailyWorkout)
   const sessionHistory = useStore(s => s.sessionHistory)
   const workoutHistory = useStore(s => s.workoutHistory)
   const streak = useMemo(() => {
@@ -67,9 +68,11 @@ export default function Dashboard() {
   }, [activeProgram])
 
   const handleTap = useCallback(() => {
-    const { activeProgram, nextProgramExercise } = useStore.getState()
-    if (activeProgram) { nextProgramExercise(); return }
-    setCurrentView(activeSession ? 'session' : 'calisthenics')
+    const { activeProgram, pendingDailyWorkout } = useStore.getState()
+    if (pendingDailyWorkout) { setCurrentView('daily-workout'); return }
+    if (activeSession) { setCurrentView('session'); return }
+    if (activeProgram) { setCurrentView('programme'); return }
+    setCurrentView('calisthenics')
   }, [activeSession, setCurrentView])
 
   if (!onboardingDone || !userGoal) {
@@ -129,7 +132,13 @@ export default function Dashboard() {
 
         <div style={{width:'100%',background:'rgba(255,255,255,.03)',borderRadius:16,padding:14,marginBottom:16,backdropFilter:'blur(20px)',border:'1px solid rgba(255,255,255,.06)'}}>
           <span style={{fontSize:10,fontWeight:600,color:'rgba(255,255,255,.4)',textTransform:'uppercase',letterSpacing:1}}>{t('dashboard.todaySession')}</span>
-          {activeSession ? (
+{pendingDailyWorkout ? (
+            <div style={{marginTop:8}}>
+              <p style={{fontSize:13,color:'#fff',fontWeight:500}}>{pendingDailyWorkout.name || 'Séance du jour'}</p>
+              <p style={{fontSize:10,color:'rgba(255,255,255,.3)',marginTop:2}}>{pendingDailyWorkout.exercises?.length || 0} exercices</p>
+              <button onClick={()=>setCurrentView('daily-workout')} style={{marginTop:8,width:'100%',padding:'10px 0',borderRadius:12,border:'none',fontFamily:'inherit',fontSize:13,fontWeight:600,cursor:'pointer',background:'#7ED957',color:'#141414'}}>{t('dashboard.resumeWorkout')}</button>
+            </div>
+          ) : activeSession ? (
             <div style={{marginTop:8}}>
               <p style={{fontSize:13,color:'#fff',fontWeight:500}}>{activeSession.exerciseName || activeSession.programName || 'Séance active'}</p>
               <button onClick={()=>setCurrentView('session')} style={{marginTop:8,width:'100%',padding:'10px 0',borderRadius:12,border:'none',fontFamily:'inherit',fontSize:13,fontWeight:600,cursor:'pointer',background:'#7ED957',color:'#141414'}}>{t('dashboard.resumeWorkout')}</button>

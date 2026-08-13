@@ -17,7 +17,7 @@ import {
 import GlassBackground from '../design-system/components/GlassBackground'
 import useStore from '../store/useStore'
 import SessionNotes from './SessionNotes'
-import WorkoutScreen from './WorkoutScreen'
+import ExerciseTracker from './ExerciseTracker'
 import CardioTimer from './CardioTimer'
 import PersonalRecords from './PersonalRecords'
 
@@ -69,9 +69,11 @@ export default function SessionPage() {
     }
     const ex = useStore.getState().getAllExercises?.()?.find(e => e.id === activeSession.exerciseId)
     const currentExercise = ex || { id: activeSession.exerciseId, name: activeSession.exerciseName, muscleGroup: 'Autre', equipment: 'none' }
+    const lastSessionHistory = useStore.getState().getExerciseHistory(currentExercise.id)?.slice(-1) || []
     return (
-      <WorkoutScreen
+      <ExerciseTracker
         exercise={currentExercise}
+        sessionHistory={lastSessionHistory}
         onComplete={() => { endSession(); setCurrentView('dashboard') }}
       />
     )
