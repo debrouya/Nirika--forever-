@@ -8,7 +8,6 @@ import {
   Trophy,
   Moon,
   Activity,
-  Flame,
   BarChart3,
 } from 'lucide-react'
 import useStore from '../store/useStore'
@@ -24,24 +23,10 @@ const TYPE_CONFIG = {
 }
 
 export default function Recommendations() {
-  const { getRecommendations, workoutHistory, sessionHistory, getStreak, profile, exerciseHistory } = useStore()
+  const { getRecommendations, workoutHistory, sessionHistory, profile, exerciseHistory } = useStore()
   const recommendations = useMemo(() => getRecommendations(), [workoutHistory, sessionHistory, profile])
 
   const allSessions = [...workoutHistory, ...sessionHistory]
-  const streak = getStreak()
-
-  const thisWeekSessions = useMemo(() => {
-    const weekAgo = new Date(Date.now() - 7 * 86400000)
-    return allSessions.filter(s => new Date(s.completedAt || s.date) >= weekAgo)
-  }, [allSessions])
-
-  const totalVolume = useMemo(() => {
-    return thisWeekSessions.reduce((sum, s) => sum + (s.totalVolume || s.calories || 0), 0)
-  }, [thisWeekSessions])
-
-  const totalDuration = useMemo(() => {
-    return thisWeekSessions.reduce((sum, s) => sum + (s.duration || 0), 0)
-  }, [thisWeekSessions])
 
   const plateaus = useMemo(() => detectPlateaus(exerciseHistory), [exerciseHistory])
   const recovery = useMemo(() => {
@@ -58,25 +43,6 @@ export default function Recommendations() {
 
   return (
     <div className="space-y-3">
-      {/* Quick Stats */}
-      <div className="grid grid-cols-3 gap-2">
-        <div className="bg-dark-card rounded-xl p-3 border border-dark-border text-center">
-          <Flame size={14} className="text-orange-400 mx-auto mb-1" />
-          <p className="text-white font-bold text-sm">{thisWeekSessions.length}</p>
-          <p className="text-muted text-[9px]">Séances / 7j</p>
-        </div>
-        <div className="bg-dark-card rounded-xl p-3 border border-dark-border text-center">
-          <Activity size={14} className="text-lime mx-auto mb-1" />
-          <p className="text-white font-bold text-sm">{Math.round(totalDuration / 60)}min</p>
-          <p className="text-muted text-[9px]">Temps total</p>
-        </div>
-        <div className="bg-dark-card rounded-xl p-3 border border-dark-border text-center">
-          <Trophy size={14} className="text-yellow-400 mx-auto mb-1" />
-          <p className="text-white font-bold text-sm">{streak}j</p>
-          <p className="text-muted text-[9px]">Série</p>
-        </div>
-      </div>
-
       {/* Recovery Score */}
       <div className="bg-dark-card rounded-2xl p-3 border border-dark-border">
         <div className="flex items-center justify-between">

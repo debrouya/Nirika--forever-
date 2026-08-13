@@ -34,7 +34,10 @@
     "musculation": "Musculation",
     "program": "Programme",
     "coach": "Coach",
-    "profile": "Profil"
+    "profile": "Profil",
+    "todaySession": "Séance du jour",
+    "restDay": "Jour de repos",
+    "startSession": "Commencer"
   },
   "workout": {
     "effort": "effort",

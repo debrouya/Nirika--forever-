@@ -9,6 +9,7 @@ import { useI18n } from '../../i18n'
 import { feedbackSystem, getStreakState, getMilestone } from '../../lib/feedback'
 import { getRecoveryScore } from '../../services/aiCoaching'
 import { getWorkoutRecommendation, getProgramRecommendation } from '../../lib/recommendations'
+import WeekChart from './widgets/WeekChart'
 import './styles/dashboard.css'
 
 export default function Dashboard() {
@@ -60,6 +61,16 @@ export default function Dashboard() {
     try { return getRecoveryScore({}, [...workoutHistory, ...sessionHistory]) } catch { return { status: 'ready', score: 50, explanation: '' } }
   }, [workoutHistory, sessionHistory])
 
+  const programDayName = useMemo(() => {
+    if (!activeProgram) return null
+    if (activeProgram.current_day) return activeProgram.current_day
+    if (activeProgram.structure && activeProgram.currentDay !== undefined) {
+      const days = Object.keys(activeProgram.structure)
+      return days[activeProgram.currentDay % days.length] || days[0] || null
+    }
+    return activeProgram.name || null
+  }, [activeProgram])
+
   const handleTap = useCallback(() => {
     const { activeProgram, nextProgramExercise } = useStore.getState()
     if (activeProgram) { nextProgramExercise(); return }
@@ -106,6 +117,8 @@ export default function Dashboard() {
           <CockpitCore mode={mode} streak={streak} activeSession={activeSession} onTap={handleTap} />
         </div>
 
+        <WeekChart sessions={[...workoutHistory, ...sessionHistory]} />
+
         {recommendation && (
           <div style={{width:'100%',background:'rgba(126,217,87,.04)',borderRadius:16,padding:14,marginBottom:16,backdropFilter:'blur(20px)',border:'1px solid rgba(126,217,87,.06)'}}>
             <div style={{display:'flex',alignItems:'center',gap:8}}>
@@ -128,6 +141,31 @@ export default function Dashboard() {
             <div style={{fontSize:10,color:'rgba(255,255,255,.2)',marginTop:4,fontStyle:'italic'}}>Prochaine : {recommendation?.name || 'repos ou choix libre'}</div>
           </div>
         )}
+
+        <div style={{width:'100%',background:'rgba(255,255,255,.03)',borderRadius:16,padding:14,marginBottom:16,backdropFilter:'blur(20px)',border:'1px solid rgba(255,255,255,.06)'}}>
+          <span style={{fontSize:10,fontWeight:600,color:'rgba(255,255,255,.4)',textTransform:'uppercase',letterSpacing:1}}>{t('dashboard.todaySession')}</span>
+          {activeSession ? (
+            <div style={{marginTop:8}}>
+              <p style={{fontSize:13,color:'#fff',fontWeight:500}}>{activeSession.exerciseName || activeSession.programName || 'Séance active'}</p>
+              <button onClick={()=>setCurrentView('session')} style={{marginTop:8,width:'100%',padding:'10px 0',borderRadius:12,border:'none',fontFamily:'inherit',fontSize:13,fontWeight:600,cursor:'pointer',background:'#7ED957',color:'#141414'}}>{t('dashboard.resumeWorkout')}</button>
+            </div>
+          ) : activeProgram ? (
+            <div style={{marginTop:8}}>
+              <p style={{fontSize:13,color:'#fff',fontWeight:500}}>{programDayName || 'Programme en cours'}</p>
+              <button onClick={()=>setCurrentView('programme')} style={{marginTop:8,width:'100%',padding:'10px 0',borderRadius:12,border:'none',fontFamily:'inherit',fontSize:13,fontWeight:600,cursor:'pointer',background:'#60a5fa',color:'#141414'}}>{t('dashboard.startSession')}</button>
+            </div>
+          ) : recommendation ? (
+            <div style={{marginTop:8}}>
+              <p style={{fontSize:13,color:'#fff',fontWeight:500}}>{recommendation.name} · {recommendation.adapted}</p>
+              <p style={{fontSize:10,color:'rgba(255,255,255,.3)',marginTop:2}}>{recommendation.exercises}</p>
+              <button onClick={()=>setCurrentView('calisthenics')} style={{marginTop:8,width:'100%',padding:'10px 0',borderRadius:12,border:'none',fontFamily:'inherit',fontSize:13,fontWeight:600,cursor:'pointer',background:'#7ED957',color:'#141414'}}>{t('dashboard.startSession')}</button>
+            </div>
+          ) : (
+            <div style={{marginTop:8}}>
+              <p style={{fontSize:11,color:'rgba(255,255,255,.2)'}}>{t('dashboard.restDay')}</p>
+            </div>
+          )}
+        </div>
 
         {programRec && !activeProgram && (
           <div style={{width:'100%',background:'rgba(96,165,250,.06)',borderRadius:16,padding:14,marginBottom:16,backdropFilter:'blur(20px)',border:'1px solid rgba(96,165,250,.08)'}}>
@@ -163,6 +201,10 @@ export default function Dashboard() {
           <div style={{flex:1,background:'rgba(255,255,255,.03)',borderRadius:14,padding:'12px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}>
             <div style={{fontSize:20,fontWeight:700,color:'#7ED957'}}>{weeklyPRs}</div>
             <div style={{fontSize:9,color:'rgba(255,255,255,.2)',textTransform:'uppercase',letterSpacing:".5px",marginTop:2}}>PR</div>
+          </div>
+          <div style={{flex:1,background:'rgba(255,255,255,.03)',borderRadius:14,padding:'12px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}>
+            <div style={{fontSize:20,fontWeight:700,color:'#f97316'}}>{streak}j</div>
+            <div style={{fontSize:9,color:'rgba(255,255,255,.2)',textTransform:'uppercase',letterSpacing:".5px",marginTop:2}}>streak</div>
           </div>
         </div>
 
