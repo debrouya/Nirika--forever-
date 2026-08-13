@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import exercises from '../data/exercises.js'
+import { seedTemplates } from '../data/seedTemplates.js'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 import { track } from '../services/analytics'
 import { enqueue } from '../services/offlineQueue'
@@ -697,7 +698,7 @@ const useStore = create(
           return { plannedSessions: [...filtered, ...sessions] }
         }),
 
-      workoutTemplates: [],
+      workoutTemplates: seedTemplates,
       addWorkoutTemplate: (template) =>
         set((state) => ({
           workoutTemplates: [...state.workoutTemplates, { ...template, id: `template_${Date.now()}` }],
