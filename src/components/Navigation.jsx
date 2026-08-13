@@ -173,7 +173,7 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
       <div className="fixed bottom-0 left-0 right-0 z-50 px-3" style={{ paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))' }}>
         <nav
           ref={containerRef}
-          className="rounded-2xl px-2 py-2 flex items-center relative"
+          className="rounded-2xl px-2 py-1.5 flex items-center relative"
           style={{background:'rgba(255,255,255,.06)',backdropFilter:'blur(60px)',WebkitBackdropFilter:'blur(60px)',border:'1px solid rgba(255,255,255,.04)'}}
         >
           {!menuOpen && (
@@ -191,7 +191,7 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
                 key={tab.id}
                 ref={(el) => (btnRefs.current[tab.id] = el)}
                 onClick={() => handleMainTab(tab.id)}
-                className={`relative z-10 flex flex-col items-center justify-center flex-1 py-2.5 rounded-xl transition-all duration-200 ${
+                className={`relative z-10 flex flex-col items-center justify-center flex-1 py-1.5 rounded-xl transition-all duration-200 ${
                   isActive ? 'text-lime scale-105' : 'text-muted hover:text-white/60'
                 }`}
               >
@@ -207,7 +207,7 @@ export default function Navigation({ active, onChange, userRole, isAdmin, onAdmi
           {/* Menu Button */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className={`relative z-10 flex flex-col items-center justify-center flex-1 py-2.5 rounded-xl transition-all duration-200 ${
+            className={`relative z-10 flex flex-col items-center justify-center flex-1 py-1.5 rounded-xl transition-all duration-200 ${
               menuOpen ? 'text-lime scale-105' : 'text-muted hover:text-white/60'
             }`}
           >

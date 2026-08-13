@@ -7,7 +7,6 @@ import Recommendations from '../Recommendations'
 import OnboardingFlow from '../OnboardingFlow'
 import { useI18n } from '../../i18n'
 import { feedbackSystem, getStreakState, getMilestone } from '../../lib/feedback'
-import { getRecoveryScore } from '../../services/aiCoaching'
 import { getWorkoutRecommendation, getProgramRecommendation } from '../../lib/recommendations'
 import WeekChart from './widgets/WeekChart'
 import './styles/dashboard.css'
@@ -56,10 +55,6 @@ export default function Dashboard() {
     const all = Object.values(exerciseHistory || {}).flat().filter(Boolean)
     return all.filter(e => e.recordType === 'PR' && new Date(e.date || e.completedAt) >= weekStart).length
   }, [exerciseHistory])
-
-  const recovery = useMemo(() => {
-    try { return getRecoveryScore({}, [...workoutHistory, ...sessionHistory]) } catch { return { status: 'ready', score: 50, explanation: '' } }
-  }, [workoutHistory, sessionHistory])
 
   const programDayName = useMemo(() => {
     if (!activeProgram) return null
@@ -119,16 +114,6 @@ export default function Dashboard() {
 
         <WeekChart sessions={[...workoutHistory, ...sessionHistory]} />
 
-        {recommendation && (
-          <div style={{width:'100%',background:'rgba(126,217,87,.04)',borderRadius:16,padding:14,marginBottom:16,backdropFilter:'blur(20px)',border:'1px solid rgba(126,217,87,.06)'}}>
-            <div style={{display:'flex',alignItems:'center',gap:8}}>
-              <span style={{fontSize:10,fontWeight:600,color:'#7ED957',textTransform:'uppercase',letterSpacing:1}}>Coach</span>
-              <span style={{fontSize:12,color:'#fff',fontWeight:500}}>{recommendation.name} · {recommendation.adapted}</span>
-            </div>
-            <div style={{fontSize:10,color:'rgba(255,255,255,.3)',marginTop:4,lineHeight:1.4}}>"{recommendation.reason}"</div>
-          </div>
-        )}
-
         {daysSinceLast <= 1 && lastSession && (
           <div style={{width:'100%',background:'rgba(126,217,87,.04)',borderRadius:16,padding:14,marginBottom:16,backdropFilter:'blur(20px)',border:'1px solid rgba(126,217,87,.06)'}}>
             <div style={{fontSize:10,color:'rgba(255,255,255,.25)',textTransform:'uppercase',letterSpacing:1}}>Dernière séance</div>
@@ -152,12 +137,13 @@ export default function Dashboard() {
           ) : activeProgram ? (
             <div style={{marginTop:8}}>
               <p style={{fontSize:13,color:'#fff',fontWeight:500}}>{programDayName || 'Programme en cours'}</p>
+              {recommendation?.reason && <p style={{fontSize:10,color:'rgba(255,255,255,.3)',marginTop:2}}>{recommendation.reason}</p>}
               <button onClick={()=>setCurrentView('programme')} style={{marginTop:8,width:'100%',padding:'10px 0',borderRadius:12,border:'none',fontFamily:'inherit',fontSize:13,fontWeight:600,cursor:'pointer',background:'#60a5fa',color:'#141414'}}>{t('dashboard.startSession')}</button>
             </div>
           ) : recommendation ? (
             <div style={{marginTop:8}}>
               <p style={{fontSize:13,color:'#fff',fontWeight:500}}>{recommendation.name} · {recommendation.adapted}</p>
-              <p style={{fontSize:10,color:'rgba(255,255,255,.3)',marginTop:2}}>{recommendation.exercises}</p>
+              <p style={{fontSize:10,color:'rgba(255,255,255,.3)',marginTop:2}}>{recommendation.reason}</p>
               <button onClick={()=>setCurrentView('calisthenics')} style={{marginTop:8,width:'100%',padding:'10px 0',borderRadius:12,border:'none',fontFamily:'inherit',fontSize:13,fontWeight:600,cursor:'pointer',background:'#7ED957',color:'#141414'}}>{t('dashboard.startSession')}</button>
             </div>
           ) : (
@@ -178,16 +164,6 @@ export default function Dashboard() {
             <button onClick={()=>setCurrentView('programme')} style={{marginTop:10,width:'100%',padding:'10px 0',borderRadius:12,border:'none',fontFamily:'inherit',fontSize:13,fontWeight:600,cursor:'pointer',background:'#60a5fa',color:'#141414'}}>Voir le programme</button>
           </div>
         )}
-
-        <div className="cockpit-recovery">
-          <span style={{fontSize:10,color:'rgba(255,255,255,.25)',textTransform:'uppercase',letterSpacing:1}}>{t('dashboard.recovery')}</span>
-          <div style={{display:'flex',gap:8,alignItems:'center',marginTop:4}}>
-            <div style={{width:8,height:8,borderRadius:'50%',background:'#7ED957'}} />
-            <span style={{fontSize:12,fontWeight:500,color:'#fff'}}>{recovery.status === 'ready' ? t('dashboard.ready_status') : recovery.status}</span>
-            <span style={{fontSize:10,color:'rgba(255,255,255,.25)'}}>· {t('recovery.score',{score:recovery.score})}</span>
-          </div>
-          <div className="dash-xp-bar" style={{marginTop:8}}><div className="dash-xp-fill" style={{width:`${recovery.score}%`}} /></div>
-        </div>
 
         <div style={{width:'100%',display:'flex',gap:8,marginBottom:16}}>
           <div style={{flex:1,background:'rgba(255,255,255,.03)',borderRadius:14,padding:'12px 8px',textAlign:'center',backdropFilter:'blur(20px)'}}>

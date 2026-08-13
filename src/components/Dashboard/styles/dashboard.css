@@ -1,13 +1,8 @@
 .dash {
-  padding: 52px 22px 0;
+  padding: 52px 22px 110px;
   max-width: 430px; margin: 0 auto;
   display: flex; flex-direction: column; align-items: center;
   min-height: 100dvh;
-}
-
-.cockpit-recovery {
-  background: rgba(255,255,255,.03); backdrop-filter: blur(30px);
-  border-radius: 20px; padding: 16px 20px; width: 100%; margin-bottom: 24px;
 }
 
 .cockpit-actions {
@@ -21,6 +16,3 @@
   transition: all .3s ease; text-align: center;
 }
 .cockpit-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
-
-.dash-xp-bar { height: 2px; border-radius: 1px; background: rgba(255,255,255,.06); overflow: hidden; }
-.dash-xp-fill { height: 100%; border-radius: 1px; background: linear-gradient(90deg, #7ED957, rgba(126,217,87,.3)); }
