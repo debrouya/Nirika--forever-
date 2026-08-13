@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import {
   Play,
   Square,
@@ -43,6 +43,11 @@ function getIntensityLabel(sets, avgReps, avgWeight) {
   if (volume > 1500) return 'Modéré'
   return 'Léger'
 }
+
+const RING_R = 130
+const RING_CIRC = 2 * Math.PI * RING_R
+const RING_COLOR = '#7ED957'
+const REST_RING_COLOR = '#f97316'
 
 export default function ExerciseTracker({ exercise, sessionHistory, onComplete }) {
   const { addExerciseRecord, addWorkout } = useStore()
@@ -371,37 +376,47 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
     )
   }
 
+  const ringColor = restActive ? REST_RING_COLOR : (isActive ? RING_COLOR : 'rgba(255,255,255,.1)')
+  const ringProgress = restActive
+    ? (restDuration > 0 ? restTime / restDuration : 0)
+    : (isActive ? Math.min((timer % 60) / 60, 1) : 0)
+  const ringOffset = useMemo(() => RING_CIRC - (ringProgress * RING_CIRC), [ringProgress])
+
   return (
     <div className="space-y-4 p-4">
-      {/* Rest Timer */}
-      {restActive && (
-        <div className="bg-dark-card rounded-2xl p-6 border border-lime/20 text-center animate-fade-in">
-          <div className="w-16 h-16 rounded-full bg-lime/10 flex items-center justify-center mx-auto mb-3">
-            <Clock size={32} className="text-lime" />
+      {/* CERCLE COCKPIT */}
+      <div style={{ position: 'relative', width: 280, height: 280, margin: '0 auto 24px' }}>
+        <svg viewBox="0 0 280 280" width="280" height="280" style={{ transform: 'rotate(-90deg)', position: 'absolute' }}>
+          <circle cx="140" cy="140" r={RING_R} fill="none" stroke="rgb(255,255,255)" strokeOpacity="0.04" strokeWidth="2" />
+          <circle cx="140" cy="140" r={RING_R} fill="none" stroke={ringColor} strokeWidth="5" strokeLinecap="round"
+            strokeDasharray={RING_CIRC} strokeDashoffset={ringOffset}
+            style={{ filter: `drop-shadow(0 0 12px ${ringColor}44)`, transition: 'stroke-dashoffset .5s linear' }} />
+        </svg>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+          <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,.4)', textTransform: 'uppercase', letterSpacing: 1, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{exercise.name}</span>
+          <div style={{ fontSize: 56, fontWeight: 700, color: '#fff', letterSpacing: '-2px', fontVariantNumeric: 'tabular-nums', fontFamily: 'Inter, sans-serif' }}>
+            {formatDuration(restActive ? restTime : timer)}
           </div>
-          <p className="text-muted text-xs uppercase mb-1">Repos</p>
-          <p className="text-white text-5xl font-mono font-bold mb-1">
-            {Math.floor(restTime / 60)}:{String(restTime % 60).padStart(2, '0')}
-          </p>
-          <p className="text-lime text-xs font-medium mb-4">
-            {restTime === restDuration ? 'Bon repos 💪' : restTime < 5 ? 'Prêt ! 🔥' : 'Continue à respirer'}
-          </p>
-          <div className="w-full h-1.5 rounded-full bg-dark-bg mb-4 overflow-hidden">
-            <div
-              className="h-full rounded-full bg-lime transition-all duration-1000"
-              style={{ width: `${(restTime / restDuration) * 100}%` }}
-            />
+          <div style={{ fontSize: 13, color: ringColor, fontWeight: 500, textTransform: 'uppercase', letterSpacing: 1 }}>
+            {restActive ? 'repos' : 'effort'}
           </div>
-          <button
-            onClick={() => { setRestActive(false); setRestTime(0) }}
-            className="px-6 py-2 rounded-xl bg-dark-bg border border-dark-border text-muted text-xs font-medium hover:text-white transition-colors flex items-center gap-2 mx-auto"
-          >
-            <SkipForward size={14} /> Passer
-          </button>
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,.35)', marginTop: 4 }}>
+            Série {sets.length + 1}
+          </div>
         </div>
+      </div>
+
+      {/* Passer le repos (discret) */}
+      {restActive && (
+        <button
+          onClick={() => { setRestActive(false); setRestTime(0) }}
+          className="mx-auto px-4 py-1.5 rounded-xl border border-dark-border text-muted text-xs font-medium hover:text-white transition-colors flex items-center gap-1.5"
+        >
+          <SkipForward size={12} /> Passer le repos
+        </button>
       )}
 
-      {/* Live Header */}
+      {/* Live Header minimal */}
       <div className="bg-dark-card rounded-2xl p-4 border border-lime/20">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -409,25 +424,6 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
             <span className="text-white font-bold text-sm">{exercise.name}</span>
           </div>
           <span className="text-lime text-xs font-medium">En cours</span>
-        </div>
-
-        {/* Timer + Stats */}
-        <div className="flex items-center justify-around mb-4">
-          <div className="text-center">
-            <Clock size={20} className="text-lime mx-auto mb-1" />
-            <p className="text-white text-3xl font-mono font-bold">{formatDuration(timer)}</p>
-            <p className="text-muted text-[10px]">Durée</p>
-          </div>
-          <div className="text-center">
-            <Flame size={20} className="text-lime mx-auto mb-1" />
-            <p className="text-white text-3xl font-bold">{sets.length}</p>
-            <p className="text-muted text-[10px]">Séries</p>
-          </div>
-          <div className="text-center">
-            <TrendingUp size={20} className="text-lime mx-auto mb-1" />
-            <p className="text-white text-3xl font-bold">{totalReps}</p>
-            <p className="text-muted text-[10px]">Reps</p>
-          </div>
         </div>
 
         {/* Coaching Tip */}
