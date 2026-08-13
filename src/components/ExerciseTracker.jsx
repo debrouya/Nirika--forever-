@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import {
   Play,
   Square,
@@ -380,7 +380,7 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
   const ringProgress = restActive
     ? (restDuration > 0 ? restTime / restDuration : 0)
     : (isActive ? Math.min((timer % 60) / 60, 1) : 0)
-  const ringOffset = useMemo(() => RING_CIRC - (ringProgress * RING_CIRC), [ringProgress])
+  const ringOffset = RING_CIRC - (ringProgress * RING_CIRC)
 
   return (
     <div className="space-y-4 p-4">
