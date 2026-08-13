@@ -68,6 +68,29 @@ export default function Dashboard() {
     return activeProgram.name || null
   }, [activeProgram])
 
+  const volumeByMonth = useMemo(() => {
+    const months = {}
+    workoutHistory.forEach(w => {
+      const d = new Date(w.completedAt || w.date)
+      if (isNaN(d)) return
+      const key = d.toLocaleDateString('fr-FR', { month: 'short' })
+      months[key] = (months[key] || 0) + (w.totalVolume || w.totalWeight || 0)
+    })
+    const entries = Object.entries(months).slice(-6)
+    const maxVal = entries.length ? Math.max(...entries.map(e => e[1])) : 1
+    return entries.map(([m, v]) => ({ month: m, volume: v, pct: maxVal > 0 ? Math.round((v / maxVal) * 100) : 0 }))
+  }, [workoutHistory])
+
+  const profile = useStore(s => s.profile)
+  const userLevel = useMemo(() => {
+    const s = streak
+    if (s >= 30) return { label: 'Légende', emoji: '🏆', color: '#f97316' }
+    if (s >= 14) return { label: 'Expert', emoji: '💪', color: '#7ED957' }
+    if (s >= 7) return { label: 'Régulier', emoji: '🔥', color: '#7ED957' }
+    if (s >= 3) return { label: 'Motivé', emoji: '⚡', color: '#60a5fa' }
+    return { label: 'Débutant', emoji: '🌱', color: 'rgba(255,255,255,.3)' }
+  }, [streak])
+
   const handleTap = useCallback(() => {
     const { activeProgram, pendingDailyWorkout } = useStore.getState()
     if (pendingDailyWorkout) { setCurrentView('daily-workout'); return }
@@ -248,19 +271,26 @@ export default function Dashboard() {
         <Recommendations />
 
         <div className="dash-grid dash-grid-2" style={{marginBottom:0}}>
-          <div className="dash-widget" style={{minHeight:120,alignItems:'center',justifyContent:'center',borderStyle:'dashed',borderColor:'rgba(126,217,87,.15)'}}>
-            <div style={{width:48,height:48,borderRadius:'50%',background:'rgba(126,217,87,.08)',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:8}}>
-              <TrendingUp size={24} style={{color:'#7ED957'}} />
-            </div>
-            <span style={{fontSize:12,fontWeight:600,color:'rgba(126,217,87,.4)'}}>Évolution Volume</span>
-            <span style={{fontSize:9,color:'rgba(255,255,255,.15)',marginTop:2}}>Bientôt disponible</span>
+          <div className="dash-widget" style={{minHeight:120}}>
+            <span className="dash-widget-label" style={{color:'rgba(126,217,87,.4)'}}>Évolution Volume</span>
+            {volumeByMonth.length > 0 ? (
+              <div style={{display:'flex',alignItems:'flex-end',gap:4,marginTop:10,flex:1,height:50}}>
+                {volumeByMonth.map((m, i) => (
+                  <div key={i} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:3}}>
+                    <div style={{width:'100%',maxWidth:14,height:Math.max(4, m.pct * 0.5),borderRadius:4,background:m.pct > 60 ? '#7ED957' : 'rgba(126,217,87,.4)'}} />
+                    <span style={{fontSize:8,color:'rgba(255,255,255,.2)'}}>{m.month}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="dash-widget-sub" style={{marginTop:8,textAlign:'center'}}>Fais ta première séance pour voir ton évolution</p>
+            )}
           </div>
-          <div className="dash-widget" style={{minHeight:120,alignItems:'center',justifyContent:'center',borderStyle:'dashed',borderColor:'rgba(126,217,87,.15)'}}>
-            <div style={{width:48,height:48,borderRadius:'50%',background:'rgba(126,217,87,.08)',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:8}}>
-              <span style={{fontSize:22}}>🧑‍🦱</span>
-            </div>
-            <span style={{fontSize:12,fontWeight:600,color:'rgba(126,217,87,.4)'}}>Avatar Évolutif</span>
-            <span style={{fontSize:9,color:'rgba(255,255,255,.15)',marginTop:2}}>Bientôt disponible</span>
+          <div className="dash-widget" style={{minHeight:120,alignItems:'center',justifyContent:'center'}}>
+            <span className="dash-widget-label">Ton niveau</span>
+            <div style={{fontSize:36,marginTop:6}}>{userLevel.emoji}</div>
+            <span style={{fontSize:13,fontWeight:600,color:userLevel.color,marginTop:2}}>{userLevel.label}</span>
+            <span style={{fontSize:9,color:'rgba(255,255,255,.2)',marginTop:2}}>{streak}j de streak</span>
           </div>
         </div>
 
