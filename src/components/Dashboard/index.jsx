@@ -68,18 +68,56 @@ export default function Dashboard() {
     return activeProgram.name || null
   }, [activeProgram])
 
-  const volumeByMonth = useMemo(() => {
-    const months = {}
-    workoutHistory.forEach(w => {
-      const d = new Date(w.completedAt || w.date)
-      if (isNaN(d)) return
-      const key = d.toLocaleDateString('fr-FR', { month: 'short' })
-      months[key] = (months[key] || 0) + (w.totalVolume || w.totalWeight || 0)
-    })
-    const entries = Object.entries(months).slice(-6)
-    const maxVal = entries.length ? Math.max(...entries.map(e => e[1])) : 1
-    return entries.map(([m, v]) => ({ month: m, volume: v, pct: maxVal > 0 ? Math.round((v / maxVal) * 100) : 0 }))
-  }, [workoutHistory])
+  const [volumePeriod, setVolumePeriod] = useState('week')
+
+  const volumeData = useMemo(() => {
+    const now = new Date()
+    const buckets = {}
+
+    if (volumePeriod === 'week') {
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(now); d.setDate(d.getDate() - i)
+        const key = d.toLocaleDateString('fr-FR', { weekday: 'short' })
+        const fullKey = d.toISOString().slice(0, 10)
+        buckets[fullKey] = { label: key, volume: 0 }
+      }
+      workoutHistory.forEach(w => {
+        const d = new Date(w.completedAt || w.date)
+        if (isNaN(d)) return
+        const fullKey = d.toISOString().slice(0, 10)
+        const weekAgo = new Date(now); weekAgo.setDate(weekAgo.getDate() - 6)
+        if (d >= weekAgo && buckets[fullKey]) buckets[fullKey].volume += (w.totalVolume || w.totalWeight || 0)
+      })
+    } else if (volumePeriod === 'month') {
+      for (let i = 5; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+        const key = d.toLocaleDateString('fr-FR', { month: 'short' })
+        const fullKey = `${d.getFullYear()}-${d.getMonth()}`
+        buckets[fullKey] = { label: key, volume: 0 }
+      }
+      workoutHistory.forEach(w => {
+        const d = new Date(w.completedAt || w.date)
+        if (isNaN(d)) return
+        const fullKey = `${d.getFullYear()}-${d.getMonth()}`
+        if (buckets[fullKey]) buckets[fullKey].volume += (w.totalVolume || w.totalWeight || 0)
+      })
+    } else {
+      for (let i = 4; i >= 0; i--) {
+        const y = now.getFullYear() - i
+        buckets[String(y)] = { label: String(y), volume: 0 }
+      }
+      workoutHistory.forEach(w => {
+        const d = new Date(w.completedAt || w.date)
+        if (isNaN(d)) return
+        const key = String(d.getFullYear())
+        if (buckets[key]) buckets[key].volume += (w.totalVolume || w.totalWeight || 0)
+      })
+    }
+
+    const entries = Object.entries(buckets).map(([k, v]) => v)
+    const maxVal = entries.length ? Math.max(...entries.map(e => e.volume)) : 1
+    return entries.map(e => ({ ...e, pct: maxVal > 0 ? Math.round((e.volume / maxVal) * 100) : 0 }))
+  }, [workoutHistory, volumePeriod])
 
   const profile = useStore(s => s.profile)
   const userLevel = useMemo(() => {
@@ -271,14 +309,21 @@ export default function Dashboard() {
         <Recommendations />
 
         <div className="dash-grid dash-grid-2" style={{marginBottom:0}}>
-          <div className="dash-widget" style={{minHeight:120}}>
-            <span className="dash-widget-label" style={{color:'rgba(126,217,87,.4)'}}>Évolution Volume</span>
-            {volumeByMonth.length > 0 ? (
-              <div style={{display:'flex',alignItems:'flex-end',gap:4,marginTop:10,flex:1,height:50}}>
-                {volumeByMonth.map((m, i) => (
+          <div className="dash-widget" style={{minHeight:140}}>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
+              <span className="dash-widget-label" style={{color:'rgba(126,217,87,.4)'}}>Volume</span>
+              <div style={{display:'flex',gap:2,background:'rgba(255,255,255,.04)',borderRadius:8,padding:2}}>
+                {[['week','S'],['month','M'],['year','A']].map(([id,label]) => (
+                  <button key={id} onClick={()=>setVolumePeriod(id)} style={{border:'none',fontFamily:'inherit',fontSize:9,fontWeight:600,padding:'3px 8px',borderRadius:6,cursor:'pointer',background:volumePeriod===id?'rgba(126,217,87,.15)':'transparent',color:volumePeriod===id?'#7ED957':'rgba(255,255,255,.3)'}}>{label}</button>
+                ))}
+              </div>
+            </div>
+            {volumeData.some(d => d.volume > 0) ? (
+              <div style={{display:'flex',alignItems:'flex-end',gap:3,flex:1,minHeight:50}}>
+                {volumeData.map((d, i) => (
                   <div key={i} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:3}}>
-                    <div style={{width:'100%',maxWidth:14,height:Math.max(4, m.pct * 0.5),borderRadius:4,background:m.pct > 60 ? '#7ED957' : 'rgba(126,217,87,.4)'}} />
-                    <span style={{fontSize:8,color:'rgba(255,255,255,.2)'}}>{m.month}</span>
+                    <div style={{width:'100%',maxWidth:16,height:Math.max(3, d.pct * 0.5),borderRadius:4,background:d.pct > 60 ? '#7ED957' : d.pct > 0 ? 'rgba(126,217,87,.4)' : 'rgba(255,255,255,.04)'}} />
+                    <span style={{fontSize:7,color:'rgba(255,255,255,.2)'}}>{d.label}</span>
                   </div>
                 ))}
               </div>
