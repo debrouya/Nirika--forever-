@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { User, Ruler, Weight, Activity, Target, MapPin, Wrench, LogOut, Save, Bell, BellOff, Check } from 'lucide-react'
+import { User, Ruler, Activity, Target, MapPin, Wrench, LogOut, Save, Bell, BellOff, Check } from 'lucide-react'
 import GlassBackground from '../design-system/components/GlassBackground'
 import useStore from '../store/useStore'
 import GlassCard from './GlassCard'
@@ -29,7 +29,6 @@ const GOAL_KEY_MAP = {
   'Relaxation': 'sante',
   'Performance sportive': 'performance',
 }
-const GOAL_LABEL_MAP = Object.fromEntries(Object.entries(GOAL_KEY_MAP).map(([k, v]) => [v, k]))
 const DAYS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
 
 function FieldGroup({ icon: Icon, label, children }) {

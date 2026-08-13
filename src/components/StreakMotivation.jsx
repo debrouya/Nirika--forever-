@@ -98,7 +98,7 @@ export default function StreakMotivation() {
       isToday: d.getTime() === today.getTime(),
       isPast: d.getTime() < today.getTime(),
     }))
-  }, [workoutHistory])
+  }, [workoutHistory, sessionHistory])
 
   const daysCompletedThisWeek = weekDays.filter(d => d.completed).length
 

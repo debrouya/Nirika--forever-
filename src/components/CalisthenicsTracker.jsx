@@ -1,10 +1,6 @@
-import GlassBackground from '../design-system/components/GlassBackground'
 import { useState, useMemo } from 'react'
 import {
   Flame,
-  Trophy,
-  Target,
-  ChevronRight,
   ChevronDown,
   RotateCcw,
   Play,
@@ -82,7 +78,7 @@ function getMotivation(day) {
   return match || DAILY_MOTIVATION[0]
 }
 
-export default function CalisthenicsTracker({ onStartExercise }) {
+export default function CalisthenicsTracker({ onStartExercise: _onStartExercise }) {
   const { calisthenie30, startCalisthenie30, completeCalisthenie30Day, uncompleteCalisthenie30Day, resetCalisthenie30 } = useStore()
   const exercises = useExercises()
   const exerciseMap = Object.fromEntries(exercises.map(e => [e.id, e]))

@@ -1,7 +1,6 @@
-import GlassBackground from '../design-system/components/GlassBackground'
 import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { Camera, Plus, X, Trash2, ChevronLeft, Calendar, Image } from 'lucide-react'
+import { Camera, X, Trash2, ChevronLeft, Image } from 'lucide-react'
 import useStore from '../store/useStore'
 import FeatureGuide from './FeatureGuide'
 
@@ -49,7 +48,7 @@ export default function ProgressPhotos() {
       setTimeout(() => {
         if (videoRef.current) videoRef.current.srcObject = s
       }, 100)
-    } catch (e) {
+    } catch {
       fileInputRef.current?.click()
     }
   }

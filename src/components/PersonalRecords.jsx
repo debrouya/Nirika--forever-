@@ -1,6 +1,5 @@
-import GlassBackground from '../design-system/components/GlassBackground'
 import { useState, useMemo } from 'react'
-import { Trophy, TrendingUp, Dumbbell, Clock, Flame, X } from 'lucide-react'
+import { Trophy, TrendingUp, Dumbbell, X } from 'lucide-react'
 import useStore from '../store/useStore'
 
 export default function PersonalRecords({ compact }) {
@@ -12,14 +11,6 @@ export default function PersonalRecords({ compact }) {
     Object.entries(records)
       .filter(([, r]) => r.maxWeight > 0)
       .sort((a, b) => b[1].maxWeight - a[1].maxWeight)
-      .slice(0, 5),
-    [records]
-  )
-
-  const sortedByVolume = useMemo(() =>
-    Object.entries(records)
-      .filter(([, r]) => r.maxVolume > 0)
-      .sort((a, b) => b[1].maxVolume - a[1].maxVolume)
       .slice(0, 5),
     [records]
   )

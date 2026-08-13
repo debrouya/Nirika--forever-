@@ -1,17 +1,13 @@
-import GlassBackground from '../design-system/components/GlassBackground'
 import { useState, useMemo } from 'react'
 import {
   Calendar,
   TrendingUp,
-  TrendingDown,
   BarChart3,
   Clock,
   Flame,
   Target,
-  ChevronRight,
   ChevronDown,
   Zap,
-  Trophy,
 } from 'lucide-react'
 import useStore from '../store/useStore'
 

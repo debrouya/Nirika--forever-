@@ -1,12 +1,11 @@
-import GlassBackground from '../design-system/components/GlassBackground'
 import GlassButton from '../design-system/components/GlassButton'
 import { useState, useRef, useEffect } from 'react'
-import { Play, Timer, ChevronLeft } from 'lucide-react'
+import { Play, ChevronLeft } from 'lucide-react'
 import { warmupExercises, cooldownExercises } from '../data/warmup'
 import useStore from '../store/useStore'
 import FeatureGuide from './FeatureGuide'
 
-export default function WarmupCooldown({ type = 'warmup', onDone }) {
+export default function WarmupCooldown({ type = 'warmup', onDone: _onDone }) {
   const pushView = useStore((s) => s.pushView)
   const addWarmupSession = useStore((s) => s.addWarmupSession)
   const [current, setCurrent] = useState(0)

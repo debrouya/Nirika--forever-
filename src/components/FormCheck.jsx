@@ -1,5 +1,4 @@
-import GlassBackground from '../design-system/components/GlassBackground'
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef } from 'react'
 import {
   Camera,
   CameraOff,
@@ -41,7 +40,7 @@ export default function FormCheck() {
       setTimeout(() => {
         if (videoRef.current) videoRef.current.srcObject = s
       }, 100)
-    } catch (e) {
+    } catch {
       setFeedback({ type: 'error', message: 'Accès caméra refusé' })
     }
   }
