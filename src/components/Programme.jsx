@@ -1,24 +1,15 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   CalendarRange,
   Clock,
   Dumbbell,
-  Target,
   ChevronRight,
-  ChevronDown,
   ChevronLeft,
-  Zap,
-  Flame,
   Play,
   Square,
   CheckCircle2,
   Bell,
   RotateCcw,
-  Trophy,
-  Timer,
-  ArrowRight,
-  SkipForward,
-  TrendingUp,
 } from 'lucide-react'
 import { programs } from '../data/programs'
 import { getUserProgram, upsertUserProgram, deleteUserProgram } from '../services/supabaseService'
@@ -52,26 +43,8 @@ const PROGRAM_IMAGES = [
 
 const PROGRAM_STATE_KEY = 'nirika_active_program'
 
-function saveProgramState(state) {
-  try { localStorage.setItem(PROGRAM_STATE_KEY, JSON.stringify(state)) } catch {}
-}
-
-function loadProgramState() {
-  try {
-    const saved = localStorage.getItem(PROGRAM_STATE_KEY)
-    return saved ? JSON.parse(saved) : null
-  } catch { return null }
-}
-
-function formatDuration(seconds) {
-  const m = Math.floor(seconds / 60)
-  const s = seconds % 60
-  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
-}
-
-export default function Programme({ user, isPremium }) {
-  const { sessionHistory, addExerciseRecord, getExerciseHistory, calisthenie30, addWorkout } = useStore()
-  const savedState = useRef(loadProgramState())
+export default function Programme({ user }) {
+  const { addExerciseRecord, getExerciseHistory, addWorkout } = useStore()
   const [view, setView] = useState('list')
   const [expandedId, setExpandedId] = useState(null)
   const [activeProgram, setActiveProgram] = useState(null)
@@ -80,7 +53,6 @@ export default function Programme({ user, isPremium }) {
   const [trackingExercise, setTrackingExercise] = useState(null)
   const [trackingDayKey, setTrackingDayKey] = useState(null)
   const [completedExercises, setCompletedExercises] = useState({})
-  const [loading, setLoading] = useState(true)
   const [starting, setStarting] = useState(null)
   const { permission, requestPermission } = useNotifications(user?.id)
   const exercises = useExercises()
@@ -156,7 +128,6 @@ export default function Programme({ user, isPremium }) {
   const toggleExerciseComplete = (dayKey, exerciseId) => {
     const exKey = `${dayKey}__${exerciseId}`
     const newExercises = { ...completedExercises }
-    const isCompleting = !newExercises[exKey]
 
     if (newExercises[exKey]) {
       delete newExercises[exKey]
