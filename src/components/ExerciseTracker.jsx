@@ -434,47 +434,58 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
       </div>
 
       {/* Set Input */}
-      <div className="bg-dark-card rounded-2xl p-4">
-        <p className="text-white font-semibold text-sm mb-3">Ajouter une série</p>
+      <div className="bg-dark-card rounded-2xl p-5 border border-dark-border">
+        <p className="text-white font-semibold text-sm mb-1">Ajouter une série</p>
+        <p className="text-muted text-[11px] mb-4">Remplis ta série puis valide</p>
         {suggestedReps > 0 && (
-          <p className="text-lime/60 text-[10px] mb-2">Dernière fois : {suggestedReps} reps {suggestedWeight ? `× ${suggestedWeight}kg` : ''} → essaie {repsInput || suggestedReps + 1} reps</p>
+          <p className="text-lime/70 text-[11px] mb-3">Dernière fois : {suggestedReps} reps {suggestedWeight ? `× ${suggestedWeight}kg` : ''} → essaie {repsInput || suggestedReps + 1} reps</p>
         )}
-        <div className="flex gap-2 mb-3">
-          <input
-            type="number"
-            value={repsInput}
-            onChange={(e) => setRepsInput(e.target.value)}
-            placeholder="Reps"
-            className="flex-1 bg-dark-bg border border-dark-border rounded-xl py-3 px-3 text-white text-sm placeholder:text-muted focus:outline-none focus:border-lime/50 text-center"
-            onKeyDown={(e) => e.key === 'Enter' && addSet()}
-          />
-          <input
-            type="number"
-            value={weightInput}
-            onChange={(e) => setWeightInput(e.target.value)}
-            placeholder="Poids (kg)"
-            className="flex-1 bg-dark-bg border border-dark-border rounded-xl py-3 px-3 text-white text-sm placeholder:text-muted focus:outline-none focus:border-lime/50 text-center"
-            onKeyDown={(e) => e.key === 'Enter' && addSet()}
-          />
-          <button
-            onClick={addSet}
-            className="bg-lime hover:bg-lime-light text-dark-bg rounded-xl px-4 font-bold text-sm transition-all"
-          >
-            <Plus size={18} />
-          </button>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="text-muted text-[10px] uppercase tracking-wider mb-1.5 block">Reps</label>
+            <input
+              type="number"
+              inputMode="numeric"
+              value={repsInput}
+              onChange={(e) => setRepsInput(e.target.value)}
+              placeholder="—"
+              className="w-full bg-dark-bg border border-dark-border rounded-2xl py-3.5 px-4 text-white text-lg font-semibold text-center placeholder:text-muted focus:outline-none focus:border-lime/50 transition-colors"
+              onKeyDown={(e) => e.key === 'Enter' && addSet()}
+            />
+          </div>
+          <div>
+            <label className="text-muted text-[10px] uppercase tracking-wider mb-1.5 block">Poids (kg)</label>
+            <input
+              type="number"
+              inputMode="decimal"
+              value={weightInput}
+              onChange={(e) => setWeightInput(e.target.value)}
+              placeholder="—"
+              className="w-full bg-dark-bg border border-dark-border rounded-2xl py-3.5 px-4 text-white text-lg font-semibold text-center placeholder:text-muted focus:outline-none focus:border-lime/50 transition-colors"
+              onKeyDown={(e) => e.key === 'Enter' && addSet()}
+            />
+          </div>
         </div>
+        <button
+          onClick={addSet}
+          className="mt-4 w-full bg-lime hover:bg-lime-light text-dark-bg rounded-2xl py-3.5 font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+        >
+          <Plus size={18} strokeWidth={2.5} /> Ajouter la série
+        </button>
 
         {/* Sets List */}
         {sets.length > 0 && (
-          <div className="space-y-1.5 max-h-40 overflow-y-auto">
+          <div className="mt-5 space-y-2 max-h-44 overflow-y-auto pr-1">
             {sets.map((s, i) => (
-              <div key={i} className="flex items-center justify-between bg-dark-bg rounded-xl px-3 py-2">
-                <span className="text-muted text-xs">Série {i + 1}</span>
-                <span className="text-white text-sm font-medium">
-                  {s.reps} reps {s.weight ? `× ${s.weight}kg` : ''}
-                </span>
-                <button onClick={() => removeSet(i)} className="text-red-400/60 hover:text-red-400">
-                  <X size={14} />
+              <div key={i} className="flex items-center justify-between bg-dark-bg rounded-2xl px-4 py-3 border border-dark-border/50">
+                <div className="flex items-center gap-3">
+                  <span className="w-7 h-7 rounded-full bg-lime/10 text-lime flex items-center justify-center text-xs font-bold">{i + 1}</span>
+                  <span className="text-white text-sm font-medium">
+                    {s.reps} reps {s.weight ? `× ${s.weight}kg` : ''}
+                  </span>
+                </div>
+                <button onClick={() => removeSet(i)} className="text-red-400/60 hover:text-red-400 p-1">
+                  <X size={16} />
                 </button>
               </div>
             ))}
