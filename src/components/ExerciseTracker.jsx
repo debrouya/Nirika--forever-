@@ -55,7 +55,7 @@ export default function ExerciseTracker({ exercise, sessionHistory, onComplete }
   const [isPaused, setIsPaused] = useState(false)
   const [timer, setTimer] = useState(0)
   const [sets, setSets] = useState([])
-  const prevSessions = (sessionHistory || []).filter((s) => s.exerciseId === exercise.id)
+  const prevSessions = (sessionHistory || []).filter((s) => s.source !== 'programme')
   const lastSession = prevSessions[prevSessions.length - 1]
   const suggestedReps = lastSession?.sets?.[lastSession.sets.length - 1]?.reps || lastSession?.reps || ''
   const suggestedWeight = lastSession?.sets?.[lastSession.sets.length - 1]?.weight || ''
