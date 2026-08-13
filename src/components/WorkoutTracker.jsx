@@ -4,15 +4,10 @@ import {
   Pause,
   Square,
   Plus,
-  Minus,
-  Check,
   Timer,
   ChevronRight,
-  Dumbbell,
-  Flame,
 } from 'lucide-react'
 import useStore from '../store/useStore'
-import { beep } from '../utils/audio'
 import useExercises from '../hooks/useExercises'
 import { fireStreakToast } from './StreakMotivation'
 import GlassCard from './GlassCard'
@@ -88,8 +83,8 @@ function RestTimer({ duration, onDone }) {
   )
 }
 
-export default function WorkoutTracker({ program, onFinish, onCancel }) {
-  const { addWorkout, addSessionToHistory, profile, addExerciseRecord } = useStore()
+export default function WorkoutTracker({ program, onFinish, onCancel: _onCancel }) {
+  const { addWorkout, addSessionToHistory, addExerciseRecord } = useStore()
   const exercises = useExercises()
   const EXERCISE_MAP = {}
   exercises.forEach((e) => (EXERCISE_MAP[e.id] = e))
@@ -111,7 +106,7 @@ export default function WorkoutTracker({ program, onFinish, onCancel }) {
   }, [program])
 
   const currentDay = dayEntries[currentDayIndex]
-  const currentDayExercises = currentDay ? currentDay[1] : []
+  const currentDayExercises = useMemo(() => currentDay ? currentDay[1] : [], [currentDay])
   const currentExerciseConfig = currentDayExercises[currentExerciseIndex]
   const currentExercise = currentExerciseConfig
     ? EXERCISE_MAP[currentExerciseConfig.exerciseId]
@@ -227,12 +222,6 @@ export default function WorkoutTracker({ program, onFinish, onCancel }) {
 
     onFinish()
   }, [allSessionSets, sessionSets, elapsed, program, currentDayIndex, currentExerciseIndex, addWorkout, addSessionToHistory, onFinish])
-
-  const handleCancel = useCallback(() => {
-    setIsPaused(false)
-    clearInterval(timerRef.current)
-    onCancel()
-  }, [onCancel])
 
   const exerciseCompleted = currentExerciseConfig
     ? (allSessionSets[`${currentDayIndex}-${currentExerciseIndex}`] || []).length >= (currentExerciseConfig.sets || 3)

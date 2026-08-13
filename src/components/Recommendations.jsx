@@ -26,7 +26,7 @@ export default function Recommendations() {
   const { getRecommendations, workoutHistory, sessionHistory, profile, exerciseHistory } = useStore()
   const recommendations = useMemo(() => getRecommendations(), [workoutHistory, sessionHistory, profile])
 
-  const allSessions = [...workoutHistory, ...sessionHistory]
+  const allSessions = useMemo(() => [...workoutHistory, ...sessionHistory], [workoutHistory, sessionHistory])
 
   const plateaus = useMemo(() => detectPlateaus(exerciseHistory), [exerciseHistory])
   const recovery = useMemo(() => {
