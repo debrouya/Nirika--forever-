@@ -126,7 +126,7 @@ export default function CalisthenicsTracker({ onStartExercise: _onStartExercise 
   if (launchExercise) {
     const ex = exerciseMap[launchExercise.id]
     const realEx = ex || { id: launchExercise.id, name: launchExercise.name, muscleGroup: 'Autre', equipment: 'none' }
-    const lastSessionHistory = useStore.getState().getExerciseHistory(realEx.id)?.slice(-1) || []
+    const lastSessionHistory = (useStore.getState().getExerciseHistory?.(realEx.id) || []).slice(-1)
     return <ExerciseTracker exercise={realEx} sessionHistory={lastSessionHistory} onComplete={() => { useStore.getState().endSession(); setLaunchExercise(null) }} />
   }
 

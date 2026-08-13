@@ -40,7 +40,7 @@ export default function Circuit30({ day, exercises, onComplete }) {
   if (!current) return null
 
   const realEx = { id: current.id, name: current.name, muscleGroup: 'Autre', equipment: 'bodyweight', ...current }
-  const lastRecord = useStore.getState().getExerciseHistory(realEx.id)?.slice(-1)[0]
+  const lastRecord = (useStore.getState().getExerciseHistory?.(realEx.id) || []).slice(-1)[0]
 
   return (
     <div className="nirika-page">

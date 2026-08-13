@@ -65,7 +65,7 @@ export default function SessionPage() {
     }
     const ex = useStore.getState().getAllExercises?.()?.find(e => e.id === activeSession.exerciseId)
     const currentExercise = ex || { id: activeSession.exerciseId, name: activeSession.exerciseName, muscleGroup: 'Autre', equipment: 'none' }
-    const lastSessionHistory = useStore.getState().getExerciseHistory(currentExercise.id)?.slice(-1) || []
+    const lastSessionHistory = (useStore.getState().getExerciseHistory?.(currentExercise.id) || []).slice(-1)
     return (
       <ExerciseTracker
         exercise={currentExercise}

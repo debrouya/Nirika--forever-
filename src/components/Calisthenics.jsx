@@ -46,7 +46,7 @@ export default function Calisthenics({ isPremium, onShowPaywall }) {
   }
 
   if (selectedExercise) {
-    const lastSessionHistory = useStore.getState().getExerciseHistory(selectedExercise.id)?.slice(-1) || []
+    const lastSessionHistory = (useStore.getState().getExerciseHistory?.(selectedExercise.id) || []).slice(-1)
     return <ExerciseTracker exercise={selectedExercise}
       sessionHistory={lastSessionHistory}
       onComplete={() => { useStore.getState().endSession(); setSelectedExercise(null) }} />
