@@ -9,7 +9,7 @@ import { useI18n } from '../../i18n'
 import { feedbackSystem, getStreakState, getMilestone } from '../../lib/feedback'
 import { getWorkoutRecommendation, getProgramRecommendation } from '../../lib/recommendations'
 import WeekChart from './widgets/WeekChart'
-import { Heart, Dumbbell, CalendarRange, ChevronDown, Zap } from 'lucide-react'
+import { Heart, Dumbbell, CalendarRange, ChevronDown, Zap, TrendingUp } from 'lucide-react'
 import './styles/dashboard.css'
 
 export default function Dashboard() {
@@ -248,11 +248,11 @@ export default function Dashboard() {
         <Recommendations />
 
         <div className="dash-grid dash-grid-2" style={{marginBottom:0}}>
-          <div className="dash-widget" style={{minHeight:120,alignItems:'center',justifyContent:'center',borderStyle:'dashed',borderColor:'rgba(96,165,250,.15)'}}>
-            <div style={{width:48,height:48,borderRadius:'50%',background:'rgba(96,165,250,.08)',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:8}}>
-              <Zap size={24} style={{color:'#60a5fa'}} />
+          <div className="dash-widget" style={{minHeight:120,alignItems:'center',justifyContent:'center',borderStyle:'dashed',borderColor:'rgba(126,217,87,.15)'}}>
+            <div style={{width:48,height:48,borderRadius:'50%',background:'rgba(126,217,87,.08)',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:8}}>
+              <TrendingUp size={24} style={{color:'#7ED957'}} />
             </div>
-            <span style={{fontSize:12,fontWeight:600,color:'rgba(96,165,250,.4)'}}>Graphique Budget 3D</span>
+            <span style={{fontSize:12,fontWeight:600,color:'rgba(126,217,87,.4)'}}>Évolution Volume</span>
             <span style={{fontSize:9,color:'rgba(255,255,255,.15)',marginTop:2}}>Bientôt disponible</span>
           </div>
           <div className="dash-widget" style={{minHeight:120,alignItems:'center',justifyContent:'center',borderStyle:'dashed',borderColor:'rgba(126,217,87,.15)'}}>
