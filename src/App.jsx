@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, lazy, Suspense } from 'react'
 import useStore from './store/useStore'
 import { supabase, isSupabaseConfigured } from './lib/supabase'
-import { track } from './services/analytics'
 import { flush } from './services/offlineQueue'
 
 const AdminPanelLazy = lazy(() => import('./components/AdminPanel'))
@@ -33,7 +32,6 @@ import NutritionTracker from './components/NutritionTracker'
 import ProgressPhotos from './components/ProgressPhotos'
 import FormCheck from './components/FormCheck'
 import Toasts from './components/Toasts'
-import Onboarding, { useOnboarding } from './components/Onboarding'
 import { useSubscription } from './hooks/useSubscription'
 import { cleanupStaleSessions } from './hooks/useBackgroundHandler'
 import DesignSystemPlayground from './design-system/DesignSystemPlayground'
@@ -46,7 +44,7 @@ function checkAdmin(user) {
 }
 
 export default function App() {
-  const { currentView, onboardingDone } = useStore()
+  const { currentView } = useStore()
   const popView = useStore((s) => s.popView)
   const [authView, setAuthView] = useState('login')
   const [user, setUser] = useState(null)
@@ -133,14 +131,14 @@ export default function App() {
         try {
           const { data: isAdminRpc } = await supabase.rpc('is_admin')
           if (isAdminRpc) role = 'admin'
-        } catch (e) {}
+        } catch {}
       }
 
       let data = null
       try {
         const result = await getProfile(userId)
         data = result.data
-      } catch (e) {}
+      } catch {}
 
       const profileData = data || {
         id: userId,
@@ -151,7 +149,7 @@ export default function App() {
       profileData.role = role
 
       setProfile(profileData)
-    } catch (e) {
+    } catch {
       setProfile({
         id: userId,
         email: user?.email || '',

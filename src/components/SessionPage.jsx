@@ -2,17 +2,13 @@ import { useMemo } from 'react'
 import {
   Play,
   RotateCcw,
-  Plus,
   Dumbbell,
   Activity,
   Zap,
   ChevronRight,
-  ChevronLeft,
   Clock,
   Flame,
   Calendar,
-  Trophy,
-  FileText,
 } from 'lucide-react'
 import GlassBackground from '../design-system/components/GlassBackground'
 import useStore from '../store/useStore'
@@ -52,7 +48,7 @@ function getTypeLabel(type) {
 }
 
 export default function SessionPage() {
-  const { workoutHistory, workoutTemplates, pushView, setCurrentView, getPersonalRecords, setCurrentWorkoutTemplate, activeSession, endSession } = useStore()
+  const { workoutHistory, setCurrentView, getPersonalRecords, activeSession, endSession } = useStore()
 
   const lastWorkout = useMemo(() => {
     if (workoutHistory.length === 0) return null
