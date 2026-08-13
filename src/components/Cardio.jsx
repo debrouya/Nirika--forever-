@@ -152,7 +152,8 @@ export default function Cardio() {
   const [coachingMsg, setCoachingMsg] = useState('')
   const [zoneTime, setZoneTime] = useState({ 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 })
   const [bpmHistory, setBpmHistory] = useState([])
-  const [timeInCurrentZone, setTimeInCurrentZone] = useState(0)
+  const timeInZoneRef = useRef(0)
+  const currentZoneRef = useRef(ZONES[0])
   const timerRef = useRef(null)
   const coachingRef = useRef(null)
   const wakeLockRef = useRef(null)
@@ -186,9 +187,10 @@ export default function Cardio() {
         const intensityRatio = bpm / maxBPM
         const zone = getZone(intensityRatio)
         setCurrentZone(zone)
+        currentZoneRef.current = zone
 
         setZoneTime((zt) => ({ ...zt, [zone.zone]: (zt[zone.zone] || 0) + 1 }))
-        setTimeInCurrentZone((prev) => prev + 1)
+        timeInZoneRef.current += 1
 
         setBpmHistory((prev) => {
           const newHistory = [...prev, bpm]
@@ -202,16 +204,16 @@ export default function Cardio() {
     return () => clearInterval(timerRef.current)
   }, [isRunning, selectedActivity, currentLevel, objective, profile?.age])
 
-  // Coaching messages
+  // Coaching messages — cadence indépendante de la zone (l'intervalle lit la zone via ref)
   useEffect(() => {
     if (!isRunning) return
     coachingRef.current = setInterval(() => {
-      const msg = getCoachingMessage(objective, currentZone, timeInCurrentZone)
+      const msg = getCoachingMessage(objective, currentZoneRef.current, timeInZoneRef.current)
       setCoachingMsg(msg)
-      setTimeInCurrentZone(0)
+      timeInZoneRef.current = 0
     }, 8000)
     return () => clearInterval(coachingRef.current)
-  }, [isRunning, objective, currentZone])
+  }, [isRunning, objective])
 
   const selectActivity = useCallback((activity) => {
     setSelectedActivity(activity)
@@ -230,7 +232,7 @@ export default function Cardio() {
     setIsRunning(true)
     setZoneTime({ 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 })
     setBpmHistory([])
-    setTimeInCurrentZone(0)
+    timeInZoneRef.current = 0
     const msg = getCoachingMessage(objective, ZONES[0], 0)
     setCoachingMsg(msg)
   }, [objective])

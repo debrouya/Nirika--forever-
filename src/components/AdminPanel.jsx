@@ -275,11 +275,13 @@ function DashboardTab() {
   const [stats, setStats] = useState(null)
   const [sessions, setSessions] = useState([])
   const [loading, setLoading] = useState(true)
+  const [err, setErr] = useState('')
 
   useEffect(() => { loadDashboard() }, [])
 
   const loadDashboard = async () => {
     setLoading(true)
+    setErr('')
     try {
       const [usersResult, sessionsResult, cardioResult] = await Promise.all([
         adminGetAllUsers(),
@@ -330,7 +332,7 @@ function DashboardTab() {
         recentSessions: allSessions.slice(0, 10),
       })
       setSessions(sessionsByDay)
-    } catch {}
+    } catch (e) { setErr('Impossible de charger le tableau de bord : ' + (e?.message || 'erreur inconnue')) }
     setLoading(false)
   }
 
@@ -344,6 +346,11 @@ function DashboardTab() {
 
   return (
     <div className="space-y-4 animate-fade-in">
+      {err && (
+        <div className="rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs text-red-400">
+          ⚠️ {err}
+        </div>
+      )}
       <div className="grid grid-cols-2 gap-3">
         <StatCard label="Utilisateurs" value={stats?.totalUsers || 0} icon={Users} color="text-lime" />
         <StatCard label="Actifs 7j" value={stats?.active7d || 0} icon={Activity} color="text-blue-400" />
@@ -411,14 +418,17 @@ function UsersTab() {
   const [permsUser, setPermsUser] = useState(null)
   const [permsValues, setPermsValues] = useState({})
   const [permsSaving, setPermsSaving] = useState(false)
+  const [permsError, setPermsError] = useState('')
 
   const handleSavePerms = async () => {
     if (!permsUser) return
     setPermsSaving(true)
+    setPermsError('')
     try {
-      await adminUpdateUserPermissions(permsUser.id, permsValues)
+      const res = await adminUpdateUserPermissions(permsUser.id, permsValues)
+      if (res?.error) throw res.error
       setPermsUser(null)
-    } catch {}
+    } catch (e) { setPermsError(e?.message || 'Échec de la sauvegarde des permissions') }
     setPermsSaving(false)
   }
 
@@ -620,6 +630,11 @@ function UsersTab() {
               </button>
             </div>
             <p className="text-muted text-xs">{permsUser.email}</p>
+            {permsError && (
+              <div className="rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs text-red-400">
+                ⚠️ {permsError}
+              </div>
+            )}
             <div className="space-y-2">
               {PERMS_FEATURES.map((f) => (
                 <label key={f.key} className="flex items-center justify-between bg-dark-bg rounded-xl px-3 py-2.5">
@@ -739,12 +754,14 @@ function SubscriptionsTab() {
   const [subscriptions, setSubscriptions] = useState([])
   const [loading, setLoading] = useState(true)
   const [users, setUsers] = useState([])
+  const [err, setErr] = useState('')
 
   useEffect(() => { loadSubscriptions() }, [])
 
   const loadSubscriptions = async () => {
     if (!isSupabaseConfigured()) { setLoading(false); return }
     setLoading(true)
+    setErr('')
     try {
       const [subRes, usersRes] = await Promise.all([
         supabase.from('subscriptions').select('*').order('created_at', { ascending: false }),
@@ -752,7 +769,7 @@ function SubscriptionsTab() {
       ])
       setSubscriptions(subRes.data || [])
       setUsers(usersRes.data || [])
-    } catch {}
+    } catch (e) { setErr('Impossible de charger les abonnements : ' + (e?.message || 'erreur inconnue')) }
     setLoading(false)
   }
 
@@ -768,6 +785,11 @@ function SubscriptionsTab() {
 
   return (
     <div className="space-y-4 animate-fade-in">
+      {err && (
+        <div className="rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs text-red-400">
+          ⚠️ {err}
+        </div>
+      )}
       <div className="grid grid-cols-3 gap-3">
         <StatCard label="Total" value={subscriptions.length} icon={Users} color="text-lime" />
         <StatCard label="Free" value={tierCounts.free || 0} icon={UserX} color="text-muted" />
@@ -1116,12 +1138,14 @@ function ActivityTab() {
   const [sessions, setSessions] = useState([])
   const [cardioSessions, setCardioSessions] = useState([])
   const [loading, setLoading] = useState(true)
+  const [err, setErr] = useState('')
 
   useEffect(() => { loadActivity() }, [])
 
   const loadActivity = async () => {
     if (!isSupabaseConfigured()) { setLoading(false); return }
     setLoading(true)
+    setErr('')
     try {
       const [sRes, cRes] = await Promise.all([
         supabase.from('sessions').select('*').order('created_at', { ascending: false }).limit(50),
@@ -1129,7 +1153,7 @@ function ActivityTab() {
       ])
       setSessions(sRes.data || [])
       setCardioSessions(cRes.data || [])
-    } catch {}
+    } catch (e) { setErr('Impossible de charger l\u2019activit\u00e9 : ' + (e?.message || 'erreur inconnue')) }
     setLoading(false)
   }
 
@@ -1143,6 +1167,11 @@ function ActivityTab() {
 
   return (
     <div className="space-y-4 animate-fade-in">
+      {err && (
+        <div className="rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs text-red-400">
+          ⚠️ {err}
+        </div>
+      )}
       <div className="grid grid-cols-2 gap-3">
         <StatCard label="Musculation" value={sessions.length} icon={Dumbbell} color="text-lime" />
         <StatCard label="Cardio" value={cardioSessions.length} icon={Flame} color="text-orange-400" />
