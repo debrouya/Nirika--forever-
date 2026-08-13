@@ -73,6 +73,7 @@ export default function Dashboard() {
   const volumeData = useMemo(() => {
     const now = new Date()
     const buckets = {}
+    const allSessions = [...workoutHistory, ...sessionHistory]
 
     if (volumePeriod === 'week') {
       for (let i = 6; i >= 0; i--) {
@@ -81,12 +82,18 @@ export default function Dashboard() {
         const fullKey = d.toISOString().slice(0, 10)
         buckets[fullKey] = { label: key, volume: 0 }
       }
-      workoutHistory.forEach(w => {
-        const d = new Date(w.completedAt || w.date)
+      allSessions.forEach(w => {
+        const d = new Date(w.completedAt || w.date || w.endedAt || w.startedAt)
         if (isNaN(d)) return
         const fullKey = d.toISOString().slice(0, 10)
         const weekAgo = new Date(now); weekAgo.setDate(weekAgo.getDate() - 6)
-        if (d >= weekAgo && buckets[fullKey]) buckets[fullKey].volume += (w.totalVolume || w.totalWeight || 0)
+        if (d >= weekAgo && buckets[fullKey]) {
+          if (w.type === 'cardio' || w.sessionType === 'cardio') {
+            buckets[fullKey].volume += (w.calories || 0)
+          } else {
+            buckets[fullKey].volume += (w.totalVolume || w.totalWeight || w.calories || 0)
+          }
+        }
       })
     } else if (volumePeriod === 'month') {
       for (let i = 5; i >= 0; i--) {
@@ -95,29 +102,41 @@ export default function Dashboard() {
         const fullKey = `${d.getFullYear()}-${d.getMonth()}`
         buckets[fullKey] = { label: key, volume: 0 }
       }
-      workoutHistory.forEach(w => {
-        const d = new Date(w.completedAt || w.date)
+      allSessions.forEach(w => {
+        const d = new Date(w.completedAt || w.date || w.endedAt || w.startedAt)
         if (isNaN(d)) return
         const fullKey = `${d.getFullYear()}-${d.getMonth()}`
-        if (buckets[fullKey]) buckets[fullKey].volume += (w.totalVolume || w.totalWeight || 0)
+        if (buckets[fullKey]) {
+          if (w.type === 'cardio' || w.sessionType === 'cardio') {
+            buckets[fullKey].volume += (w.calories || 0)
+          } else {
+            buckets[fullKey].volume += (w.totalVolume || w.totalWeight || w.calories || 0)
+          }
+        }
       })
     } else {
       for (let i = 4; i >= 0; i--) {
         const y = now.getFullYear() - i
         buckets[String(y)] = { label: String(y), volume: 0 }
       }
-      workoutHistory.forEach(w => {
-        const d = new Date(w.completedAt || w.date)
+      allSessions.forEach(w => {
+        const d = new Date(w.completedAt || w.date || w.endedAt || w.startedAt)
         if (isNaN(d)) return
         const key = String(d.getFullYear())
-        if (buckets[key]) buckets[key].volume += (w.totalVolume || w.totalWeight || 0)
+        if (buckets[key]) {
+          if (w.type === 'cardio' || w.sessionType === 'cardio') {
+            buckets[key].volume += (w.calories || 0)
+          } else {
+            buckets[key].volume += (w.totalVolume || w.totalWeight || w.calories || 0)
+          }
+        }
       })
     }
 
     const entries = Object.entries(buckets).map(([k, v]) => v)
     const maxVal = entries.length ? Math.max(...entries.map(e => e.volume)) : 1
     return entries.map(e => ({ ...e, pct: maxVal > 0 ? Math.round((e.volume / maxVal) * 100) : 0 }))
-  }, [workoutHistory, volumePeriod])
+  }, [workoutHistory, sessionHistory, volumePeriod])
 
   const profile = useStore(s => s.profile)
   const userLevel = useMemo(() => {
@@ -312,9 +331,9 @@ export default function Dashboard() {
           <div className="dash-widget" style={{minHeight:140}}>
             <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
               <span className="dash-widget-label" style={{color:'rgba(126,217,87,.4)'}}>Volume</span>
-              <div style={{display:'flex',gap:2,background:'rgba(255,255,255,.04)',borderRadius:8,padding:2}}>
-                {[['week','S'],['month','M'],['year','A']].map(([id,label]) => (
-                  <button key={id} onClick={()=>setVolumePeriod(id)} style={{border:'none',fontFamily:'inherit',fontSize:9,fontWeight:600,padding:'3px 8px',borderRadius:6,cursor:'pointer',background:volumePeriod===id?'rgba(126,217,87,.15)':'transparent',color:volumePeriod===id?'#7ED957':'rgba(255,255,255,.3)'}}>{label}</button>
+              <div style={{display:'flex',gap:2,background:'rgba(255,255,255,.04)',borderRadius:8,padding:2,overflow:'hidden'}}>
+                {[['week','Semaine'],['month','Mois'],['year','Année']].map(([id,label]) => (
+                  <button key={id} onClick={()=>setVolumePeriod(id)} style={{border:'none',fontFamily:'inherit',fontSize:9,fontWeight:600,padding:'4px 10px',borderRadius:6,cursor:'pointer',whiteSpace:'nowrap',background:volumePeriod===id?'rgba(126,217,87,.15)':'transparent',color:volumePeriod===id?'#7ED957':'rgba(255,255,255,.3)',transition:'all .2s ease'}}>{label}</button>
                 ))}
               </div>
             </div>
