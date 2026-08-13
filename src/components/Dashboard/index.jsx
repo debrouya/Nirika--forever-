@@ -247,9 +247,21 @@ export default function Dashboard() {
 
         <Recommendations />
 
-        <div style={{height:120,display:'flex',alignItems:'center',justifyContent:'center',gap:6,opacity:.3}}>
-          <Zap size={14} style={{color:'rgba(255,255,255,.15)'}} />
-          <span style={{fontSize:10,color:'rgba(255,255,255,.15)'}}>Graphiques & Avatar — bientôt</span>
+        <div className="dash-grid dash-grid-2" style={{marginBottom:0}}>
+          <div className="dash-widget" style={{minHeight:120,alignItems:'center',justifyContent:'center',borderStyle:'dashed',borderColor:'rgba(96,165,250,.15)'}}>
+            <div style={{width:48,height:48,borderRadius:'50%',background:'rgba(96,165,250,.08)',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:8}}>
+              <Zap size={24} style={{color:'#60a5fa'}} />
+            </div>
+            <span style={{fontSize:12,fontWeight:600,color:'rgba(96,165,250,.4)'}}>Graphique Budget 3D</span>
+            <span style={{fontSize:9,color:'rgba(255,255,255,.15)',marginTop:2}}>Bientôt disponible</span>
+          </div>
+          <div className="dash-widget" style={{minHeight:120,alignItems:'center',justifyContent:'center',borderStyle:'dashed',borderColor:'rgba(126,217,87,.15)'}}>
+            <div style={{width:48,height:48,borderRadius:'50%',background:'rgba(126,217,87,.08)',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:8}}>
+              <span style={{fontSize:22}}>🧑‍🦱</span>
+            </div>
+            <span style={{fontSize:12,fontWeight:600,color:'rgba(126,217,87,.4)'}}>Avatar Évolutif</span>
+            <span style={{fontSize:9,color:'rgba(255,255,255,.15)',marginTop:2}}>Bientôt disponible</span>
+          </div>
         </div>
 
         <div style={{height:40}} />
