@@ -238,7 +238,7 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   .cockpit svg { width: 200px !important; height: 200px !important; }
   .c-core-value { font-size: 36px !important; }
   .c-core-icon { font-size: 32px !important; }
-  .dash { padding: 24px 22px 110px !important; }
+  .dash { padding: 24px 20px 110px !important; }
 }
 
 @keyframes pulse-bar { 0%,100%{opacity:.3} 50%{opacity:.7} }
