@@ -17,6 +17,7 @@ import {
 import useStore from '../store/useStore'
 import useExercises from '../hooks/useExercises'
 import ExerciseTracker from './ExerciseTracker'
+import Circuit30 from './Circuit30'
 import CalisthenicsBilan from './CalisthenicsBilan'
 import ExerciseTutorial from './ExerciseTutorial'
 
@@ -90,6 +91,7 @@ export default function CalisthenicsTracker({ onStartExercise }) {
   const [showBilan, setShowBilan] = useState(false)
   const [selectedExercise, setSelectedExercise] = useState(null)
   const [launchExercise, setLaunchExercise] = useState(null)
+  const [circuitDay, setCircuitDay] = useState(null)
 
   const stats = useMemo(() => {
     const completed = Object.keys(calisthenie30.completedDays || {}).length
@@ -116,6 +118,14 @@ export default function CalisthenicsTracker({ onStartExercise }) {
 
     return { completed, totalDays, percent, streak, weekDays }
   }, [calisthenie30])
+
+  if (circuitDay) {
+    return <Circuit30
+      day={circuitDay.day}
+      exercises={circuitDay.exercises}
+      onComplete={() => { setCircuitDay(null); setSelectedDay(null) }}
+    />
+  }
 
   if (launchExercise) {
     const ex = exerciseMap[launchExercise.id]
@@ -393,6 +403,17 @@ export default function CalisthenicsTracker({ onStartExercise }) {
               {(calisthenie30.completedDays?.[selectedDay] || calisthenie30.completedDays?.[String(selectedDay)]) ? 'Annuler' : 'Marquer fait ✓'}
             </button>
           </div>
+
+          <button
+              onClick={() => {
+                const phase = getDayPhase(selectedDay)
+                const dayExercises = phase === 1 ? PHASE_1_EXERCISES : phase === 2 ? PHASE_2_EXERCISES : PHASE_3_EXERCISES
+                setCircuitDay({ day: selectedDay, exercises: dayExercises })
+              }}
+              className="w-full py-3 rounded-xl bg-lime text-dark-bg font-bold text-sm flex items-center justify-center gap-2 mb-3"
+            >
+              <Play size={16} fill="currentColor" /> Lancer la séance du jour
+            </button>
 
           <div className="space-y-1.5">
             {selectedDay <= 10 && PHASE_1_EXERCISES.map((ex) => (
